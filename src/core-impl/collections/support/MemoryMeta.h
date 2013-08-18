@@ -165,7 +165,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual KUrl playableUrl() const { return m_track->playableUrl(); }
         virtual QString prettyUrl() const { return m_track->prettyUrl(); }
         virtual QString uidUrl() const { return m_track->uidUrl(); }
-        virtual bool isPlayable() const { return m_track->isPlayable(); }
+        virtual QString notPlayableReason() const { return m_track->notPlayableReason(); }
 
         //these functions return the proxy track values
         virtual Meta::AlbumPtr album() const { return m_album; }
@@ -205,6 +205,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
 
+        virtual Meta::TrackEditorPtr editor();
         virtual Meta::StatisticsPtr statistics();
 
         // MemoryMeta::Track methods:
@@ -289,7 +290,7 @@ class AMAROK_EXPORT MapChanger
          *
          * @return shared pointer to underlying track of the deleted track, i.e. the track
          * that you passed to MapChanger::addTrack() originally. May be null pointer if
-         * @param track is not found in collection ot if in wasn't added using MapChanger.
+         * @param track is not found in collection or if it wasn't added using MapChanger.
          */
         Meta::TrackPtr removeTrack( Meta::TrackPtr track );
 

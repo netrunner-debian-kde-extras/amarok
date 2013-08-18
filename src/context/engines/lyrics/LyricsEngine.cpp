@@ -19,11 +19,12 @@
 
 #include "LyricsEngine.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "ContextView.h"
 #include "EngineController.h"
 #include "ScriptManager.h"
+#include "context/ContextView.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QTimer>
 #include <QTextDocument>
@@ -37,10 +38,10 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 {
 
     EngineController* engine = The::engineController();
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ), Qt::QueuedConnection );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(update()), Qt::QueuedConnection );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(onTrackMetadataChanged(Meta::TrackPtr)), Qt::QueuedConnection );
 }
 
 QStringList LyricsEngine::sources() const

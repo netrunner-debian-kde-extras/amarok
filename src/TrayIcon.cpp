@@ -27,6 +27,7 @@
 #include "amarokconfig.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistActions.h"
@@ -43,6 +44,10 @@
 #include <QPixmap>
 #include <QToolTip>
 
+#ifdef Q_WS_MAC
+    extern void qt_mac_set_dock_menu(QMenu *);
+#endif
+
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
         , m_track( The::engineController()->currentTrack() )
@@ -52,11 +57,14 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     setStatus( KStatusNotifierItem::Active );
 
+    // Remove the "Configure Amarok..." action, as it makes no sense in the tray menu
+    const QString preferences = KStandardAction::name( KStandardAction::Preferences );
+    contextMenu()->removeAction( ac->action( preferences ) );
+
     PERF_LOG( "Before adding actions" );
 
 #ifdef Q_WS_MAC
     // Add these functions to the dock icon menu in OS X
-    extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
     contextMenu()->addSeparator();
@@ -66,6 +74,9 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
+
+    contextMenu()->addSeparator();
+
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Initializing system tray icon" );
@@ -76,32 +87,32 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     updateMenu();
 
     const EngineController* engine = The::engineController();
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged(Meta::TrackPtr)) );
 
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
 
-    connect( engine, SIGNAL( volumeChanged( int ) ),
-             this, SLOT( updateToolTip() ) );
+    connect( engine, SIGNAL(volumeChanged(int)),
+             this, SLOT(updateToolTip()) );
 
-    connect( engine, SIGNAL( muteStateChanged( bool ) ),
-             this, SLOT( updateToolTip() ) );
+    connect( engine, SIGNAL(muteStateChanged(bool)),
+             this, SLOT(updateToolTip()) );
 
-    connect( engine, SIGNAL( playbackStateChanged() ),
-             this, SLOT( updateOverlayIcon() ) );
+    connect( engine, SIGNAL(playbackStateChanged()),
+             this, SLOT(updateOverlayIcon()) );
 
-    connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ),
-             SLOT( slotScrollRequested(int, Qt::Orientation) ) );
-    connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
-             The::engineController(), SLOT( playPause() ) );
+    connect( this, SIGNAL(scrollRequested(int,Qt::Orientation)),
+             SLOT(slotScrollRequested(int,Qt::Orientation)) );
+    connect( this, SIGNAL(secondaryActivateRequested(QPoint)),
+             The::engineController(), SLOT(playPause()) );
 }
 
 void
@@ -283,19 +294,15 @@ Amarok::TrayIcon::updateMenu()
     if( m_extraActions.count() > 0 ||
         contextMenu()->actions().last() != actionCollection()->action( "file_quit" ) )
     {
-        KActionCollection const *ac = Amarok::actionCollection();
-        QAction *preferenceAction = ac->action( KStandardAction::name( KStandardAction::Preferences ) );
-        // remove the 3 bottom items, so we can push them to the bottom again
+        // remove the 2 bottom items, so we can push them to the bottom again
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
-        contextMenu()->removeAction( preferenceAction );
 
         foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addAction( preferenceAction );
         contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }

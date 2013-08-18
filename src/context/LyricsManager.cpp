@@ -19,9 +19,10 @@
 
 #include "LyricsManager.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <KLocale>
 

@@ -13,11 +13,11 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef SOURCEINFOCAPABILITY_H
 #define SOURCEINFOCAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 
 class QPixmap;

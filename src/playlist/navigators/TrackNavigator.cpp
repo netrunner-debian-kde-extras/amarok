@@ -20,14 +20,13 @@
 
 #include "TrackNavigator.h"
 
+#include "amarokconfig.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include "core/support/Amarok.h"
-#include "amarokconfig.h"
-#include "core/support/Debug.h"
-
 #include <QQueue>
-
 
 Playlist::TrackNavigator::TrackNavigator()
 {
@@ -36,31 +35,19 @@ Playlist::TrackNavigator::TrackNavigator()
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
-    connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
+    connect( m_model->qaim(), SIGNAL(modelReset()), this, SLOT(slotModelReset()) );
     connect( Playlist::ModelStack::instance()->bottom(),
-             SIGNAL( rowsAboutToBeRemoved( QModelIndex, int, int ) ),
-             SLOT( slotRowsAboutToBeRemoved( QModelIndex, int, int ) ) );
+             SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+             SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)) );
     //   Ignore SIGNAL rowsInserted.
-}
-
-void
-Playlist::TrackNavigator::queueId( const quint64 id )
-{
-    QList<quint64> ids;
-    ids << id;
-    queueIds( ids );
 }
 
 void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
-    Meta::TrackPtr track;
     foreach( quint64 id, ids )
     {
-        track = m_model->trackForId( id );
-        if( !track ) // playlist might contain invalid tracks. See BUG: 302607
-            continue;
-        if( !m_queue.contains( id ) && track->isPlayable() )
+        if( !m_queue.contains( id ) )
             m_queue.enqueue( id );
     }
 }

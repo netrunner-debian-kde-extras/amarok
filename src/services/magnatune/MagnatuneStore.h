@@ -118,8 +118,6 @@ private slots:
     void download();
 
     void download( const QString &sku );
-    
-    void downloadCurrentTrackAlbum();
 
     /**
      * Slot for recieving notification that the update button has been clicked.
@@ -205,7 +203,6 @@ private:
     static MagnatuneStore *s_instance;
 
     QString m_currentInfoUrl;
-    QMenu *m_popupMenu;
     MagnatuneDownloadHandler *m_downloadHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
@@ -214,7 +211,6 @@ private:
 
     QAction * m_updateAction;
 
-    QComboBox   *m_genreComboBox;
     bool         m_downloadInProgress;
 
     Meta::MagnatuneAlbum * m_currentAlbum;

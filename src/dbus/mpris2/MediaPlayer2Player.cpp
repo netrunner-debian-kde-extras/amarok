@@ -23,10 +23,11 @@
 
 #include "MediaPlayer2Player.h"
 
+#include "EngineController.h"
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
@@ -58,35 +59,38 @@ MediaPlayer2Player::MediaPlayer2Player(QObject* parent)
     : DBusAbstractAdaptor(parent)
     , m_lastPosition(-1)
 {
-    connect( The::engineController(), SIGNAL( trackPositionChanged( qint64, bool ) ),
-             this,                    SLOT( trackPositionChanged( qint64, bool ) ) );
-    connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this,                    SLOT( trackChanged( Meta::TrackPtr ) ) );
-    connect( The::engineController(), SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this,                    SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
-    connect( The::engineController(), SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this,                    SLOT( albumMetadataChanged( Meta::AlbumPtr ) ) );
-    connect( The::engineController(), SIGNAL( seekableChanged( bool ) ),
-             this,                    SLOT( seekableChanged( bool ) ) );
-    connect( The::engineController(), SIGNAL( volumeChanged( int ) ),
-             this,                    SLOT( volumeChanged( int ) ) );
-    connect( The::engineController(), SIGNAL( trackLengthChanged( qint64 ) ),
-             this,                    SLOT( trackLengthChanged( qint64 ) ) );
-    connect( The::engineController(), SIGNAL( playbackStateChanged() ),
-             this,                    SLOT( playbackStateChanged() ) );
-    connect( The::playlistActions(),  SIGNAL( navigatorChanged() ),
-             this,                    SLOT( playlistNavigatorChanged() ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsInserted( QModelIndex, int, int ) ),
-             this,                    SLOT( playlistRowsInserted( QModelIndex, int, int ) ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsMoved( QModelIndex, int, int, QModelIndex, int ) ),
-             this,                    SLOT( playlistRowsMoved( QModelIndex, int, int, QModelIndex, int ) ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( QModelIndex, int, int) ),
-             this,                    SLOT( playlistRowsRemoved( QModelIndex, int, int ) ) );
-    connect( The::playlist()->qaim(), SIGNAL( modelReset() ),
-             this,                    SLOT( playlistReplaced() ) );
+    connect( The::engineController(), SIGNAL(trackPositionChanged(qint64,bool)),
+             this,                    SLOT(trackPositionChanged(qint64,bool)) );
+    // it is important that we receive this signal *after* the playlist code
+    // has dealt with it, in order to get the right value for mpris:trackid
+    connect( The::engineController(), SIGNAL(trackChanged(Meta::TrackPtr)),
+             this,                    SLOT(trackChanged(Meta::TrackPtr)),
+             Qt::QueuedConnection );
+    connect( The::engineController(), SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this,                    SLOT(trackMetadataChanged(Meta::TrackPtr)) );
+    connect( The::engineController(), SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this,                    SLOT(albumMetadataChanged(Meta::AlbumPtr)) );
+    connect( The::engineController(), SIGNAL(seekableChanged(bool)),
+             this,                    SLOT(seekableChanged(bool)) );
+    connect( The::engineController(), SIGNAL(volumeChanged(int)),
+             this,                    SLOT(volumeChanged(int)) );
+    connect( The::engineController(), SIGNAL(trackLengthChanged(qint64)),
+             this,                    SLOT(trackLengthChanged(qint64)) );
+    connect( The::engineController(), SIGNAL(playbackStateChanged()),
+             this,                    SLOT(playbackStateChanged()) );
+    connect( The::playlistActions(),  SIGNAL(navigatorChanged()),
+             this,                    SLOT(playlistNavigatorChanged()) );
+    connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+             this,                    SLOT(playlistRowsInserted(QModelIndex,int,int)) );
+    connect( The::playlist()->qaim(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+             this,                    SLOT(playlistRowsMoved(QModelIndex,int,int,QModelIndex,int)) );
+    connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             this,                    SLOT(playlistRowsRemoved(QModelIndex,int,int)) );
+    connect( The::playlist()->qaim(), SIGNAL(modelReset()),
+             this,                    SLOT(playlistReplaced()) );
     connect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()),
-                                      SIGNAL( activeTrackChanged( const quint64 ) ),
-             this,                    SLOT( playlistActiveTrackChanged( quint64 ) ) );
+                                      SIGNAL(activeTrackChanged(quint64)),
+             this,                    SLOT(playlistActiveTrackChanged(quint64)) );
 }
 
 MediaPlayer2Player::~MediaPlayer2Player()
@@ -162,7 +166,7 @@ void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong 
 {
     QDBusObjectPath activeTrackId = activeMprisTrackId();
     if( TrackId == activeTrackId )
-        The::engineController()->seek( position / 1000 );
+        The::engineController()->seekTo( position / 1000 );
     else
         debug() << "SetPosition() called with a trackId (" << TrackId.path() << ") which is not for the active track (" << activeTrackId.path() << ")";
 }
@@ -170,7 +174,7 @@ void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong 
 void MediaPlayer2Player::OpenUri( QString Uri ) const
 {
     KUrl url( Uri );
-    The::playlistController()->insertOptioned( KUrl::List() << url, Playlist::AppendAndPlayImmediately );
+    The::playlistController()->insertOptioned( url, Playlist::OnPlayMediaAction );
 }
 
 QString MediaPlayer2Player::PlaybackStatus() const
@@ -308,7 +312,7 @@ double MediaPlayer2Player::MaximumRate() const
 
 bool MediaPlayer2Player::CanSeek() const
 {
-    return The::engineController()->phononMediaObject()->isSeekable();
+    return The::engineController()->isSeekable();
 }
 
 void MediaPlayer2Player::Seek( qlonglong Offset ) const
@@ -320,7 +324,7 @@ void MediaPlayer2Player::Seek( qlonglong Offset ) const
     else if( position > The::engineController()->trackLength() )
         Next();
     else
-        The::engineController()->seek( position );
+        The::engineController()->seekTo( position );
 }
 
 bool MediaPlayer2Player::CanControl() const
@@ -365,8 +369,11 @@ void MediaPlayer2Player::volumeChanged( int percent )
 
 void MediaPlayer2Player::trackLengthChanged( qint64 milliseconds )
 {
-    Q_UNUSED( milliseconds )
-    signalPropertyChange( "Metadata", Metadata() );
+    // milliseconds < 0 is not a helpful value, and generally happens
+    // when the track changes or playback is stopped; these cases are
+    // dealt with better by other signal handlers
+    if ( milliseconds >= 0 )
+        signalPropertyChange( "Metadata", Metadata() );
 }
 
 void MediaPlayer2Player::playbackStateChanged()

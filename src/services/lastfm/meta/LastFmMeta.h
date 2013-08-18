@@ -41,16 +41,13 @@ namespace LastFm
 
         // methods inherited from Meta::Base
             virtual QString name() const;
-            virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
-            virtual QString fixedName() const;
 
         // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
-
-            virtual bool isPlayable() const;
+            virtual QString notPlayableReason() const;
 
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;

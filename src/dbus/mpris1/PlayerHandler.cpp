@@ -78,10 +78,10 @@ namespace Mpris1
 
         EngineController *engine = The::engineController();
 
-        connect( engine, SIGNAL( playbackStateChanged() ),
-                 this, SLOT( slotStateChanged() ) );
-        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-                 this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
+        connect( engine, SIGNAL(playbackStateChanged()),
+                 this, SLOT(slotStateChanged()) );
+        connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+                 this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
     }
 
     Status PlayerHandler::GetStatus()
@@ -171,7 +171,7 @@ namespace Mpris1
     void PlayerHandler::PositionSet( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( time );
+            The::engineController()->seekTo( time );
     }
 
     void PlayerHandler::Stop()
@@ -222,13 +222,13 @@ namespace Mpris1
     void PlayerHandler::Forward( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
+            The::engineController()->seekTo( The::engineController()->trackPosition() * 1000 + time );
     }
 
     void PlayerHandler::Backward( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
+            The::engineController()->seekTo( The::engineController()->trackPosition() * 1000 - time );
     }
 
     QVariantMap PlayerHandler::GetMetadata()

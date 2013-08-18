@@ -25,7 +25,7 @@ namespace Meta
 {
     namespace Tag
     {
-        class AMAROK_EXPORT APETagHelper : public TagHelper
+        class AMAROKSHARED_EXPORT APETagHelper : public TagHelper
         {
             public:
                 APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType );

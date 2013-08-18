@@ -63,8 +63,6 @@ namespace Meta
 
 class JamendoTrack  : public ServiceTrack
 {
-
-
 public:
     JamendoTrack( const QString &name );
     JamendoTrack( const QStringList &resultRow );
@@ -87,23 +85,13 @@ public:
     virtual QString collectionName() const { return "Jamendo.com"; }
     virtual bool simpleFiltering() const { return false; }
 
-    virtual QList< QAction *> customActions();
-    virtual QList< QAction * > currentTrackActions();
-
-
 private:
-    
     JamendoService * m_service;
-    
-    QAction * m_downloadCustomAction;
-    QAction * m_downloadCurrentTrackAction;
-
 };
 
 
 class JamendoArtist : public ServiceArtist
 {
-
 private:
 
     QString m_country;
@@ -140,8 +128,6 @@ private:
     QString m_coverURL;
     int m_launchYear;
     QString m_genre;
-    QString m_mp3TorrentUrl;
-    QString m_oggTorrentUrl;
 
 
 public:
@@ -164,14 +150,6 @@ public:
 
     void setGenre( const QString &genre );
     QString genre() const;
-
-    void setMp3TorrentUrl( const QString &url );
-    QString mp3TorrentUrl();
-
-    void setOggTorrentUrl( const QString &url );
-    QString oggTorrentUrl();
-
-    virtual QList< QAction *> customActions();
 
     void setService( JamendoService * store );
     JamendoService * service();

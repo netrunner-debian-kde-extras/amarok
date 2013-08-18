@@ -17,26 +17,22 @@ Image*                                                                          
 
 #include "MetaTypeExporter.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 
-#include <QtScript>
+#include <QScriptEngine>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
-#define GET_TRACK_EC( X ) Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
-Capabilities::EditCapability* ec = track->create<Capabilities::EditCapability>(); \
+#define GET_TRACK_EC( X ) GET_TRACK \
+Meta::TrackEditorPtr ec = track->editor(); \
 if( ec ) \
 { \
-    ec->beginMetaDataUpdate(); \
     X; \
-    ec->endMetaDataUpdate(); \
 }
 
 MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
     : QObject( parent )
-{
-}
-
-MetaTrackPrototype::~MetaTrackPrototype()
 {
 }
 
@@ -221,12 +217,12 @@ MetaTrackPrototype::isValid() const
     if ( track ) return true;
     return false;
 }
+
 bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
-    return ( ec && ec->isEditable() );
+    return track->editor(); // converts to bool nicely
 }
 
 QString

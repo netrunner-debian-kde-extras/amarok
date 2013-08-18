@@ -31,19 +31,19 @@
 #include "AmarokMimeData.h"
 #include "core/capabilities/ReadLabelCapability.h"
 #include "core/support/Debug.h"
-#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
-#include "PlaylistColumnNames.h"
+#include "PlaylistDefines.h"
 #include "PlaylistActions.h"
 #include "PlaylistController.h"
 #include "PlaylistItem.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "UndoCommands.h"
+#include "core-impl/support/TrackLoader.h"
+#include "playlist/UndoCommands.h"
 
 #include <KGlobal>
 #include <KIconLoader>
@@ -132,7 +132,7 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
     {
         QString line;
         line += "<tr><td align=\"right\">";
-        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconNames[column] , -16)+"\" />";
+        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconName( column ), -16)+"\" />";
         line += "</td><td align=\"left\">";
         line += breakLongLinesHTML( value );
         line += "</td></tr>";
@@ -212,6 +212,19 @@ Playlist::Model::queueSaveState()
         m_saveStateTimer->start();
 }
 
+void
+Playlist::Model::insertTracksFromTrackLoader( const Meta::TrackList &tracks )
+{
+    QObject *loader = sender();
+    if( !sender() )
+    {
+        warning() << __PRETTY_FUNCTION__ << "can only be connected to TrackLoader";
+        return;
+    }
+    int insertRow = loader->property( "beginRow" ).toInt();
+    Controller::instance()->insertTracks( insertRow, tracks );
+}
+
 QVariant
 Playlist::Model::headerData( int section, Qt::Orientation orientation, int role ) const
 {
@@ -220,7 +233,7 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
     if ( role != Qt::DisplayRole )
         return QVariant();
 
-    return columnNames( section );
+    return columnName( static_cast<Playlist::Column>( section ) );
 }
 
 void
@@ -249,6 +262,9 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     Meta::ComposerPtr composer = track->composer();
     Meta::YearPtr year = track->year();
     Meta::StatisticsPtr statistics = track->statistics();
+
+    if( !track->isPlayable() )
+        text += i18n( "<b>Note:</b> This track is not playable.<br>%1", track->notPlayableReason() );
 
     if( s_tooltipColumns[Playlist::Title] )
         text += HTMLLine( Playlist::Title, track->name() );
@@ -354,13 +370,20 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
 
-    else if ( role == Qt::ToolTipRole && s_showToolTip )
-        return tooltipFor( m_items.at( row )->track() );
+    else if ( role == Qt::ToolTipRole )
+    {
+        Meta::TrackPtr track = m_items.at( row )->track();
+        if( s_showToolTip )
+            return tooltipFor( track );
+        else if( !track->isPlayable() )
+            return i18n( "<b>Note:</b> This track is not playable.<br>%1", track->notPlayableReason() );
+    }
 
     else if ( role == Qt::DisplayRole )
     {
-        Meta::AlbumPtr album = m_items.at( row )->track()->album();
-        Meta::StatisticsPtr statistics = m_items.at( row )->track()->statistics();
+        Meta::TrackPtr track = m_items.at( row )->track();
+        Meta::AlbumPtr album = track->album();
+        Meta::StatisticsPtr statistics = track->statistics();
         switch ( index.column() )
         {
             case PlaceHolder:
@@ -373,34 +396,40 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case AlbumArtist:
             {
-                if( album && album->albumArtist() )
-                    return album->albumArtist()->name();
+                if( album )
+                {
+                    Meta::ArtistPtr artist = album->albumArtist();
+                    if( artist )
+                        return artist->name();
+                }
                 break;
             }
             case Artist:
             {
-                if ( m_items.at( row )->track()->artist() )
-                    return m_items.at( row )->track()->artist()->name();
+                Meta::ArtistPtr artist = track->artist();
+                if( artist )
+                    return artist->name();
                 break;
             }
             case Bitrate:
             {
-                return Meta::prettyBitrate( m_items.at( row )->track()->bitrate() );
+                return Meta::prettyBitrate( track->bitrate() );
             }
             case Bpm:
             {
-                if ( m_items.at( row )->track()->bpm() > 0.0 )
-                    return QString::number( m_items.at( row )->track()->bpm() );
+                if( track->bpm() > 0.0 )
+                    return QString::number( track->bpm() );
                 break;
             }
             case Comment:
             {
-                return m_items.at( row )->track()->comment();
+                return track->comment();
             }
             case Composer:
             {
-                if ( m_items.at( row )->track()->composer() )
-                    return m_items.at( row )->track()->composer()->name();
+                Meta::ComposerPtr composer = track->composer();
+                if( composer )
+                    return composer->name();
                 break;
             }
             case CoverImage:
@@ -411,31 +440,32 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Directory:
             {
-                if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
-                    return m_items.at( row )->track()->playableUrl().directory();
+                if( track->playableUrl().isLocalFile() )
+                    return track->playableUrl().directory();
                 break;
             }
             case DiscNumber:
             {
-                if( m_items.at( row )->track()->discNumber() > 0 )
-                    return m_items.at( row )->track()->discNumber();
+                if( track->discNumber() > 0 )
+                    return track->discNumber();
                 break;
             }
             case Filename:
             {
 
-                if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
-                    return m_items.at( row )->track()->playableUrl().fileName();
+                if( track->playableUrl().isLocalFile() )
+                    return track->playableUrl().fileName();
                 break;
             }
             case Filesize:
             {
-                return Meta::prettyFilesize( m_items.at( row )->track()->filesize() );
+                return Meta::prettyFilesize( track->filesize() );
             }
             case Genre:
             {
-                if ( m_items.at( row )->track()->genre() )
-                    return m_items.at( row )->track()->genre()->name();
+                Meta::GenrePtr genre = track->genre();
+                if( genre )
+                    return genre->name();
                 break;
             }
             case GroupLength:
@@ -448,7 +478,6 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Labels:
             {
-                Meta::TrackPtr track = m_items.at( row )->track();
                 if( track )
                 {
                     QStringList labelNames;
@@ -469,11 +498,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                return Meta::msToPrettyTime( m_items.at( row )->track()->length() );
+                return Meta::msToPrettyTime( track->length() );
             }
             case LengthInSeconds:
             {
-                return m_items.at( row )->track()->length() / 1000;
+                return track->length() / 1000;
             }
             case Mood:
             {
@@ -489,8 +518,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case SampleRate:
             {
-                if( m_items.at( row )->track()->sampleRate() > 0 )
-                    return m_items.at( row )->track()->sampleRate();
+                if( track->sampleRate() > 0 )
+                    return track->sampleRate();
                 break;
             }
             case Score:
@@ -500,7 +529,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Source:
             {
                 QString sourceName;
-                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     sourceName = sic->sourceName();
@@ -508,14 +537,14 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 }
                 else
                 {
-                    sourceName = m_items.at( row )->track()->collection() ? m_items.at( row )->track()->collection()->prettyName() : QString();
+                    sourceName = track->collection() ? track->collection()->prettyName() : QString();
                 }
                 return sourceName;
             }
             case SourceEmblem:
             {
                 QPixmap emblem;
-                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     QString source = sic->sourceName();
@@ -527,15 +556,15 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Title:
             {
-                return m_items.at( row )->track()->prettyName();
+                return track->prettyName();
             }
             case TitleWithTrackNum:
             {
                 QString trackString;
-                QString trackName = m_items.at( row )->track()->prettyName();
-                if ( m_items.at( row )->track()->trackNumber() > 0 )
+                QString trackName = track->prettyName();
+                if( track->trackNumber() > 0 )
                 {
-                    QString trackNumber = QString::number( m_items.at( row )->track()->trackNumber() );
+                    QString trackNumber = QString::number( track->trackNumber() );
                     trackString =  QString( trackNumber + " - " + trackName );
                 } else
                     trackString = trackName;
@@ -544,17 +573,17 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case TrackNumber:
             {
-                if( m_items.at( row )->track()->trackNumber() > 0 )
-                    return m_items.at( row )->track()->trackNumber();
+                if( track->trackNumber() > 0 )
+                    return track->trackNumber();
                 break;
             }
             case Type:
             {
-                return m_items.at( row )->track()->type();
+                return track->type();
             }
             case Year:
             {
-                Meta::YearPtr year = m_items.at( row )->track()->year();
+                Meta::YearPtr year = track->year();
                 if( year && year->year() > 0 )
                     return year->year();
                 break;
@@ -605,9 +634,8 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
 }
 
 bool
-Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex& parent )
+Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex &parent )
 {
-    DEBUG_BLOCK
     if ( action == Qt::IgnoreAction )
         return true;
 
@@ -671,8 +699,9 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasUrls() )
     {
         debug() << "this is _something_ with a url....";
-        DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
-        dl->insertAtRow( beginRow );
+        TrackLoader *dl = new TrackLoader(); // auto-deletes itself
+        dl->setProperty( "beginRow", beginRow );
+        connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(insertTracksFromTrackLoader(Meta::TrackList)) );
         dl->init( data->urls() );
         return true;
     }
@@ -719,7 +748,7 @@ Playlist::Model::stateOfRow( int row ) const
 }
 
 bool
-Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
+Playlist::Model::containsTrack( const Meta::TrackPtr& track ) const
 {
     foreach( Item* i, m_items )
     {
@@ -730,7 +759,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
 }
 
 int
-Playlist::Model::firstRowForTrack( const Meta::TrackPtr track ) const
+Playlist::Model::firstRowForTrack( const Meta::TrackPtr& track ) const
 {
     int row = 0;
     foreach( Item* i, m_items )
@@ -743,7 +772,7 @@ Playlist::Model::firstRowForTrack( const Meta::TrackPtr track ) const
 }
 
 QSet<int>
-Playlist::Model::allRowsForTrack( const Meta::TrackPtr track ) const
+Playlist::Model::allRowsForTrack( const Meta::TrackPtr& track ) const
 {
     QSet<int> trackRows;
 
@@ -822,8 +851,6 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK;
-
     int row = 0;
     foreach( Item* i, m_items )
     {
@@ -835,7 +862,6 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
                 subscribeTo( album );
 
             emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
-            debug()<<"Metadata updated for track"<<track->prettyName();
         }
         row++;
     }
@@ -979,107 +1005,105 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 }
 
+static bool
+removeCmdLessThanByRow( const Playlist::RemoveCmd &left, const Playlist::RemoveCmd &right )
+{
+    return left.second < right.second;
+}
 
 void
-Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
+Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
 {
     DEBUG_BLOCK
-    if ( cmds.size() < 1 )
+    if ( passedCmds.size() < 1 )
         return;
 
-    if ( cmds.size() == m_items.size() )
+    if ( passedCmds.size() == m_items.size() )
     {
         clearCommand();
         return;
     }
 
-    int activeShift = 0;
-    bool activeDeleted = false;
-    foreach( const RemoveCmd &rc, cmds )
+    // sort tracks to remove by their row
+    RemoveCmdList cmds( passedCmds );
+    qSort( cmds.begin(), cmds.end(), removeCmdLessThanByRow );
+
+    // update the active row
+    if( m_activeRow >= 0 )
     {
-        activeShift += ( rc.second < m_activeRow ) ? 1 : 0;
-        if ( rc.second == m_activeRow )
-            activeDeleted = true;
+        int activeShift = 0;
+        foreach( const RemoveCmd &rc, cmds )
+        {
+            if( rc.second < m_activeRow )
+                activeShift++;
+            else if( rc.second == m_activeRow )
+                m_activeRow = -1; // disappeared
+            else
+                break; // we got over it, nothing left to do
+        }
+        if( m_activeRow >= 0 ) // not deleted
+            m_activeRow -= activeShift;
     }
 
-    /* This next bit is probably more complicated that you expected it to be.
-     * The reason for the complexity comes from the following:
-     *
-     * 1. Qt's Model/View architecture can handle removal of only consecutive rows
-     * 2. The "remove rows" command from the Controller must handle
-     *    non-consecutive rows, and the removal command probably isn't sorted
-     *
-     * So each item has to be removed individually, and you can't just iterate
-     * over the commands, calling "m_items.removeAt(index)" as you go, because
-     * the indices of m_items will change with every removeAt().  Thus the
-     * following strategy of copying m_item, looking up the index in the copy and
-     * removing the item from the original list. (The strategy was changed from
-     * only replacing m_items at the end because that meant lying to the view -- Max)
-     *
-     * As a safety measure, the items themselves are not deleted until after m_items
-     * has been replaced.  If you delete as you go, then m_items will be holding
-     * dangling pointers, and the program will probably crash if the model is
-     * accessed in this state.   -- stharward */
+    QSet<Meta::TrackPtr> trackUnsubscribeCandidates;
+    QSet<Meta::AlbumPtr> albumUnsubscribeCandidates;
 
-    QList<Item*> originalList(m_items); // copy the current item list
-    QList<Item*> delitems;
-    foreach( const RemoveCmd &rc, cmds )
+    QListIterator<RemoveCmd> it( cmds );
+    int removedRows = 0;
+    while( it.hasNext() )
     {
-        Meta::TrackPtr track = rc.first;
-        Item* item = originalList.at(rc.second);
-        Q_ASSERT( track == item->track() );
+        int startRow = it.next().second;
+        int endRow = startRow;
 
-        // -- remove the items from the lists
-        int idx = rowForItem( item );
-        if (idx != -1) {
-            beginRemoveRows(QModelIndex(), idx, idx);
-            delitems.append(item);
-            m_items.removeAll( item );
-            m_itemIds.remove( item->id() );
+        // find consecutive runs of rows, this is important to group begin/endRemoveRows(),
+        // which are very costly when there are many proxymodels and a view above.
+        while( it.hasNext() && it.peekNext().second == endRow + 1 )
+        {
+            it.next();
+            endRow++;
+        }
+
+        beginRemoveRows( QModelIndex(), startRow - removedRows, endRow - removedRows );
+        for( int row = startRow; row <= endRow; row++ )
+        {
+            Item *removedItem = m_items.at( row - removedRows );
+            m_items.removeAt( row - removedRows );
+            m_itemIds.remove( removedItem->id() );
+
+            const Meta::TrackPtr &track = removedItem->track();
             // update totals here so they're right when endRemoveRows() called
             m_totalLength -= track->length();
             m_totalSize -= track->filesize();
-            endRemoveRows();
-        } else {
-            error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
-        }
-
-        // -- unsubscribe
-        if( !containsTrack( track ) ) // check against same track two times in playlist
-        {
-            unsubscribeFrom( track );
-
+            trackUnsubscribeCandidates.insert( track );
             Meta::AlbumPtr album = track->album();
             if( album )
-            {
-                // check if we are the last track in playlist with this album
-                bool last = true;
-                const int size = m_items.size();
-                for ( int i = 0; i < size; i++ )
-                {
-                    if( m_items.at( i )->track()->album() == album )
-                    {
-                        last = false;
-                        break;
-                    }
-                }
-                if( last )
-                    unsubscribeFrom( album );
-            }
+                albumUnsubscribeCandidates.insert( album );
+
+            delete removedItem; // note track is by reference, needs removedItem alive
+            removedRows++;
         }
+        endRemoveRows();
     }
 
-    qDeleteAll(delitems);
-    delitems.clear();
-
-    //update the active row
-    if ( !activeDeleted && ( m_activeRow >= 0 ) )
+    // unsubscribe from tracks no longer present in playlist
+    foreach( Meta::TrackPtr track, trackUnsubscribeCandidates )
     {
-        m_activeRow = ( m_activeRow > 0 ) ? m_activeRow - activeShift : 0;
+        if( !containsTrack( track ) )
+            unsubscribeFrom( track );
     }
-    else
+
+    // unsubscribe from albums no longer present im playlist
+    QSet<Meta::AlbumPtr> remainingAlbums;
+    foreach( const Item *item, m_items )
     {
-        m_activeRow = -1;
+        Meta::AlbumPtr album = item->track()->album();
+        if( album )
+            remainingAlbums.insert( album );
+    }
+    foreach( Meta::AlbumPtr album, albumUnsubscribeCandidates )
+    {
+        if( !remainingAlbums.contains( album ) )
+            unsubscribeFrom( album );
     }
 
     // make sure that there are enough tracks if we just removed from a dynamic playlist.
@@ -1123,14 +1147,18 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     if ( cmds.size() < 1 )
         return;
 
-    int min = m_items.size() + cmds.size();
-    int max = 0;
+    int min = INT_MAX;
+    int max = INT_MIN;
     foreach( const MoveCmd &rc, cmds )
     {
         min = qMin( min, rc.first );
-        min = qMin( min, rc.second );
         max = qMax( max, rc.first );
-        max = qMax( max, rc.second );
+    }
+
+    if( min < 0 || max >= m_items.size() )
+    {
+        error() << "Wrong row numbers given";
+        return;
     }
 
     int newActiveRow = m_activeRow;

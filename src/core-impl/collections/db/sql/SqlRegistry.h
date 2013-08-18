@@ -75,7 +75,7 @@ typedef QPair<int, QString> TrackPath;
     A single update is only done very seldom and does currently not
     need to be optimized.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
 {
     Q_OBJECT
 
@@ -142,7 +142,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         void emptyCache();
 
     private:
-
         typedef QPair<QString, QString> AlbumKey;
 
         // only SqlTrack can change this
@@ -204,7 +203,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QHash<QString, Meta::LabelPtr > m_labelMap;
 
         QMutex m_trackMutex; // guards access to m_trackMap, m_uidMap
-        QMutex m_artistMutex; // guards acces to m_artistMap, m_artistIdMap
+        QMutex m_artistMutex; // guards access to m_artistMap, m_artistIdMap
         QMutex m_composerMutex; // guards access to m_composerMap
         QMutex m_genreMutex; // guards access to m_genreMap
         QMutex m_yearMutex; // guards access to m_yearMap

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -64,7 +64,7 @@ AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
 
     QAction *removeFromCartAction = new QAction( KIcon( "amarok_cart_remove" ), QString( i18n( "Remove from Cart" ) ), &menu );
     actions.append( removeFromCartAction );
-    connect( removeFromCartAction, SIGNAL( triggered() ), this, SLOT( removeFromCartAction() ) );
+    connect( removeFromCartAction, SIGNAL(triggered()), this, SLOT(removeFromCartAction()) );
 
     menu.exec( actions, event->globalPos() );
     event->accept();

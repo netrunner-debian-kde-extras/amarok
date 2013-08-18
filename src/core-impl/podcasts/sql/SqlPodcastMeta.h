@@ -64,13 +64,14 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-        virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 
         virtual Meta::ArtistPtr artist() const;
         virtual Meta::ComposerPtr composer() const;
         virtual Meta::GenrePtr genre() const;
         virtual Meta::YearPtr year() const;
+
+        virtual Meta::TrackEditorPtr editor();
 
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
@@ -84,8 +85,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
          * Establishes m_localFile using MetaProxy::Track if m_localUrl is valid.
          */
         void setupLocalFile();
-
-        bool m_batchUpdate;
 
         int m_dbId; //database ID
         bool m_isKeep; //Keep the download after purge or not?
@@ -125,7 +124,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         //Podcasts::PodcastChannel methods
         virtual KUrl uidUrl() const;
         virtual void setTitle( const QString &title );
-        virtual Podcasts::PodcastEpisodeList episodes();
+        virtual Podcasts::PodcastEpisodeList episodes() const;
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual void setImage( const QImage &image );
         virtual QImage image() const { return m_image; }

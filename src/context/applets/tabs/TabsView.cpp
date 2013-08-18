@@ -62,8 +62,8 @@ TabsView::TabsView( QGraphicsWidget *parent )
 {
     // tree view which holds the collection of fetched tabs
     m_treeView = new TabsTreeView( 0 );
-    connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ),
-             this, SLOT( itemClicked( const QModelIndex & ) ) );
+    connect( m_treeView, SIGNAL(clicked(QModelIndex)),
+             this, SLOT(itemClicked(QModelIndex)) );
 
     m_model = new QStandardItemModel();
     m_model->setColumnCount( 1 );
@@ -90,9 +90,9 @@ TabsView::TabsView( QGraphicsWidget *parent )
     m_scrollBar->setFocusPolicy( Qt::NoFocus );
 
     // synchronize scrollbars
-    connect( treeScrollBar, SIGNAL( rangeChanged( int, int ) ), SLOT( slotScrollBarRangeChanged( int, int ) ) );
-    connect( treeScrollBar, SIGNAL( valueChanged( int ) ), m_scrollBar, SLOT( setValue( int ) ) );
-    connect( m_scrollBar, SIGNAL( valueChanged( int ) ), treeScrollBar, SLOT( setValue( int ) ) );
+    connect( treeScrollBar, SIGNAL(rangeChanged(int,int)), SLOT(slotScrollBarRangeChanged(int,int)) );
+    connect( treeScrollBar, SIGNAL(valueChanged(int)), m_scrollBar, SLOT(setValue(int)) );
+    connect( m_scrollBar, SIGNAL(valueChanged(int)), treeScrollBar, SLOT(setValue(int)) );
     m_scrollBar->setRange( treeScrollBar->minimum(), treeScrollBar->maximum() );
     m_scrollBar->setPageStep( treeScrollBar->pageStep() );
     m_scrollBar->setSingleStep( treeScrollBar->singleStep() );
@@ -171,7 +171,7 @@ TabsView::showTab( TabsItem *tab )
                     htmlData += "font-size:" + QString::number( headingFont.pointSize() ) + "pt;";
                     htmlData += "font-weight:" + QString::number( headingWeight ) + ";\">";
                     htmlData += tab->getTabTitle();
-                    htmlData += " (" + i18n( "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";
+                    htmlData += " (" + i18nc( "Guitar tablature", "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";
                     htmlData += "<span style=\"text-decoration: underline; color:" + linkColor + ";\">";
                     htmlData += tab->getTabSource() + "</a>";
                     htmlData += ")</span></p>";

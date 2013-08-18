@@ -25,35 +25,16 @@
 
 #include "StringHelper.h"
 
-#include <flacpicture.h>
+#include <QBuffer>
+#include <QImage>
 
-#ifndef UTILITIES_BUILD
-    #include <QBuffer>
-#endif  //UTILITIES_BUILD
+#include <flacpicture.h>
 
 using namespace Meta::Tag;
 
 static const TagLib::String VORBIS_PICTURE_TAG( "METADATA_BLOCK_PICTURE" );
 
-VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
-                      : TagHelper( tag, fileType )
-                      , m_tag( commentsTag )
-                      , m_flacFile( 0 )
-{
-    m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUMARTIST" ) );
-    m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
-    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
-    m_fieldMap.insert( Meta::valComposer,    TagLib::String( "COMPOSER" ) );
-    m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISCNUMBER" ) );
-    m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "COVERART" ) ); // non-standard but frequently used
-    m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
-    m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
-    m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
-
-    m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
-}
-
-VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType )
+VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file )
                       : TagHelper( tag, fileType )
                       , m_tag( commentsTag )
                       , m_flacFile( file )
@@ -63,6 +44,7 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
     m_fieldMap.insert( Meta::valComposer,    TagLib::String( "COMPOSER" ) );
     m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISCNUMBER" ) );
+    m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "COVERART" ) ); // non-standard but frequently used
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
@@ -78,7 +60,6 @@ isAlbumCover( const TagLib::FLAC::Picture* picture )
              picture->data().size() > MIN_COVER_SIZE; // must be at least 1kb
 }
 
-#ifndef UTILITIES_BUILD
 /**
  * Extract the given FLAC Picture object to QImage picture.
  *
@@ -101,7 +82,6 @@ flacPictureToQImage( const TagLib::FLAC::Picture* picture, QImage& cover, QImage
     }
     return false;
 }
-#endif //UTILITIES_BUILD
 
 Meta::FieldHash
 VorbisCommentTagHelper::tags() const
@@ -203,7 +183,6 @@ VorbisCommentTagHelper::render() const
     return m_tag->render();
 }
 
-#ifndef UTILITIES_BUILD
 bool
 VorbisCommentTagHelper::hasEmbeddedCover() const
 {
@@ -343,14 +322,11 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
 
     return false;
 }
-#endif  //UTILITIES_BUILD
 
 bool
 VorbisCommentTagHelper::parsePictureBlock( const TagLib::StringList& block, QImage* result )
 {
-#ifndef UTILITIES_BUILD
     QImage otherCover;
-#endif // UTILITIES_BUILD
     // Here's what's happening: "block" may contain several FLAC picture entries.
     // We need to find at least one that satisfies our needs.
     for( TagLib::StringList::ConstIterator i = block.begin(); i != block.end(); ++i )
@@ -363,7 +339,6 @@ VorbisCommentTagHelper::parsePictureBlock( const TagLib::StringList& block, QIma
             continue;
         if(isAlbumCover(&p))
         {
-#ifndef UTILITIES_BUILD
             if( result )
             {
                 // Now, if the image is a front cover, we just use it and quit
@@ -372,12 +347,10 @@ VorbisCommentTagHelper::parsePictureBlock( const TagLib::StringList& block, QIma
                     return true;
             }
             else
-#endif // UTILITIES_BUILD
                 // We found some image, but we don't need best one here, so just leave
                 return true;
         }
     }
-#ifndef UTILITIES_BUILD
     if(result)
     {
         // Now here we haven't found any front covers in the file
@@ -385,6 +358,5 @@ VorbisCommentTagHelper::parsePictureBlock( const TagLib::StringList& block, QIma
         *result = otherCover;
         return !result->isNull();
     }
-#endif //UTILITIES_BUILD
     return false;
 }

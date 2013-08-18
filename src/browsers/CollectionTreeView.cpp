@@ -43,7 +43,6 @@
 #include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "dialogs/TagDialog.h"
 #include "playlist/PlaylistModelStack.h"
-#include "widgets/AmarokContextMenu.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -68,9 +67,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_loadAction( 0 )
     , m_editAction( 0 )
     , m_organizeAction( 0 )
-    , m_dragMutex()
     , m_ongoingDrag( false )
-    , m_expandToggledWhenPressed( false )
 {
     setSortingEnabled( true );
     setFocusPolicy( Qt::StrongFocus );
@@ -78,26 +75,13 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setEditTriggers( EditKeyPressed );
-#ifdef Q_WS_MAC
-    // for some bizarre reason w/ some styles on mac per-pixel scrolling is slower than
-    // per-item
-    setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
-    setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
-#else
-    // Scrolling per item is really not smooth and looks terrible
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-#endif
 
     setDragDropMode( QAbstractItemView::DragDrop );
 
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        setAnimated( true );
-
-    connect( this, SIGNAL(collapsed( const QModelIndex & )),
-             SLOT(slotCollapsed( const QModelIndex & )) );
-    connect( this, SIGNAL(expanded( const QModelIndex & )),
-             SLOT(slotExpanded( const QModelIndex & )) );
+    connect( this, SIGNAL(collapsed(QModelIndex)),
+             SLOT(slotCollapsed(QModelIndex)) );
+    connect( this, SIGNAL(expanded(QModelIndex)),
+             SLOT(slotExpanded(QModelIndex)) );
 }
 
 void
@@ -111,13 +95,10 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
     connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)),
              SLOT(slotExpandIndex(QModelIndex)) );
 
+    if( m_filterModel )
+        m_filterModel->deleteLater();
     m_filterModel = new CollectionSortFilterProxyModel( this );
-    m_filterModel->setSortRole( CustomRoles::SortRole );
-    m_filterModel->setFilterRole( CustomRoles::FilterRole );
-    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setSourceModel( model );
-    m_filterModel->setDynamicSortFilter( true );
 
     QTreeView::setModel( m_filterModel );
 
@@ -126,10 +107,8 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
 
 CollectionTreeView::~CollectionTreeView()
 {
-    DEBUG_BLOCK
-
-    delete m_treeModel;
-    delete m_filterModel;
+    // we don't own m_treeModel pointer
+    // m_filterModel will get deleted by QObject parentship
 }
 
 void
@@ -221,7 +200,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                         );
     }
 
-    Amarok::ContextMenu menu( this );
+    KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
@@ -256,8 +235,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QActionList collectionActions = createCollectionActions( indices );
-    //TODO: subclass KMenu in order to show tooltip and respond to Shift key press
-    // during exec()
     KMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
     {
@@ -267,7 +244,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( collectionActions.count() > 1 )
     {
-        menuCollection.setIcon( KIcon( "collection-amarok" ) );
+        menuCollection.setIcon( KIcon( "drive-harddisk" ) );
         menuCollection.addActions( collectionActions );
         menu.addMenu( &menuCollection );
         menu.addSeparator();
@@ -285,22 +262,16 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
         copyMenu->setIcon( KIcon( "edit-copy" ) );
         copyMenu->addActions( m_currentCopyDestination.keys() );
-        QAction *menuAction = menu.addMenu( copyMenu );
+        menu.addMenu( copyMenu );
+    }
 
+    //Move = copy + delete from source
+    if( !m_currentMoveDestination.empty() )
+    {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-
-        //Move = copy + delete from source
-        if( !m_currentMoveDestination.empty() )
-        {
-            moveMenu->setIcon( KIcon( "go-jump" ) );
-            moveMenu->addActions( m_currentMoveDestination.keys() );
-            menu.addMenu( moveMenu );
-            //offer move operation only if Shift is pressed because move is destructive
-            menu.setAlternatives( copyMenu->menuAction(), moveMenu->menuAction(),
-                                  Qt::Key_Shift );
-            //HACK: menu tooltip != action tooltip in QMenu::event();
-            menuAction->setToolTip( i18n("Press Shift key for move") );
-        }
+        moveMenu->setIcon( KIcon( "go-jump" ) );
+        moveMenu->addActions( m_currentMoveDestination.keys() );
+        menu.addMenu( moveMenu );
     }
 
     // create trash and delete actions
@@ -314,11 +285,11 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
             trashAction->setProperty( "popupdropper_svg_id", "delete" );
+            // key shortcut is only for display purposes here, actual one is
+            // determined by View in Model/View classes
             trashAction->setShortcut( Qt::Key_Delete );
-            trashAction->setToolTip( i18n( "Press Shift key to delete") );
-            connect( trashAction,
-                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotTrashTracks()) );
+            connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                     SLOT(slotTrashTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
             menu.addAction( trashAction );
 
             KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
@@ -328,13 +299,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-            connect( deleteAction,
-                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotDeleteTracks()) );
+            connect( deleteAction, SIGNAL(triggered(bool)), SLOT(slotDeleteTracks()) );
             menu.addAction( deleteAction );
-
-            //offer delete operation only if Shift is pressed.
-            menu.setAlternatives( trashAction, deleteAction, Qt::Key_Shift );
         }
     }
 
@@ -364,38 +330,22 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
+    // code copied in PlaylistBrowserView::mouseDoubleClickEvent(), keep in sync
+    // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
-    bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
+    bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
+                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::AppendAndPlay );
-        event->accept();
-        return;
-    }
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
-}
-
-void
-CollectionTreeView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
+        playChildTracks( item, Playlist::OnDoubleClickOnSelectedItems );
         event->accept();
         return;
     }
 
-    bool prevExpandState = isExpanded( index );
-
-    // This will toggle the expansion of the current item when clicking
-    // on the fold marker but not on the item itself. Required here to
-    // enable dragging.
-    Amarok::PrettyTreeView::mousePressEvent( event );
-
-    m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
+    PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void
@@ -403,7 +353,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
         m_pd->hide();
         m_pd = 0;
     }
@@ -411,50 +361,19 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
-        event->accept();
+        PrettyTreeView::mouseReleaseEvent( event );
         return;
     }
 
     if( event->button() == Qt::MidButton )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::AppendAndPlay );
+        playChildTracks( item, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
         return;
     }
 
-    if( !m_expandToggledWhenPressed &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
-        model()->hasChildren( index ) )
-    {
-        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setExpanded( index, !isExpanded( index ) );
-        event->accept();
-        return;
-    }
-
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
-}
-
-void
-CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    // pass event to parent widget
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        return;
-    }
-    event->accept();
+    PrettyTreeView::mouseReleaseEvent( event );
 }
 
 CollectionTreeItem *
@@ -507,7 +426,7 @@ CollectionTreeView::keyPressEvent( QKeyEvent *event )
     {
         case Qt::Key_Enter:
         case Qt::Key_Return:
-            slotAppendChildTracks();
+            playChildTracks( m_currentItems, Playlist::OnReturnPressedOnSelectedItems );
             return;
         case Qt::Key_Delete:
             if( !onlyOneCollection( indices ) )
@@ -580,20 +499,21 @@ void
 CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
+
+    // Make sure that the left mouse button is actually pressed. Otherwise we're prone to
+    // mis-detecting clicks as dragging
+    if( !( QApplication::mouseButtons() & Qt::LeftButton ) )
+        return;
+
     QModelIndexList indices = selectedIndexes();
     if( indices.isEmpty() )
         return;
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we
     // prevent that:
-    m_dragMutex.lock();
     if( m_ongoingDrag )
-    {
-        m_dragMutex.unlock();
         return;
-    }
     m_ongoingDrag = true;
-    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
@@ -667,9 +587,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         m_pd->hide();
     }
 
-    m_dragMutex.lock();
     m_ongoingDrag = false;
-    m_dragMutex.unlock();
 }
 
 void
@@ -757,7 +675,7 @@ CollectionTreeView::slotCheckAutoExpand()
 }
 
 void
-CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode)
+CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode )
 {
     QSet<CollectionTreeItem*> items;
     items.insert( item );
@@ -778,8 +696,8 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem *> &items,
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>(
                 m_treeModel->mimeData( QList<CollectionTreeItem *>::fromSet( parents ) ) );
     m_playChildTracksMode.insert( mime, insertMode );
-    connect( mime, SIGNAL(trackListSignal( Meta::TrackList )), this,
-             SLOT(playChildTracksSlot( Meta::TrackList )) );
+    connect( mime, SIGNAL(trackListSignal(Meta::TrackList)), this,
+             SLOT(playChildTracksSlot(Meta::TrackList)) );
     mime->getTrackListSignal();
 }
 
@@ -827,11 +745,55 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem *> &items ) co
 }
 
 void
+CollectionTreeView::copySelectedToLocalCollection()
+{
+    DEBUG_BLOCK
+
+    // Get the local collection
+    Collections::Collection *collection = 0;
+    const QList<Collections::Collection*> collections = CollectionManager::instance()->collections().keys();
+
+    foreach( collection, collections )
+    {
+        if ( collection->collectionId() == "localCollection" )
+            break;
+    }
+
+    if( !collection )
+        return;
+
+    // Get selected items
+    QModelIndexList indexes = selectedIndexes();
+    if( m_filterModel )
+    {
+        QModelIndexList tmp;
+        foreach( const QModelIndex &idx, indexes )
+            tmp.append( m_filterModel->mapToSource( idx ) );
+        indexes = tmp;
+    }
+
+    m_currentItems.clear();
+    foreach( const QModelIndex &index, indexes )
+    {
+        if( index.isValid() && index.internalPointer() )
+            m_currentItems.insert( static_cast<CollectionTreeItem *>( index.internalPointer() ) );
+    }
+
+    copyTracks( m_currentItems, collection, false );
+}
+
+void
 CollectionTreeView::copyTracks( const QSet<CollectionTreeItem *> &items,
                                 Collection *destination, bool removeSources ) const
 {
     DEBUG_BLOCK
-    if( !destination || !destination->isWritable() )
+
+    if( !destination )
+    {
+        warning() << "collection is not writable (0-pointer)! Aborting";
+        return;
+    }
+    if( !destination->isWritable() )
     {
         warning() << "collection " << destination->prettyName() << " is not writable! Aborting";
         return;
@@ -933,9 +895,40 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem *> &items ) const
 void
 CollectionTreeView::slotSetFilter( const QString &filter )
 {
-    DEBUG_BLOCK;
-    if( m_treeModel )
+    if( m_treeModel && m_treeModel->currentFilter() != filter )
         m_treeModel->setCurrentFilter( filter );
+}
+
+void
+CollectionTreeView::slotAddFilteredTracksToPlaylist()
+{
+    if( !m_treeModel )
+        return;
+
+    // disconnect any possible earlier connection we've done
+    disconnect( m_treeModel, SIGNAL(allQueriesFinished()),
+                this, SLOT(slotAddFilteredTracksToPlaylist()) );
+
+    if( m_treeModel->hasRunningQueries() )
+        // wait for the queries to finish
+        connect( m_treeModel, SIGNAL(allQueriesFinished()),
+                 this, SLOT(slotAddFilteredTracksToPlaylist()) );
+    else
+    {
+        // yay, we can add the tracks now
+        QSet<CollectionTreeItem *> items;
+        for( int row = 0; row < m_treeModel->rowCount(); row++ )
+        {
+            QModelIndex idx = m_treeModel->index( row, 0 );
+            CollectionTreeItem *item = idx.isValid()
+                    ? static_cast<CollectionTreeItem *>( idx.internalPointer() ) : 0;
+            if( item )
+                items.insert( item );
+        }
+        if( !items.isEmpty() )
+            playChildTracks( items, Playlist::OnAppendToPlaylistAction );
+        emit addingFilteredTracksDone();
+    }
 }
 
 QActionList
@@ -950,10 +943,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
             m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
                                           i18n( "&Add to Playlist" ), this );
             m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-            // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-            m_appendAction->setShortcut( Qt::Key_Enter );
-            connect( m_appendAction, SIGNAL(triggered()), this,
-                     SLOT(slotAppendChildTracks()) );
+            connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendChildTracks()) );
         }
 
         actions.append( m_appendAction );
@@ -965,7 +955,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
                                "&Replace Playlist" ), this );
             m_loadAction->setProperty( "popupdropper_svg_id", "load" );
             connect( m_loadAction, SIGNAL(triggered()),
-                     this, SLOT(slotPlayChildTracks()) );
+                     this, SLOT(slotReplacePlaylistWithChildTracks()) );
         }
 
         actions.append( m_loadAction );
@@ -1225,21 +1215,21 @@ CollectionTreeView::getCollection( const QModelIndex &index )
 }
 
 void
-CollectionTreeView::slotPlayChildTracks()
+CollectionTreeView::slotReplacePlaylistWithChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::LoadAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnReplacePlaylistAction );
 }
 
 void
 CollectionTreeView::slotAppendChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::AppendAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnAppendToPlaylistAction );
 }
 
 void
 CollectionTreeView::slotQueueChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::Queue );
+    playChildTracks( m_currentItems, Playlist::OnQueueToPlaylistAction );
 }
 
 void
@@ -1267,22 +1257,15 @@ CollectionTreeView::slotMoveTracks()
 }
 
 void
-CollectionTreeView::slotTrashTracks()
+CollectionTreeView::slotTrashTracks( Qt::MouseButtons, Qt::KeyboardModifiers modifiers )
 {
-    KAction *action = qobject_cast<KAction *>( sender() );
-    if( !action )
-        return;
-    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
-    removeTracks( m_currentItems, true /* use trash */ );
+    bool useTrash = !modifiers.testFlag( Qt::ShiftModifier );
+    removeTracks( m_currentItems, useTrash );
 }
 
 void
 CollectionTreeView::slotDeleteTracks()
 {
-    KAction *action = qobject_cast<KAction*>( sender() );
-    if( !action )
-        return;
-    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
     removeTracks( m_currentItems, false /* do not use trash */ );
 }
 

@@ -74,11 +74,11 @@ GpodderProvider::GpodderProvider( const QString& username,
     //Connect default podcasts signals to make possible to ask the user if he wants
     //to upload a new local podcast to gpodder.net
     connect( The::playlistManager()->defaultPodcasts(),
-             SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
-             SLOT(slotSyncPlaylistAdded( Playlists::PlaylistPtr )) );
+             SIGNAL(playlistAdded(Playlists::PlaylistPtr)),
+             SLOT(slotSyncPlaylistAdded(Playlists::PlaylistPtr)) );
     connect( The::playlistManager()->defaultPodcasts(),
-             SIGNAL(playlistRemoved( Playlists::PlaylistPtr )),
-             SLOT(slotSyncPlaylistRemoved( Playlists::PlaylistPtr )) );
+             SIGNAL(playlistRemoved(Playlists::PlaylistPtr)),
+             SLOT(slotSyncPlaylistRemoved(Playlists::PlaylistPtr)) );
 
     Podcasts::SqlPodcastProvider *sqlPodcastProvider;
 
@@ -101,10 +101,10 @@ GpodderProvider::GpodderProvider( const QString& username,
     }
 
     //Connect engine controller signals to make possible to synchronize podcast status
-    connect( The::engineController(), SIGNAL(trackChanged( Meta::TrackPtr )),
-             SLOT(slotTrackChanged( Meta::TrackPtr )) );
-    connect( The::engineController(), SIGNAL(trackPositionChanged( qint64, bool )),
-             SLOT(slotTrackPositionChanged( qint64, bool )) );
+    connect( The::engineController(), SIGNAL(trackChanged(Meta::TrackPtr)),
+             SLOT(slotTrackChanged(Meta::TrackPtr)) );
+    connect( The::engineController(), SIGNAL(trackPositionChanged(qint64,bool)),
+             SLOT(slotTrackPositionChanged(qint64,bool)) );
     connect( The::engineController(), SIGNAL(paused()),
              SLOT(slotPaused()) );
 
@@ -343,51 +343,39 @@ GpodderProvider::removeChannel( const QUrl &url )
     }
 }
 
-QList<QAction *>
+QActionList
 GpodderProvider::channelActions( PodcastChannelList channels )
 {
-    DEBUG_BLOCK
-
-    QList<QAction *> actions;
+    QActionList actions;
+    if( channels.isEmpty() )
+        return actions;
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Channel and Episodes" ),
-            this
-        );
-
+        m_removeAction = new QAction( KIcon( "edit-delete" ),
+                i18n( "&Delete Channel and Episodes" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_removeAction, 
-                 SIGNAL(triggered()),
-                 SLOT(slotRemoveChannels()) );
+        connect( m_removeAction,  SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
     }
-
     //Set the episode list as data that we'll retrieve in the slot
-    PodcastChannelList actionList =
-        m_removeAction->data().value<PodcastChannelList>();
-
-    actionList << channels;
-    m_removeAction->setData( QVariant::fromValue( actionList ) );
-
+    m_removeAction->setData( QVariant::fromValue( channels ) );
     actions << m_removeAction;
 
     return actions;
 }
 
-QList<QAction *>
-GpodderProvider::playlistActions( Playlists::PlaylistPtr playlist )
+QActionList
+GpodderProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
-    DEBUG_BLOCK
-
     PodcastChannelList channels;
-    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    {
+        PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+        if( channel )
+            channels << channel;
+    }
 
-    if( channel.isNull() )
-        return QList<QAction *>();
-
-    return channelActions( channels << channel );
+    return channelActions( channels );
 }
 
 void
@@ -479,8 +467,8 @@ void GpodderProvider::synchronizeStatus()
         connect( m_episodeActionsResult.data(), SIGNAL(finished()),
                  SLOT(slotSuccessfulStatusSynchronisation()) );
         connect( m_episodeActionsResult.data(),
-                 SIGNAL(requestError( QNetworkReply::NetworkError )),
-                 SLOT(synchronizeStatusRequestError( QNetworkReply::NetworkError )) );
+                 SIGNAL(requestError(QNetworkReply::NetworkError)),
+                 SLOT(synchronizeStatusRequestError(QNetworkReply::NetworkError)) );
         connect( m_episodeActionsResult.data(), SIGNAL(parseError()),
                  SLOT(synchronizeStatusParseError()) );
 
@@ -607,7 +595,7 @@ GpodderProvider::slotTrackPositionChanged( qint64 position, bool userSeek )
     Q_UNUSED( position )
 
     //If the current track is in one of the subscribed gpodder channels and it's position
-    //is not at the beggining of the track, then we probably should sync it status.
+    //is not at the beginning of the track, then we probably should sync it status.
     if( m_trackToSyncStatus )
     {
         if( userSeek )
@@ -726,8 +714,8 @@ GpodderProvider::requestDeviceUpdates()
     connect( m_deviceUpdatesResult.data(), SIGNAL(finished()),
              SLOT(deviceUpdatesFinished()) );
     connect( m_deviceUpdatesResult.data(),
-             SIGNAL(requestError( QNetworkReply::NetworkError )),
-             SLOT(deviceUpdatesRequestError( QNetworkReply::NetworkError )) );
+             SIGNAL(requestError(QNetworkReply::NetworkError)),
+             SLOT(deviceUpdatesRequestError(QNetworkReply::NetworkError)) );
     connect( m_deviceUpdatesResult.data(), SIGNAL(parseError()),
              SLOT(deviceUpdatesParseError()) );
 }
@@ -831,8 +819,8 @@ GpodderProvider::requestEpisodeActionsInCascade()
         connect( m_episodeActionListResult.data(), SIGNAL(finished()),
                  SLOT(episodeActionsInCascadeFinished()) );
         connect( m_episodeActionListResult.data(),
-                 SIGNAL(requestError( QNetworkReply::NetworkError )),
-                 SLOT(episodeActionsInCascadeRequestError( QNetworkReply::NetworkError )) );
+                 SIGNAL(requestError(QNetworkReply::NetworkError)),
+                 SLOT(episodeActionsInCascadeRequestError(QNetworkReply::NetworkError)) );
         connect( m_episodeActionListResult.data(), SIGNAL(parseError()),
                  SLOT(episodeActionsInCascadeParseError()) );
     }
@@ -1011,11 +999,11 @@ GpodderProvider::requestUrlResolve( Podcasts::GpodderPodcastChannelPtr channel )
 
     m_resolveUrlJob = KIO::get( channel->url(), KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_resolveUrlJob, SIGNAL(result( KJob * )),
-             SLOT(urlResolveFinished( KJob * )) );
+    connect( m_resolveUrlJob, SIGNAL(result(KJob*)),
+             SLOT(urlResolveFinished(KJob*)) );
     connect( m_resolveUrlJob,
-             SIGNAL(permanentRedirection( KIO::Job *, const KUrl &, const KUrl & )),
-             SLOT(urlResolvePermanentRedirection( KIO::Job *, const KUrl &, const KUrl & )) );
+             SIGNAL(permanentRedirection(KIO::Job*,KUrl,KUrl)),
+             SLOT(urlResolvePermanentRedirection(KIO::Job*,KUrl,KUrl)) );
 
     m_resolvedPodcasts.insert( m_resolveUrlJob, channel );
 }

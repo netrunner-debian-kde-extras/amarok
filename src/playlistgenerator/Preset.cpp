@@ -24,14 +24,15 @@
 #include "constraints/TrackSpreader.h"
 
 #include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-
 #include <QDomElement>
-#include <threadweaver/ThreadWeaver.h>
+
+#include <ThreadWeaver/Weaver>
 
 APG::PresetPtr
 APG::Preset::createFromXml( QDomElement& xmlelem )
@@ -107,7 +108,7 @@ void
 APG::Preset::generate( int q )
 {
     ConstraintSolver* solver = new ConstraintSolver( m_constraintTreeRoot, q );
-    connect( solver, SIGNAL( readyToRun() ), this, SLOT( queueSolver() ) );
+    connect( solver, SIGNAL(readyToRun()), this, SLOT(queueSolver()) );
 }
 
 void APG::Preset::queueSolver() {
@@ -127,7 +128,7 @@ void APG::Preset::queueSolver() {
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
     Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, SLOT(requestAbort()), Qt::QueuedConnection );
-    connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( s, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(solverFinished(ThreadWeaver::Job*)), Qt::QueuedConnection );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 
@@ -144,12 +145,12 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( !solver->satisfied() ) {
             Amarok::Components::logger()->longMessage(
-                        i18n("The playlist generator created a playlist which does not meet all " \
-                             "of your constraints.  If you are not satisfied with the results, " \
-                             "try loosening or removing some constraints and then generating a " \
+                        i18n("The playlist generator created a playlist which does not meet all "
+                             "of your constraints.  If you are not satisfied with the results, "
+                             "try loosening or removing some constraints and then generating a "
                              "new playlist.") );
         }
-        The::playlistController()->insertOptioned( solver->getSolution() , Playlist::Replace );
+        The::playlistController()->insertOptioned( solver->getSolution(), Playlist::OnReplacePlaylistAction );
     } else {
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }

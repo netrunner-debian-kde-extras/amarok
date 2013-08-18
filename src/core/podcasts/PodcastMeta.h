@@ -17,7 +17,7 @@
 #ifndef PODCASTMETA_H
 #define PODCASTMETA_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "core/support/Amarok.h"
@@ -33,8 +33,6 @@
 
 namespace Podcasts
 {
-
-class PodcastMetaCommon;
 class PodcastEpisode;
 class PodcastChannel;
 
@@ -44,20 +42,11 @@ class PodcastComposer;
 class PodcastGenre;
 class PodcastYear;
 
-// typedef KSharedPtr<PodcastMetaCommon> PodcastMetaCommonPtr;
 typedef KSharedPtr<PodcastEpisode> PodcastEpisodePtr;
 typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
 
-// typedef QList<PodcastMetaCommon> PodcastMetaCommonList;
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;
-
-enum PodcastType
-{
-    NoType = 0,
-    ChannelType,
-    EpisodeType
-};
 
 class AMAROK_CORE_EXPORT PodcastMetaCommon
 {
@@ -71,7 +60,6 @@ class AMAROK_CORE_EXPORT PodcastMetaCommon
         virtual QString subtitle() const { return m_subtitle; }
         virtual QString summary() const { return m_summary; }
         virtual QString author() const { return m_author; }
-        virtual int podcastType() const = 0; //{ return NoType; }
 
         virtual void setTitle( const QString &title ) { m_title = title; }
         virtual void setDescription( const QString &description ) { m_description = description; }
@@ -106,8 +94,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
         virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
         virtual QString uidUrl() const { return m_url.url(); }
-        virtual bool isPlayable() const { return true; }
-        virtual bool isEditable() const { return false; }
+        virtual QString notPlayableReason() const;
 
         virtual Meta::AlbumPtr album() const { return m_albumPtr; }
         virtual Meta::ArtistPtr artist() const { return m_artistPtr; }
@@ -143,8 +130,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual bool operator==( const Meta::Track &track ) const;
 
         //PodcastMetaCommon methods
-        virtual int podcastType() const { return EpisodeType; }
-
         virtual void setTitle( const QString &title ) { m_title = title; }
 
         //PodcastEpisode methods
@@ -222,8 +207,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
         //PodcastMetaCommon methods
-        virtual int podcastType() const { return ChannelType; }
-        //override this since it's ambigous in PodcastMetaCommon and Playlist
+        // override this since it's ambigous in PodcastMetaCommon and Playlist
         virtual QString description() const { return m_description; }
 
         //PodcastChannel methods
@@ -247,7 +231,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
         virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
-        virtual PodcastEpisodeList episodes() { return m_episodes; }
+        virtual PodcastEpisodeList episodes() const { return m_episodes; }
 
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 

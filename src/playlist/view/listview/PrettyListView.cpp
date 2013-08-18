@@ -53,6 +53,7 @@
 #include <KApplication>
 #include <KMenu>
 #include <KUrl>
+#include <KLocale>
 
 #include <QClipboard>
 #include <QContextMenuEvent>
@@ -76,12 +77,16 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_skipAutoScroll( false )
         , m_firstScrollToActiveTrack( true )
         , m_rowsInsertedScrollItem( 0 )
+        , m_showOnlyMatches( false )
         , m_pd( 0 )
 {
     // QAbstractItemView basics
     setModel( The::playlist()->qaim() );
+
     m_prettyDelegate = new PrettyItemDelegate( this );
+    connect( m_prettyDelegate, SIGNAL( redrawRequested() ), this, SLOT( redrawActive() ) );
     setItemDelegate( m_prettyDelegate );
+
     setSelectionMode( ExtendedSelection );
     setDragDropMode( DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
@@ -96,34 +101,33 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(newPalette(QPalette)) );
 
     setAutoFillBackground( false );
 
 
     // Signal connections
-    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ),
-             this, SLOT( trackActivated( const QModelIndex& ) ) );
-    connect( selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( slotSelectionChanged() ) );
+    connect( this, SIGNAL(doubleClicked(QModelIndex)),
+             this, SLOT(trackActivated(QModelIndex)) );
+    connect( selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             this, SLOT(slotSelectionChanged()) );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+    connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()), this, SLOT(playlistLayoutChanged()) );
 
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
+    connect( model(), SIGNAL(activeTrackChanged(quint64)), this, SLOT(slotPlaylistActiveTrackChanged()) );
 
-    connect( model(), SIGNAL( queueChanged() ), viewport(), SLOT( update() ) );
+    connect( model(), SIGNAL(queueChanged()), viewport(), SLOT(update()) );
 
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
-
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(bottomModelRowsInserted(QModelIndex,int,int)) );
 
     // Timers
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
-    connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
+    connect( m_proxyUpdateTimer, SIGNAL(timeout()), this, SLOT(updateProxyTimeout()) );
 
     m_animationTimer = new QTimer(this);
-    connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(redrawActive()) );
     m_animationTimer->setInterval( 250 );
 
     playlistLayoutChanged();
@@ -367,7 +371,7 @@ Playlist::PrettyListView::selectionModel_setCurrentIndex( const QModelIndex &ind
 void
 Playlist::PrettyListView::showEvent( QShowEvent* event )
 {
-    QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
+    QTimer::singleShot( 0, this, SLOT(fixInvisible()) );
 
     QListView::showEvent( event );
 }
@@ -515,19 +519,19 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
 }
 
 void
-Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
+Playlist::PrettyListView::keyPressEvent( QKeyEvent *event )
 {
-    if ( event->matches( QKeySequence::Delete ) )
+    if( event->matches( QKeySequence::Delete ) )
     {
         removeSelection();
         event->accept();
     }
-    else if ( event->key() == Qt::Key_Return )
+    else if( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
         trackActivated( currentIndex() );
         event->accept();
     }
-    else if ( event->matches( QKeySequence::SelectAll ) )
+    else if( event->matches( QKeySequence::SelectAll ) )
     {
         QModelIndex topIndex = model()->index( 0, 0 );
         QModelIndex bottomIndex = model()->index( model()->rowCount() - 1, 0 );
@@ -536,9 +540,7 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
         event->accept();
     }
     else
-    {
         QListView::keyPressEvent( event );
-    }
 }
 
 void
@@ -585,9 +587,11 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         KUrl url( QApplication::clipboard()->text() );
         if ( url.isValid() )
         {
-            QList<KUrl> list;
-            list.append( url );
-            The::playlistController()->insertOptioned( list, Playlist::AppendAndPlay );
+            QList<KUrl> urls = QList<KUrl>() << url;
+            if( index.isValid() )
+                The::playlistController()->insertUrls( index.row() + 1, urls );
+            else
+                The::playlistController()->insertOptioned( urls, Playlist::OnAppendToPlaylistAction );
         }
     }
 
@@ -656,16 +660,38 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 }
 
 void
-Playlist::PrettyListView::paintEvent( QPaintEvent* event )
+Playlist::PrettyListView::paintEvent( QPaintEvent *event )
 {
-    if ( !m_dropIndicator.size().isEmpty() )
+    if( m_dropIndicator.isValid() ||
+        model()->rowCount( rootIndex() ) == 0 )
     {
-        const QPoint offset( 6, 0 );
-        const QPalette p = KApplication::palette();
-        const QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
         QPainter painter( viewport() );
-        painter.setPen( pen );
-        painter.drawLine( m_dropIndicator.topLeft() + offset, m_dropIndicator.topRight() - offset );
+
+        if( m_dropIndicator.isValid() )
+        {
+            const QPoint offset( 6, 0 );
+            QColor c = KApplication::palette().color( QPalette::Highlight );
+            painter.setPen( QPen( c, 6, Qt::SolidLine, Qt::RoundCap ) );
+            painter.drawLine( m_dropIndicator.topLeft() + offset,
+                              m_dropIndicator.topRight() - offset );
+        }
+
+        if( model()->rowCount( rootIndex() ) == 0 )
+        {
+            // here we assume that an empty list is caused by the filter if it's active
+            QString emptyText;
+            if( m_showOnlyMatches && Playlist::ModelStack::instance()->bottom()->rowCount() > 0 )
+                emptyText = i18n( "Tracks have been hidden due to the active search." );
+            else
+                emptyText = i18n( "Add some songs here by dragging them from all around." );
+
+            QColor c = KApplication::palette().color( foregroundRole() );
+            c.setAlpha( c.alpha() / 2 );
+            painter.setPen( c );
+            painter.drawText( rect(),
+                              Qt::AlignCenter | Qt::TextWordWrap,
+                              emptyText );
+        }
     }
 
     QListView::paintEvent( event );
@@ -709,7 +735,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
     ongoingDrags = false;
@@ -933,6 +959,8 @@ void Playlist::PrettyListView::updateProxyTimeout()
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
+    m_showOnlyMatches = onlyMatches;
+
     The::playlist()->showOnlyMatches( onlyMatches );
 }
 
@@ -947,10 +975,11 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
     Q_UNUSED( parent )
     Q_UNUSED( end )
 
-    if( m_rowsInsertedScrollItem == 0 )
+    // skip scrolling if tracks were added while playlist is in dynamicMode
+    if( m_rowsInsertedScrollItem == 0 && !AmarokConfig::dynamicMode() )
     {
         m_rowsInsertedScrollItem = Playlist::ModelStack::instance()->bottom()->idAt( start );
-        QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
+        QTimer::singleShot( 0, this, SLOT(bottomModelRowsInsertedScroll()) );
     }
 }
 
@@ -1014,7 +1043,7 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     update();
 
     // Schedule a re-scroll to the active playlist row. Assumption: Qt will run this *after* the repaint.
-    QTimer::singleShot( 0, this, SLOT( slotPlaylistActiveTrackChanged() ) );
+    QTimer::singleShot( 0, this, SLOT(slotPlaylistActiveTrackChanged()) );
 }
 
 #include "PrettyListView.moc"

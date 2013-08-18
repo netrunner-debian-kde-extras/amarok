@@ -35,9 +35,6 @@ class OpmlDirectoryMetaFactory : public ServiceMetaFactory
 
         virtual Meta::TrackPtr createTrack( const QStringList &rows );
         virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
-
-    private:
-        OpmlDirectoryService * m_service;
 };
 
 
@@ -55,8 +52,6 @@ class OpmlDirectoryFeed  : public ServiceTrack
 public:
     OpmlDirectoryFeed( const QString &name );
     OpmlDirectoryFeed( const QStringList &resultRow );
-
-        virtual QList< QAction *> customActions();
 };
 
 class OpmlDirectoryCategory : public ServiceAlbum

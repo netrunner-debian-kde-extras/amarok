@@ -122,10 +122,10 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
 
     m_providerMap.insert( category, provider );
     connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
-    connect( provider, SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
-             SLOT(slotPlaylistAdded( Playlists::PlaylistPtr )));
-    connect( provider, SIGNAL(playlistRemoved( Playlists::PlaylistPtr )),
-             SLOT(slotPlaylistRemoved( Playlists::PlaylistPtr )));
+    connect( provider, SIGNAL(playlistAdded(Playlists::PlaylistPtr)),
+             SLOT(slotPlaylistAdded(Playlists::PlaylistPtr)));
+    connect( provider, SIGNAL(playlistRemoved(Playlists::PlaylistPtr)),
+             SLOT(slotPlaylistRemoved(Playlists::PlaylistPtr)));
 
     if( newCategory )
         emit categoryAdded( category );
@@ -177,7 +177,7 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
 
             //The synchronosation will be done in the next mainloop run
             m_syncNeeded.append( syncedPlaylist );
-            QTimer::singleShot( 0, this, SLOT( slotSyncNeeded() ) );
+            QTimer::singleShot( 0, this, SLOT(slotSyncNeeded()) );
         }
 
         //deliberatly reusing the passed argument
@@ -307,37 +307,6 @@ PlaylistManager::playlistProvider(int category, QString name)
     return 0;
 }
 
-void
-PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist )
-{
-    KIO::StoredTransferJob *downloadJob =  KIO::storedGet( path );
-
-    m_downloadJobMap[downloadJob] = playlist;
-
-    connect( downloadJob, SIGNAL( result( KJob * ) ),
-             this, SLOT( downloadComplete( KJob * ) ) );
-
-    Amarok::Components::logger()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
-}
-
-void
-PlaylistManager::downloadComplete( KJob *job )
-{
-    if( !job->error() == 0 )
-    {
-        //TODO: error handling here
-        return ;
-    }
-
-    Playlists::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
-
-    QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
-    QTextStream stream;
-    stream.setString( &contents );
-
-    playlist->load( stream );
-}
-
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        Playlists::PlaylistProvider *toProvider, bool editName )
@@ -390,7 +359,7 @@ PlaylistManager::rename( PlaylistPtr playlist, const QString &newName )
     if( !provider || !provider->isWritable() )
         return false;
 
-    provider->rename( playlist, newName );
+    provider->renamePlaylist( playlist, newName );
     return true;
 }
 

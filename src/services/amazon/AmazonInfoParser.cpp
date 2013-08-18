@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2012 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -64,7 +64,7 @@ AmazonInfoParser::getInfo( Meta::AlbumPtr album )
 
     KIO::FileCopyJob *requestJob = KIO::file_copy( urlString, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    connect( requestJob, SIGNAL( result( KJob* ) ), this, SLOT( albumInfoDownloadComplete( KJob* ) ) );
+    connect( requestJob, SIGNAL(result(KJob*)), this, SLOT(albumInfoDownloadComplete(KJob*)) );
     requestJob->start();
 }
 

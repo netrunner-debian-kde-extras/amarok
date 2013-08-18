@@ -33,8 +33,8 @@ ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     // Proxy the Playlist::AbstractModel signals.
     //   If you need to do something special in a subclass, disconnect() this signal and
     //   do your own connect() call.
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
+    connect( sourceModel(), SIGNAL(activeTrackChanged(quint64)), this, SIGNAL(activeTrackChanged(quint64)) );
+    connect( sourceModel(), SIGNAL(queueChanged()), this, SIGNAL(queueChanged()) );
 }
 
 ProxyBase::~ProxyBase()
@@ -64,7 +64,7 @@ ProxyBase::activeTrack() const
 }
 
 QSet<int>
-ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
+ProxyBase::allRowsForTrack( const Meta::TrackPtr& track ) const
 {
     QSet<int> proxyModelRows;
 
@@ -85,7 +85,7 @@ ProxyBase::clearSearchTerm()
 }
 
 bool
-ProxyBase::containsTrack( const Meta::TrackPtr track ) const
+ProxyBase::containsTrack( const Meta::TrackPtr& track ) const
 {
     return ( firstRowForTrack( track ) != -1 );    // Let him do the clever work.
 }
@@ -145,7 +145,7 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
 }
 
 int
-ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
+ProxyBase::firstRowForTrack( const Meta::TrackPtr& track ) const
 {
     // First optimistically try 'firstRowForTrack()'. It'll usually work.
     int proxyModelRow = rowFromSource( m_belowModel->firstRowForTrack( track ) );

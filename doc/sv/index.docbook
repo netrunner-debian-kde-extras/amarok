@@ -51,7 +51,7 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2012-12-22</date>
+>2013-04-24</date>
       <releaseinfo
 >2.7.0</releaseinfo>
 <abstract>
@@ -82,7 +82,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-12-23T12:57:51Z</timestamp
+>2013-04-24T10:00:01Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -2448,7 +2448,7 @@
     </entry>
     <entry>
     <para
->Kopierar bokmärken till KDE:s klippbord.</para>
+>Kopierar bokmärken till systemets klippbord.</para>
     </entry>
   </row>
   <row>
@@ -4957,11 +4957,11 @@
     </imageobject>
     <textobject>
       <phrase
->(Klicka för att förstora)</phrase>
+></phrase>
     </textobject>
     <caption>
       <para
->(Klicka för att förstora)</para>
+></para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5348,7 +5348,7 @@
 >Mediakällor</emphasis
 >, väljer Internetavdelningen, och klickar på Magnatunes butik. Det kommer då ladda ner katalogen där du kan söka och välja musiken du vill köpa. </para>
 </sect2>
-<sect2 id="mp3-store-configuration"
+<sect2 id="mpthree-store-configuration"
 ><title
 >Inställning av MP3-butik</title
 > 
@@ -5403,7 +5403,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -6186,10 +6186,18 @@
 <listitem
 ><para
 >Album som kallas <quote
->Live</quote
+>Best Of</quote
+>, <quote
+>Anthology</quote
+>, <quote
+>Hit collection</quote
 >, <quote
 >Greatest Hits</quote
->, och några andra namn, räknas alltid som album.</para
+>, <quote
+>All Time Greatest Hits</quote
+> och <quote
+>Live</quote
+> räknas alltid som album.</para
 ></listitem>
 <listitem
 ><para
@@ -11434,19 +11442,85 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </screenshot>
 </para>
 <para
->Det betyder troligen att en identisk fil har hamnat i samlingen två gånger på olika ställen. Du kan använda Amaroks filbläddrare för att kontrollera filerna individuellt, där den vanliga åtgärden är att ta bort en av de duplicerade filerna. Om du är säker på att spåren inte är dubbletter kan du använda kommandoradverktyget <guilabel
->amarok_afttagger</guilabel
->för att återställa ett av spårens unika identifierare: </para>
-<para
-><userinput
->amarok_afttagger --newid --verbose sökväg/till/ett/av/spåren.mp3</userinput>
-</para>
-<para
->Som ett alternativ kan du ta bort den unika identifieraren från ett av spåren, och förlora funktionen att följa spåret även om det ändras utifrån: </para>
-<para
-><userinput
->amarok_afttagger --delete --verbose sökväg/till/ett/av/spåren.mp3</userinput>
-</para>
+>Det betyder troligen att en identisk fil har hamnat i samlingen två gånger på olika ställen. Du kan använda Amaroks filbläddrare för att kontrollera filerna individuellt, där <guilabel
+>den vanliga åtgärden är att ta bort en av de duplicerade filerna</guilabel
+>. Om du är säker på att spåren inte är (eller inte ska vara) dubbletter, kan det finnas flera orsaker att &amarok; anser att de är det: </para>
+<orderedlist>
+<listitem
+><para
+>Filerna är identiska bit för bit<itemizedlist>
+<listitem
+><para
+>Du kan exempelvis använda kommandot <varname
+>md5sum</varname
+> för att verifiera det</para
+></listitem>
+<listitem
+><para
+>Du kan redigera metadata i en av filerna inne i &amarok;s filbläddrare för att skilja dem åt på något sätt, kanske genom att redigera albumartist, artist, år, tonsättare eller en kommentar.</para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>Filerna har samma Amarok-AFT unik identifierare<itemizedlist
+><listitem
+><para
+>Det är ofta ett resultat av att ha kört amarok_afttagger och därefter skapat flera kopior av en taggad fil. Taggläsare som Kid3 eller MP3Diags kan användas för att verifiera det. Sök efter strängen <varname
+>Amarok 2 AFTv1</varname
+> i taggar.</para
+></listitem>
+<listitem
+><para
+>Kommandoradverktyget <varname
+>amarok_afttagger</varname
+> kan användas för att återställa den unika identifieraren för ett av spåren: <userinput
+>amarok_afttagger --newid --verbose sökväg/till/ett/av/spåren.mp3</userinput
+></para
+></listitem>
+<listitem
+><para
+>Som ett alternativ kan du ta bort den unika identifieraren från ett av spåren, och förlora funktionen att följa spåret även om det ändras utifrån: <userinput
+>amarok_afttagger --delete --verbose sökväg/till/ett/av/spåren.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>(för Amarok innan <ulink url="http://commits.kde.org/amarok/216c18bdaf1"
+>v2.7.0-96-g216c18b</ulink
+>) Filerna har samma MusicBrainz-identifierare<itemizedlist
+><listitem
+><para
+>Utgivna versioner fram till &amarok; 2.7 behandlade MusicBrainz-identifierare inbäddad i taggar (ifylld av taggprogram med stöd för MusicBrainz, såsom Picard) som unika spåridentifierare. Dock ändrade MusicBrainz identifierarens semantik till att betyda <quote
+>inspelnings-identifierare</quote
+> efter den ursprungliga implementeringen i &amarok;, vilket betyder att man kan få falska dubbletter för exempelvis spår som finns på originalalbumet och ett samlingsalbum. Se <emphasis role="strikethrough"
+><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329"
+>felrapport nr 315329</ulink
+></emphasis
+> för mer information.</para
+></listitem>
+<listitem
+><para
+>Man kan använda en avancerad taggläsare för att verifiera det (sök efter strängen <varname
+>MusicBrainz</varname
+> i taggar) och ta bort MusicBrainz-identifieraren från ett av spåren</para
+></listitem>
+<listitem
+><para
+>Som alternativ lösning kan man använda <varname
+>amarok_afttagger</varname
+> för att lägga till en &amarok; AFT-identifierar för ett av spåren, eftersom &amarok; då föredrar sin egen identifierare istället för den från MusicBrainz: <userinput
+>amarok_afttagger --newid --verbose sökväg/till/ett/av/spåren.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+</orderedlist>
 </sect3>
 </sect2>
 <sect2 id="problems-playing-files"
@@ -11573,7 +11647,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >här</link
 >. </para>
 </sect2>
-<sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"
+<sect2 id="what-are-the-differences-between-amarok-two-and-the-previous-versions"
 ><title
 >Vilka är skillnaderna mellan Amarok 2 och de föregående versionerna?</title
 > 
@@ -11853,7 +11927,9 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >här</link
 >. </para>
 <para
->Vi rekommenderar både Gstreamer- och VLC-gränssnittet, eftersom båda underhålls aktivt. Försäkra dig om att du inte använder något annat gränssnitt, eftersom de är föråldrade. </para>
+>Vi rekommenderar för närvarande både Gstreamer- och VLC-gränssnittet, eftersom båda underhålls aktivt. Om du vill spela strömmar bör du bara använda VLC-gränssnittet, eftersom Gstreamer-gränssnittet har vissa tillkortakommanden i detta avseende. Försäkra dig om att du inte använder något annat gränssnitt, eftersom de är föråldrade. </para>
+<para
+>Om du använder Phonon-backend-gstreamer, försäkra dig om att du bara använder gränssnitt från en enda version av gstreamer, annars blir ljudet lidande. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
 ><title
@@ -11980,6 +12056,29 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Verktyg</guilabel
 >. </para>
 </sect3>
+<sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"
+><title
+>Hur kan jag ändra volymen bara i Amarok utan att behöva ändra i Kmix?</title
+> 
+<para
+>De flesta distributioner levererar numera ljuddemonen <guilabel
+>Pulseaudio</guilabel
+>, som hanterar ljudinställningar i hela systemet. Om det inte går att ändra volym i &amarok; oberoende av &kmix;, har inställningarna i <guilabel
+>Pulseaudio</guilabel
+> alternativet </para>
+<para
+> <userinput
+>flat-volume=yes</userinput>
+</para>
+<para
+>aktiverat. Beroende på distribution finns det antingen i filen <guilabel
+>$HOME/.pulse/daemon.conf</guilabel
+> eller i systemfilen <guilabel
+>/etc/pulse/daemon.conf</guilabel
+>. Mer information om inställningar specifika för Pulseaudio, finns på <ulink url="http://linux.die.net/man/5/pulse-daemon.conf"
+>manualsidan pulse-daemon.conf</ulink
+>. </para>
+</sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
 ><title
 >Hur startar man visualiseringar?</title
@@ -12086,7 +12185,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >här</link
 >. </para>
 </sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"
 ><title
 >Kan man använda samlingar från äldre Amarok-versioner i Amarok 2? Kommer taggar, poäng och betyg att gå förlorade?</title
 > 
@@ -12123,7 +12222,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ></menuchoice
 >. </para>
 </sect3>
-<sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"
+<sect3 id="can-i-use-amarok-one-four-scripts-in-amarok-2"
 ><title
 >Kan man använda Amarok 1.4-skript i Amarok 2?</title
 > 
@@ -14481,11 +14580,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
     </entry>
     <entry>
     <para
-><keycombo
->&Ctrl;<keycap
->Vänster</keycap
-></keycombo
-></para>
+>&Backspace;</para>
     </entry>
   </row>
   <row>
@@ -14533,7 +14628,61 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
   <row>
     <entry>
     <para
->Sök bakåt</para>
+>Sök framåt med 2 sekunder</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>Höger</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Sök framåt med 10 sekunder</para>
+    </entry>
+    <entry>
+    <para
+><keycap
+>Höger</keycap
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Sök framåt med 60 sekunder</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Shift;<keycap
+>Höger</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Sök bakåt med 2 sekunder</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>Vänster</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Sök bakåt med 10 sekunder</para>
     </entry>
     <entry>
     <para
@@ -14545,12 +14694,14 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
   <row>
     <entry>
     <para
->Sök framåt</para>
+>Sök bakåt med 60 sekunder</para>
     </entry>
     <entry>
     <para
-><keycap
->Höger</keycap
+><keycombo
+>&Shift;<keycap
+>Vänster</keycap
+></keycombo
 ></para>
     </entry>
   </row>

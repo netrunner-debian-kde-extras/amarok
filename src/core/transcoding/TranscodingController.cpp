@@ -21,6 +21,7 @@
 #include "formats/TranscodingAlacFormat.h"
 #include "formats/TranscodingFlacFormat.h"
 #include "formats/TranscodingMp3Format.h"
+#include "formats/TranscodingOpusFormat.h"
 #include "formats/TranscodingVorbisFormat.h"
 #include "formats/TranscodingWmaFormat.h"
 
@@ -35,6 +36,7 @@ Controller::Controller( QObject *parent )
     m_formats.insert( ALAC, new AlacFormat() );
     m_formats.insert( FLAC, new FlacFormat() );
     m_formats.insert( MP3, new Mp3Format() );
+    m_formats.insert( OPUS, new OpusFormat() );
     m_formats.insert( VORBIS, new VorbisFormat() );
     m_formats.insert( WMA2, new WmaFormat() );
 
@@ -42,8 +44,8 @@ Controller::Controller( QObject *parent )
     verifyAvailability->setOutputChannelMode( KProcess::MergedChannels );
     verifyAvailability->setProgram( "ffmpeg" );
     *verifyAvailability << QString( "-codecs" );
-    connect( verifyAvailability, SIGNAL( finished( int, QProcess::ExitStatus ) ),
-             this, SLOT( onAvailabilityVerified( int, QProcess::ExitStatus ) ) );
+    connect( verifyAvailability, SIGNAL(finished(int,QProcess::ExitStatus)),
+             this, SLOT(onAvailabilityVerified(int,QProcess::ExitStatus)) );
     verifyAvailability->start();
 }
 

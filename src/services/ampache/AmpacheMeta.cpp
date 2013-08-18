@@ -17,8 +17,6 @@
 #include "AmpacheMeta.h"
 #include "core/support/Debug.h"
 
-#include <Solid/Networking>
-
 using namespace Meta;
 
 //// AmpacheAlbum ////
@@ -44,24 +42,28 @@ QString AmpacheAlbum::coverUrl( ) const
     return m_coverURL;
 }
 
-QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
+void
+AmpacheAlbum::addInfo( const AmpacheAlbum::AmpacheAlbumInfo &info )
 {
-    QList< QAction * > actions;
-    return actions;
+    m_ampacheAlbums.insert( info.id, info );
 }
 
-bool
-AmpacheTrack::isPlayable() const
+AmpacheAlbum::AmpacheAlbumInfo
+AmpacheAlbum::getInfo( int id ) const
 {
-    switch( Solid::Networking::status() )
+    if( !m_ampacheAlbums.contains( id ) )
     {
-        case Solid::Networking::Unknown:
-        case Solid::Networking::Connected:
-            return true;
-        case Solid::Networking::Unconnected:
-        case Solid::Networking::Disconnecting:
-        case Solid::Networking::Connecting:
-            return false;
+        AmpacheAlbumInfo info;
+        info.id = -1;
+        info.discNumber = -1;
+        info.year = -1;
+        return info;
     }
-    return true;
+    return m_ampacheAlbums.value( id );
+}
+
+QString
+AmpacheTrack::notPlayableReason() const
+{
+    return networkNotPlayableReason();
 }

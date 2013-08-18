@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,16 +21,15 @@
 
 using namespace Meta;
 
-NepomukComposer::NepomukComposer( const QString &name )
-    : Meta::Composer()
-    , m_name( name )
+NepomukComposer::NepomukComposer( const QUrl &resourceUri )
+    : m_resource( resourceUri )
 {
 }
 
 TrackList
 NepomukComposer::tracks()
 {
-    return TrackList();
+    return TrackList(); // TODO
 }
 
 QString

@@ -20,9 +20,11 @@
 #ifndef TRACKORGANIZER_H
 #define TRACKORGANIZER_H
 
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QObject>
+#include <QMap>
 
 /**
  * Generates a list of paths formatted according to the specified
@@ -45,12 +47,13 @@ public:
      * @param prefix the folder prefix, e.g.,  /home/user/Music/
      */
     void setFolderPrefix( const QString &prefix );
+
     /**
-     * Sets whether to ignore the the in an artist name.
+     * Sets whether to move the the in an artist name to the end of the name.
      * Default value is false.
      * @param flag turns the option on
      */
-    void setIgnoreThe( bool flag );
+    void setPostfixThe( bool flag );
     /**
      * Sets whether to restrict filenames to ASCII
      * Default value is false.
@@ -80,7 +83,7 @@ public:
      * @param fileExtension the file extension
      */
     void setTargetFileExtension( const QString &fileExtension );
-    
+
     /**
      * Get the list of processed destinations
      * Only call after setting all the appropriate options
@@ -92,20 +95,26 @@ public:
      */
     QMap<Meta::TrackPtr, QString> getDestinations( unsigned int batchSize = 0 );
 
-signals:
-    void finished();
+    /** Call this function if you want getDestinations to return results starting from the
+        first track. */
+    void resetTrackOffset() { m_trackOffset = 0; }
+
 
 private:
     QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
-    QString cleanPath( const QString &component ) const;
+    QString cleanPath( const QString &path ) const;
+
+    /** Returns the number of characters that are the same in both strings beginning. */
+    static int commonPrefixLength( const QString &a, const QString &b );
 
     Meta::TrackList m_allTracks;
+    /** The starting track that is to be processed. */
     int m_trackOffset;
 
     //options
     QString m_format;
     QString m_folderPrefix;
-    bool m_IgnoreThe;
+    bool m_postfixThe;
     bool m_AsciiOnly;
     bool m_UnderscoresNotSpaces;
     bool m_vfatSafe;

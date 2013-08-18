@@ -24,7 +24,6 @@
 #include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
 #include <KIcon>
-#include <Solid/Networking>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -57,7 +56,7 @@ Track::Track( lastfm::Track track )
 
     d->trackFetch = lastfm::ws::post( params );
 
-    connect( d->trackFetch, SIGNAL( finished() ), SLOT( slotResultReady() ) );
+    connect( d->trackFetch, SIGNAL(finished()), SLOT(slotResultReady()) );
 }
 
 
@@ -81,12 +80,12 @@ void Track::init( int id /* = -1*/ )
     QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
-    connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
+    connect( banAction, SIGNAL(triggered()), this, SLOT(ban()) );
     m_trackActions.append( banAction );
 
-    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
-    skipAction->setShortcut( QString( "Ctrl+S" ) ); // i18n after string freeze
-    skipAction->setStatusTip( QString( "Skip this track" ) ); // i18n after string freeze
+    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    skipAction->setShortcut( i18n( "Ctrl+S" ) );
+    skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
     m_trackActions.append( skipAction );
 
@@ -113,31 +112,11 @@ Track::name() const
 }
 
 QString
-Track::fullPrettyName() const
-{
-    if( d->track.isEmpty() || d->artist.isEmpty() )
-        return prettyName();
-    else
-        return i18n("%1 - %2", d->artist, d->track );
-}
-
-QString
 Track::sortableName() const
 {
     // TODO
     return name();
 }
-
-QString LastFm::Track::fixedName() const
-{
-
-    //unless this is a stream for a single track, return the generic name
-    if ( streamName() != i18n( "Track Radio" ) )
-        return streamName();
-    else
-        return name();
-}
-
 
 KUrl
 Track::playableUrl() const
@@ -163,20 +142,10 @@ Track::uidUrl() const
     return d->lastFmUri.toString();
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    switch( Solid::Networking::status() )
-    {
-        case Solid::Networking::Unknown:
-        case Solid::Networking::Connected:
-            return true;
-        case Solid::Networking::Unconnected:
-        case Solid::Networking::Disconnecting:
-        case Solid::Networking::Connecting:
-            return false;
-    }
-    return true;
+    return networkNotPlayableReason();
 }
 
 Meta::AlbumPtr
@@ -371,7 +340,7 @@ Track::ban()
 {
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
-    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
+    connect( d->wsReply, SIGNAL(finished()), this, SLOT(slotWsReply()) );
     if( The::engineController()->currentTrack() == this )
         emit skipTrack();
 }

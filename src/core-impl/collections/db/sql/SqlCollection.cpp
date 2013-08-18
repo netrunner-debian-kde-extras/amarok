@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,18 +17,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SqlCollection"
+
 #include "SqlCollection.h"
 
 #include "DefaultSqlQueryMakerFactory.h"
-#include "CapabilityDelegate.h"
-#include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/ScanManager.h"
+#include "scanner/GenericScanManager.h"
+#include "scanner/AbstractDirectoryWatcher.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -35,11 +37,106 @@
 #include "SvgHandler.h"
 #include "MainWindow.h"
 
+#include "collectionscanner/BatchFile.h"
+
+#include <KStandardDirs>
 #include <KApplication>
 #include <KMessageBox>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <QApplication>
 #include <QDir>
+
+
+/** Concrete implementation of the directory watcher */
+class SqlDirectoryWatcher : public AbstractDirectoryWatcher
+{
+public:
+    SqlDirectoryWatcher( Collections::SqlCollection* collection )
+        : AbstractDirectoryWatcher()
+        , m_collection( collection )
+    { }
+
+    ~SqlDirectoryWatcher()
+    { }
+
+protected:
+    QList<QString> collectionFolders()
+    { return m_collection->mountPointManager()->collectionFolders(); }
+
+    Collections::SqlCollection* m_collection;
+};
+
+class SqlScanManager : public GenericScanManager
+{
+public:
+    SqlScanManager( Collections::SqlCollection* collection, QObject* parent )
+        : GenericScanManager( parent )
+        , m_collection( collection )
+    { }
+
+    ~SqlScanManager()
+    { }
+
+protected:
+    QList< QPair<QString, uint> > getKnownDirs()
+    {
+        QList< QPair<QString, uint> > result;
+
+        // -- get all (mounted) mount points
+        QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
+
+        // -- query all known directories
+        QString deviceIds;
+        foreach( int id, idList )
+        {
+            if( !deviceIds.isEmpty() )
+                deviceIds += ',';
+            deviceIds += QString::number( id );
+        }
+        QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
+
+        QStringList values = m_collection->sqlStorage()->query( query.arg( deviceIds ) );
+        for( QListIterator<QString> iter( values ); iter.hasNext(); )
+        {
+            int deviceid = iter.next().toInt();
+            QString dir = iter.next();
+            uint mtime = iter.next().toUInt();
+
+            QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, dir );
+            result.append( QPair<QString, uint>( folder, mtime ) );
+        }
+
+        return result;
+    }
+
+    QString getBatchFile( const QStringList &scanDirsRequested )
+    {
+        // -- write the batch file
+        // the batch file contains the known modification dates so that the scanner only
+        // needs to report changed directories
+        QList<QPair<QString, uint> > knownDirs = getKnownDirs();
+        if( !knownDirs.isEmpty() )
+        {
+            QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+            while( QFile::exists( path ) )
+                path += "_";
+
+            CollectionScanner::BatchFile batchfile;
+            batchfile.setTimeDefinitions( knownDirs );
+            batchfile.setDirectories( scanDirsRequested );
+            if( !batchfile.write( path ) )
+            {
+                warning() << "Failed to write batch file" << path;
+                return QString();
+            }
+            return path;
+        }
+        return QString();
+    }
+
+    Collections::SqlCollection* m_collection;
+};
 
 namespace Collections {
 
@@ -71,8 +168,8 @@ public:
                     m_caption //caption
                 );
 
-        connect( m_dialog, SIGNAL( accepted() ), SIGNAL( accepted() ) );
-        connect( m_dialog, SIGNAL( rejected() ), SIGNAL( rejected() ) );
+        connect( m_dialog, SIGNAL(accepted()), SIGNAL(accepted()) );
+        connect( m_dialog, SIGNAL(rejected()), SIGNAL(rejected()) );
         m_dialog->show();
     }
 
@@ -118,21 +215,14 @@ public:
 
 using namespace Collections;
 
-SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlStorage* storage )
-    : DatabaseCollection( id, prettyName )
+SqlCollection::SqlCollection( SqlStorage* storage )
+    : DatabaseCollection()
     , m_registry( 0 )
-    , m_albumCapabilityDelegate( 0 )
-    , m_artistCapabilityDelegate( 0 )
-    , m_trackCapabilityDelegate( 0 )
     , m_sqlStorage( storage )
+    , m_scanProcessor( 0 )
+    , m_directoryWatcher( 0 )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
-    , m_scanManager( 0 )
-    , m_mpm( 0 )
-    , m_collectionId( id )
-    , m_prettyName( prettyName )
-    , m_blockUpdatedSignalCount( 0 )
-    , m_updatedSignalRequested( false )
 {
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
@@ -171,25 +261,30 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     updater.cleanupDatabase();
 
     m_registry = new SqlRegistry( this );
-    m_albumCapabilityDelegate = new Capabilities::AlbumCapabilityDelegateImpl();
-    m_artistCapabilityDelegate = new Capabilities::ArtistCapabilityDelegateImpl();
-    m_trackCapabilityDelegate = new Capabilities::TrackCapabilityDelegateImpl();
 
     m_collectionLocationFactory = new SqlCollectionLocationFactoryImpl( this );
     m_queryMakerFactory = new DefaultSqlQueryMakerFactory( this );
-    m_scanManager = new ScanManager( this, this );
-    connect( m_scanManager, SIGNAL(scanStarted(ScannerJob*)), SLOT(slotScanStarted(ScannerJob*)) );
+
+    // scanning
+    m_scanManager = new SqlScanManager( this, this );
+    m_scanProcessor = new SqlScanResultProcessor( m_scanManager, this, this );
+    m_directoryWatcher = new SqlDirectoryWatcher( this );
+    connect( m_directoryWatcher, SIGNAL(done(ThreadWeaver::Job*)),
+             m_directoryWatcher, SLOT(deleteLater()) ); // auto delete
+    connect( m_directoryWatcher, SIGNAL(requestScan(QList<KUrl>,GenericScanManager::ScanType)),
+             m_scanManager,      SLOT(requestScan(QList<KUrl>,GenericScanManager::ScanType)) );
+    ThreadWeaver::Weaver::instance()->enqueue( m_directoryWatcher );
+
 
     // we need a UI-dialog service, but for now just output the messages
     if( !storage->getLastErrors().isEmpty() )
     {
         if( QApplication::type() != QApplication::Tty )
         {
-            KMessageBox::error( The::mainWindow(), //parent
-                                i18n( "The amarok database reported the following errors:\n"
-                                      "%1\n"
-                                      "In most cases you will need to resolve these errors before Amarok will run properly." ).
-                                arg(storage->getLastErrors().join( "\n" ) ) );
+            KMessageBox::error( The::mainWindow(), i18n( "The amarok database reported "
+                    "the following errors:\n%1\nIn most cases you will need to resolve "
+                    "these errors before Amarok will run properly.",
+                    storage->getLastErrors().join( "\n" ) ) );
         }
         else
         {
@@ -203,16 +298,12 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
 
 SqlCollection::~SqlCollection()
 {
-    if( m_scanManager )
-        m_scanManager->blockScan();
-    delete m_albumCapabilityDelegate;
-    delete m_artistCapabilityDelegate;
-    delete m_trackCapabilityDelegate;
+    m_directoryWatcher->abort();
+    delete m_scanProcessor; // this prevents any further commits from the scanner
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
     delete m_registry;
-    delete m_mpm;
 }
 
 QString
@@ -225,18 +316,6 @@ QString
 SqlCollection::generateUidUrl( const QString &hash )
 {
     return uidUrlProtocol() + "://" + hash;
-}
-
-QString
-SqlCollection::collectionId() const
-{
-    return m_collectionId;
-}
-
-QString
-SqlCollection::prettyName() const
-{
-    return m_prettyName;
 }
 
 QueryMaker*
@@ -253,13 +332,6 @@ SqlCollection::registry() const
     return m_registry;
 }
 
-ScanManager*
-SqlCollection::scanManager() const
-{
-    Q_ASSERT( m_scanManager );
-    return m_scanManager;
-}
-
 SqlStorage*
 SqlCollection::sqlStorage() const
 {
@@ -267,116 +339,20 @@ SqlCollection::sqlStorage() const
     return m_sqlStorage;
 }
 
-MountPointManager*
-SqlCollection::mountPointManager() const
-{
-    Q_ASSERT( m_mpm );
-    return m_mpm;
-}
-
-void
-SqlCollection::setMountPointManager( MountPointManager *mpm )
-{
-    Q_ASSERT( mpm );
-
-    if( m_mpm )
-    {
-        disconnect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-        disconnect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
-    }
-
-    m_mpm = mpm;
-    connect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-    connect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
-}
-
-void
-SqlCollection::blockUpdatedSignal()
-{
-    QMutexLocker locker( &m_mutex );
-    m_blockUpdatedSignalCount ++;
-}
-
-void
-SqlCollection::unblockUpdatedSignal()
-{
-    QMutexLocker locker( &m_mutex );
-
-    Q_ASSERT( m_blockUpdatedSignalCount > 0 );
-    m_blockUpdatedSignalCount --;
-
-    // check if meanwhile somebody had updated the collection
-    if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
-    {
-        m_updatedSignalRequested = false;
-        locker.unlock();
-        emit updated();
-    }
-}
-
-void
-SqlCollection::collectionUpdated()
-{
-    QMutexLocker locker( &m_mutex );
-    if( m_blockUpdatedSignalCount == 0 )
-    {
-        m_updatedSignalRequested = false;
-        locker.unlock();
-        emit updated();
-    }
-    else
-    {
-        m_updatedSignalRequested = true;
-    }
-}
-
-void
-SqlCollection::slotScanStarted( ScannerJob *job )
-{
-    if( !job )
-    {
-        warning() << "job is invalid";
-        return;
-    }
-
-    if( Amarok::Components::logger() )
-    {
-        Amarok::Components::logger()->newProgressOperation( job,
-                                                            i18n( "Scanning music" ),
-                                                            100,
-                                                            m_scanManager,
-                                                            SLOT(abort()) );
-    }
-}
-
-bool
-SqlCollection::isDirInCollection( const QString &p )
-{
-    QString path = p;
-    // In the database all directories have a trailing slash, so we must add that
-    if( !path.endsWith( '/' ) )
-        path += '/';
-
-    const int deviceid = mountPointManager()->getIdForUrl( path );
-    const QString rpath = mountPointManager()->getRelativePath( deviceid, path );
-
-    const QStringList values =
-            sqlStorage()->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
-            .arg( QString::number( deviceid ), sqlStorage()->escape( rpath ) ) );
-
-    return !values.isEmpty();
-}
-
 bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    // what about uidUrlProtocol?
-    foreach( const QString &folder, collectionFolders() )
+    if( url.isLocalFile() )
     {
-        if ( url.path().contains( folder ) )
-            return true;
+        foreach( const QString &folder, collectionFolders() )
+        {
+            if( KUrl( folder ).isParentOf( url ) )
+                return true;
+        }
+        return false;
     }
-    return url.protocol() == "file" || url.protocol() == uidUrlProtocol();
+    else
+        return url.protocol() == uidUrlProtocol();
 }
 
 Meta::TrackPtr
@@ -413,32 +389,6 @@ SqlCollection::location()
 {
     Q_ASSERT( m_collectionLocationFactory );
     return m_collectionLocationFactory->createSqlCollectionLocation();
-}
-
-QStringList
-SqlCollection::getDatabaseDirectories( QList<int> idList ) const
-{
-    QString deviceIds;
-    foreach( int id, idList )
-    {  
-        if ( !deviceIds.isEmpty() ) deviceIds += ',';
-        deviceIds += QString::number( id );
-    }
-
-    QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
-    return m_sqlStorage->query( query.arg( deviceIds ) );
-}
-
-QStringList
-SqlCollection::collectionFolders() const
-{
-    return mountPointManager()->collectionFolders();
-}
-
-void
-SqlCollection::setCollectionFolders( const QStringList &folders )
-{
-    mountPointManager()->setCollectionFolders( folders );
 }
 
 void
@@ -484,15 +434,11 @@ SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
 {
     switch( type )
     {
-        case Capabilities::Capability::CollectionImport:
-        case Capabilities::Capability::CollectionScan:
-            return (bool) m_scanManager;
-        case Capabilities::Capability::Transcode:
-            return true;
-        default:
-            break;
+    case Capabilities::Capability::Transcode:
+        return true;
+    default:
+        return DatabaseCollection::hasCapabilityInterface( type );
     }
-    return false;
 }
 
 Capabilities::Capability*
@@ -500,16 +446,11 @@ SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CollectionImport:
-            return m_scanManager ? new SqlCollectionImportCapability( m_scanManager ) : 0;
-        case Capabilities::Capability::CollectionScan:
-            return m_scanManager ? new SqlCollectionScanCapability( m_scanManager ) : 0;
-        case Capabilities::Capability::Transcode:
-            return new SqlCollectionTranscodeCapability();
-        default:
-            break;
+    case Capabilities::Capability::Transcode:
+        return new SqlCollectionTranscodeCapability();
+    default:
+        return DatabaseCollection::createCapabilityInterface( type );
     }
-    return 0;
 }
 
 void
@@ -526,82 +467,7 @@ SqlCollection::dumpDatabaseContent()
     }
 }
 
-ScanResultProcessor*
-SqlCollection::getNewScanResultProcessor()
-{
-    return new SqlScanResultProcessor( this );
-}
-
-
-// --------- SqlCollectionScanCapability -------------
-
-SqlCollectionScanCapability::SqlCollectionScanCapability( ScanManager* scanManager )
-    : m_scanManager( scanManager )
-{ }
-
-SqlCollectionScanCapability::~SqlCollectionScanCapability()
-{ }
-
-void
-SqlCollectionScanCapability::startFullScan()
-{
-    if( m_scanManager )
-        m_scanManager->requestFullScan();
-}
-
-void
-SqlCollectionScanCapability::startIncrementalScan( const QString &directory )
-{
-    if( m_scanManager )
-        m_scanManager->requestIncrementalScan( directory );
-}
-
-void
-SqlCollectionScanCapability::stopScan()
-{
-    if( m_scanManager )
-        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
-}
-
-// --------- SqlCollectionImportCapability -------------
-
-SqlCollectionImportCapability::SqlCollectionImportCapability( ScanManager* scanManager )
-    : m_scanManager( scanManager )
-{ }
-
-SqlCollectionImportCapability::~SqlCollectionImportCapability()
-{ }
-
-void
-SqlCollectionImportCapability::import( QIODevice *input, QObject *listener )
-{
-    DEBUG_BLOCK
-    if( m_scanManager )
-    {
-        // ok. connecting of the signals is very specific for the SqlBatchImporter.
-        // For now this works.
-
-        /*
-           connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
-           this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
-           this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
-           this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
-           this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( importError( QString ) ),
-           this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-           */
-
-        connect( m_scanManager, SIGNAL( finished() ),
-                 listener, SIGNAL( importSucceeded() ) );
-        connect( m_scanManager, SIGNAL( message( QString ) ),
-                 listener, SIGNAL( showMessage( QString ) ) );
-
-        m_scanManager->requestImport( input );
-    }
-}
+// ---------- SqlCollectionTranscodeCapability -------------
 
 SqlCollectionTranscodeCapability::~SqlCollectionTranscodeCapability()
 {

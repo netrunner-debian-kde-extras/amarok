@@ -48,7 +48,7 @@ TestSqlAlbum::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
+    m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }
 
@@ -72,10 +72,12 @@ TestSqlAlbum::init()
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (4, -1, './MeNeitherToo.mp3', 'uid:/4');" );
+    m_storage->query( "INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');" );
+
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, 'uid://1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, 'uid://2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, 'uid:/3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, -1, './MeNeitherToo.mp3', 1, 'uid:/4');" );
 
     m_collection->registry()->emptyCache();
 }
@@ -90,6 +92,7 @@ TestSqlAlbum::cleanup()
     m_storage->query( "TRUNCATE TABLE artists;" );
     m_storage->query( "TRUNCATE TABLE tracks;" );
     m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE directories;" );
     m_storage->query( "TRUNCATE TABLE urls_labels;" );
 }
 

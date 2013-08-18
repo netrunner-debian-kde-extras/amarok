@@ -19,7 +19,7 @@
 
 #include "ui_IpodConfiguration.h"
 #include "core/collections/Collection.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 
 #include <QMutex>
 #include <QSharedPointer>
@@ -163,12 +163,12 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void slotShowConfigureDialog( const QString &errorMessage = QString() );
 
-        /**
-         * Overridden to update m_lastUpdated timestamp
-         */
-        virtual void collectionUpdated();
-
     private slots:
+        /**
+         * Update m_lastUpdated timestamp and emit updated()
+         */
+        void collectionUpdated();
+
         /**
          * Tries to initialize iPod, read the database, add tracks. (Re)shows the
          * configuration dialog with info about initialization.

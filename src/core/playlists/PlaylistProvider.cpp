@@ -14,22 +14,60 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-
+#include "core/meta/Meta.h"
 #include "core/playlists/PlaylistProvider.h"
-#include "PlaylistProvider.moc"
 
 using namespace Playlists;
 
-PlaylistPtr
-PlaylistProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+PlaylistProvider::PlaylistProvider( QObject *parent)
+    : QObject( parent )
 {
-    Q_UNUSED( playlist );
+}
+
+QActionList
+PlaylistProvider::providerActions()
+{
+    return QActionList();
+}
+
+QActionList
+PlaylistProvider::playlistActions( const PlaylistList & )
+{
+    return QActionList();
+
+}
+
+QActionList
+PlaylistProvider::trackActions( const QMultiHash<PlaylistPtr, int> & )
+{
+    return QActionList();
+}
+
+bool
+PlaylistProvider::isWritable()
+{
+    return false;
+}
+
+PlaylistPtr
+PlaylistProvider::addPlaylist( Playlists::PlaylistPtr )
+{
     return PlaylistPtr();
 }
 
-Meta::TrackPtr
-PlaylistProvider::addTrack( Meta::TrackPtr track )
+void
+PlaylistProvider::renamePlaylist( PlaylistPtr, const QString & )
 {
-    Q_UNUSED( track );
+}
+
+bool
+PlaylistProvider::deletePlaylists( const PlaylistList & )
+{
+    return false;
+}
+
+Meta::TrackPtr
+PlaylistProvider::addTrack( Meta::TrackPtr )
+{
     return Meta::TrackPtr();
 }

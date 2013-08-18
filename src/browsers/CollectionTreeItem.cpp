@@ -17,14 +17,16 @@
  ****************************************************************************************/
 
 #include "CollectionTreeItem.h"
-#include "CollectionTreeItemModelBase.h"
-#include "core/support/Debug.h"
+
 #include "amarokconfig.h"
-
+#include "browsers/CollectionTreeItemModelBase.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "widgets/PrettyTreeRoles.h"
 
-#include <KLocale>
 #include <KIcon>
+#include <KLocale>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -71,7 +73,7 @@ CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollectio
     if ( m_parent )
         m_parent->appendChild( this );
 
-    connect( parentCollection, SIGNAL( updated() ), SLOT( collectionUpdated() ) );
+    connect( parentCollection, SIGNAL(updated()), SLOT(collectionUpdated()) );
 }
 
 CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
@@ -84,7 +86,6 @@ CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, C
     , m_type( type )
     , m_isCounting( false )
 {
-    DEBUG_BLOCK
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
 
@@ -94,7 +95,7 @@ CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, C
 
 CollectionTreeItem::~CollectionTreeItem()
 {
-    qDeleteAll(m_childItems);
+    qDeleteAll( m_childItems );
 }
 
 void
@@ -149,12 +150,12 @@ CollectionTreeItem::data( int role ) const
         switch( role )
         {
         case Qt::DisplayRole:
-        case CustomRoles::FilterRole:
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::FilterRole:
+        case PrettyTreeRoles::SortRole:
             return m_parentCollection->prettyName();
         case Qt::DecorationRole:
             return m_parentCollection->icon();
-        case CustomRoles::ByLineRole:
+        case PrettyTreeRoles::ByLineRole:
             if( m_isCounting )
                 return counting;
             if( m_trackCount < 0 )
@@ -162,8 +163,8 @@ CollectionTreeItem::data( int role ) const
                 m_isCounting = true;
 
                 Collections::QueryMaker *qm = m_parentCollection->queryMaker();
-                connect( qm, SIGNAL( newResultReady(QStringList) ),
-                         SLOT( tracksCounted(QStringList) ) );
+                connect( qm, SIGNAL(newResultReady(QStringList)),
+                         SLOT(tracksCounted(QStringList)) );
 
                 qm->setAutoDelete( true )
                   ->setQueryType( Collections::QueryMaker::Custom )
@@ -173,15 +174,15 @@ CollectionTreeItem::data( int role ) const
                 return counting;
             }
             return i18np( "1 track", "%1 tracks", m_trackCount );
-        case CustomRoles::HasCapacityRole:
+        case PrettyTreeRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
-        case CustomRoles::UsedCapacityRole:
+        case PrettyTreeRoles::UsedCapacityRole:
             return m_parentCollection->usedCapacity();
-        case CustomRoles::TotalCapacityRole:
+        case PrettyTreeRoles::TotalCapacityRole:
             return m_parentCollection->totalCapacity();
-        case CustomRoles::DecoratorRoleCount:
+        case PrettyTreeRoles::DecoratorRoleCount:
             return decoratorActions().size();
-        case CustomRoles::DecoratorRole:
+        case PrettyTreeRoles::DecoratorRole:
             QVariant v;
             v.setValue( decoratorActions() );
             return v;
@@ -331,6 +332,12 @@ CollectionTreeItem::operator<( const CollectionTreeItem& other ) const
     if( isVariousArtistItem() )
         return true;
     return m_data->sortableName() < other.m_data->sortableName();
+}
+
+const Meta::DataPtr
+CollectionTreeItem::data() const
+{
+    return m_data;
 }
 
 QList<Meta::TrackPtr>

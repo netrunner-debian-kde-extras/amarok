@@ -56,11 +56,15 @@ int main( int argc, char *argv[] )
             ki18n("Developer (dr_lepper)"), "edward.hades@gmail.com" );
     ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
 
+    aboutData.addAuthor( ki18n("Mark Kretschmann" ),
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "https://plus.google.com/102602725322221030250/posts" );
+        ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
+
     aboutData.addAuthor( ki18n("Matěj Laitl"),
             ki18n("iPod collection rewrite & more (strohel)"), "matej@laitl.cz", "http://strohel.blogspot.com/" );
     ocsData.addAuthor( "strohel", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
+    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org", "http://blogs.fsfe.org/myriam" );
     ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Ralf 'SalsaMaster' Engels"),
@@ -110,10 +114,6 @@ int main( int argc, char *argv[] )
 
     aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"), ki18n("Release Vixen (Nightrose)"), "lydia@kde.org" );
         ocsData.addAuthor( "nightrose", aboutData.authors().last() );
-
-    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
-            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
-        ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );

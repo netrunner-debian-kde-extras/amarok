@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,7 @@
 #ifndef TESTMETATRACK_H
 #define TESTMETATRACK_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -32,10 +32,10 @@ Q_OBJECT
 
 public:
     TestMetaTrack();
+    ~TestMetaTrack();
 
 private slots:
     void initTestCase();
-    void cleanupTestCase();
 
     void testPrettyName();
     void testPlayableUrl();

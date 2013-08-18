@@ -39,14 +39,16 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     , m_applet( applet )
     , m_label( 0 )
     , m_deleteIcon( 0 )
-    , m_labelPadding( 5 )
     , m_configEnabled( false )
 {
     m_label = new QGraphicsTextItem( this );
+
+    // Don't propagate opacity changes to the text label, as this reduces readability
+    m_label->setFlags( QGraphicsItem::ItemIgnoresParentOpacity );
+
     if( m_applet )
     {
        m_label->setPlainText( m_applet->name() );
-       setToolTip( m_applet->name() );
     }
     else
     {
@@ -60,7 +62,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     delApplet->setVisible( true );
     delApplet->setEnabled( true );
 
-    connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
+    connect( delApplet, SIGNAL(triggered()), this, SLOT(deleteApplet()) );
     m_deleteIcon = addAction( delApplet, 18 );
     m_deleteIcon->hide();
 
@@ -153,10 +155,8 @@ Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & c
 {
     Q_UNUSED( constraint )
     if( which == Qt::MinimumSize )
-    //    return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
         return QSizeF();
     else
-       // return QGraphicsWidget::sizeHint( which, constraint );
         return QSizeF( 10000, 10000 );
 }
 
@@ -206,16 +206,16 @@ Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
     QPropertyAnimation *animation = m_opacityAnimation.data();
     if( !animation )
     {
-        animation = new QPropertyAnimation( m_label, "opacity" );
-        animation->setDuration( 300 );
-        animation->setStartValue( 0.5 );
+        animation = new QPropertyAnimation( this, "opacity" );
+        animation->setDuration( 250 );
+        animation->setStartValue( 0.3 );
         animation->setEndValue( 1.0 );
         m_opacityAnimation = animation;
     }
     else if( animation->state() == QAbstractAnimation::Running )
         animation->stop();
 
-    animation->setEasingCurve( QEasingCurve::InQuad );
+    animation->setEasingCurve( QEasingCurve::OutCubic );
     animation->setDirection( QAbstractAnimation::Backward );
     animation->start( QAbstractAnimation::KeepWhenStopped );
 }
@@ -226,16 +226,16 @@ Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
     QPropertyAnimation *animation = m_opacityAnimation.data();
     if( !animation )
     {
-        animation = new QPropertyAnimation( m_label, "opacity" );
-        animation->setDuration( 300 );
-        animation->setStartValue( 0.5 );
+        animation = new QPropertyAnimation( this, "opacity" );
+        animation->setDuration( 250 );
+        animation->setStartValue( 0.3 );
         animation->setEndValue( 1.0 );
         m_opacityAnimation = animation;
     }
     else if( animation->state() == QAbstractAnimation::Running )
         animation->pause();
 
-    animation->setEasingCurve( QEasingCurve::OutQuad );
+    animation->setEasingCurve( QEasingCurve::OutCubic );
     animation->setDirection( QAbstractAnimation::Forward );
     animation->start( QAbstractAnimation::DeleteWhenStopped );
 }

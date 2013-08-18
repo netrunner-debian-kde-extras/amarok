@@ -22,9 +22,10 @@
 #ifndef AMAROK_PLAYLISTCONTROLLER_H
 #define AMAROK_PLAYLISTCONTROLLER_H
 
-#include "core/meta/Meta.h"
-#include "core/playlists/Playlist.h"
 #include "UndoCommands.h"
+#include "amarok_export.h"
+#include "core/meta/forward_declarations.h"
+#include "core/playlists/Playlist.h"
 
 #include <QObject>
 
@@ -34,19 +35,36 @@ namespace Playlist
 {
 class AbstractModel;
 
-enum AddOptions
+/**
+ * No options means: append at the end of the playlist (without touching playing
+ * state)
+ */
+enum AddOption
 {
-    Append     = 1,     ///< inserts media after the last item in the playlist
-    Queue      = 2,     ///< inserts media after the currentTrack
-    Replace    = 4,     ///< clears the playlist first
-    DirectPlay = 8,     ///< start playback of the first item in the list
-    Unique     = 16,    ///< don't insert anything already in the playlist
-    StartPlay  = 32,    ///< start playback of the first item in the list if nothing else playing
-    AppendAndPlay = Append | StartPlay,
-    LoadAndPlay = Replace | StartPlay,
-    AppendAndPlayImmediately = Append | DirectPlay, ///< append and start playback of the added item
-    LoadAndPlayImmediately = Replace | DirectPlay   ///< replace and begin playing of new item
+    Replace = 1, ///< replaces the playlist instead of default appending (or queueing)
+    Queue = 2, ///< inserts media into the queue after the currentTrack instead of default
+               ///  appending to the end of the playlist
+    PrependToQueue = Queue | 4, ///< prepends media to the queue (after current track), implies Queue
+    DirectPlay = PrependToQueue | 8, ///< start playback of the first item in the list, implies PrependToQueue
+    RemotePlaylistsAreStreams = 16, ///< treat remote urls pointing to playlists as streams.
+                                    ///  only has sense for methods that accept urls or playlists
+    StartPlayIfConfigured = 32, ///< start playing the first added track if Amarok is
+                                ///  configured so and nothing else is already playing
+
+    // following are "consistency convenience enums" so that it is easy for us to make the
+    // bahaviour of similarly-looking UI elements the same. These enums are the preferred
+    // ones on calling sites. Feel free to add a new one if you find another UI element
+    // that appears on multiple places. Prefix these with On*.
+    OnDoubleClickOnSelectedItems = StartPlayIfConfigured,
+    OnMiddleClickOnSelectedItems = DirectPlay,
+    OnReturnPressedOnSelectedItems = StartPlayIfConfigured, // append, should be kept same as double-click
+
+    OnPlayMediaAction = DirectPlay,
+    OnAppendToPlaylistAction = 0, // double-click is always available, so don't add StartPlayIfConfigured here
+    OnReplacePlaylistAction = Replace | StartPlayIfConfigured,
+    OnQueueToPlaylistAction = Queue | StartPlayIfConfigured,
 };
+Q_DECLARE_FLAGS( AddOptions, AddOption )
 
 /** The Playlist::Controller allows to add, remove or otherwise change tracks to the playlist.
     Instead of directly talking to The::Playlist or PlaylistModelStack this object
@@ -56,8 +74,8 @@ enum AddOptions
 class AMAROK_EXPORT Controller : public QObject
 {
     Q_OBJECT
-public:
 
+public:
     /**
      * Accessor for the singleton pattern.
      * @return a pointer to the only instance of Playlist::Controller.
@@ -77,7 +95,7 @@ public slots:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackPtr track, int options );
+    void insertOptioned( Meta::TrackPtr track, AddOptions options = 0 );
 
     /**
      * Handles the insertion of one or more tracks into the playlist, considering a set of
@@ -86,10 +104,11 @@ public slots:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackList list, int options );
-    void insertOptioned( Playlists::PlaylistPtr playlist, int options );
-    void insertOptioned( Playlists::PlaylistList list, int options );
-    void insertOptioned( QList<KUrl> &urls, int options );
+    void insertOptioned( Meta::TrackList list, AddOptions options = 0 );
+    void insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options = 0 );
+    void insertOptioned( Playlists::PlaylistList list, AddOptions options = 0 );
+    void insertOptioned( const KUrl &url, AddOptions options = 0 );
+    void insertOptioned( QList<KUrl> &urls, AddOptions options = 0 );
 
     /**
      * Handles the insertion of one or more tracks into the playlist on a specific row.
@@ -101,6 +120,7 @@ public slots:
     void insertTracks( int topModelRow, Meta::TrackList list );
     void insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist );
     void insertPlaylists( int topModelRow, Playlists::PlaylistList playlists );
+    void insertUrls( int topModelRow, QList<KUrl> &urls );
 
     /**
      * Handles the removal of a single track from the playlist.
@@ -159,8 +179,18 @@ public slots:
      * @param to the target row where the tracks should be moved.
      * @return the first row where the tracks ended up in the new list.
      */
-    int  moveRows( QList<int>& topModelFrom, int topModelTo );
-    void moveRows( QList<int>& topModelFrom, QList<int>& topModelTo );
+    int moveRows( QList<int>& topModelFrom, int topModelTo );
+
+    /**
+     * Reorders tracks in the playlist. For each i, track at position
+     * topModelFrom[i] is moved to the position topModelTo[i]. Note that when track
+     * on position A is moved to the position B, the track from position B needs to
+     * be moved as well. As a consequence, every track position appearing
+     * in topModelFrom needs to appear in topModelTo.
+     * @param topModelFrom the list containing positions of tracks to be moved
+     * @param topModelTo the list containing positions the tracks should be moved to
+     */
+    void reorderRows( const QList<int> &topModelFrom, const QList<int> &topModelTo );
 
     void undo();
     void redo();
@@ -175,7 +205,8 @@ signals:
     void replacingPlaylist();
 
 private slots:
-    void slotDirectoryLoaderFinished( const Meta::TrackList &tracks );
+    void slotLoaderWithOptionsFinished( const Meta::TrackList &tracks );
+    void slotLoaderWithRowFinished( const Meta::TrackList &tracks );
 
 private:
     Controller();
@@ -205,6 +236,9 @@ private:
     QUndoStack* m_undoStack;
 };
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( Playlist::AddOptions )
+Q_DECLARE_METATYPE( Playlist::AddOptions )
 
 namespace The
 {

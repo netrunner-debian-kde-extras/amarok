@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2009-2010 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,36 +21,74 @@
 
 #include "SqlScanResultProcessor.h"
 
+#include "MainWindow.h"
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Album.h"
 #include "collectionscanner/Track.h"
 #include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
 
-SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent )
-    : ScanResultProcessor( parent ),
-      m_collection( collection )
-{
-}
+#include <KMessageBox>
+
+#include <QApplication>
+
+SqlScanResultProcessor::SqlScanResultProcessor( GenericScanManager* manager,
+                                                Collections::SqlCollection* collection,
+                                                QObject *parent )
+    : AbstractScanResultProcessor( manager, parent )
+    , m_collection( collection )
+{ }
 
 SqlScanResultProcessor::~SqlScanResultProcessor()
+{ }
+
+void
+SqlScanResultProcessor::scanStarted( GenericScanManager::ScanType type )
 {
+    AbstractScanResultProcessor::scanStarted( type );
+
+    m_collection->sqlStorage()->clearLastErrors();
+    m_messages.clear();
 }
 
 void
-SqlScanResultProcessor::commit()
+SqlScanResultProcessor::scanSucceeded()
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
-    m_collection->sqlStorage()->clearLastErrors();
+    // we are blocking the updated signal for maximum of one second.
+    m_blockedTime = QDateTime::currentDateTime();
+    blockUpdates();
+
     urlsCacheInit();
 
     // -- call the base implementation
-    ScanResultProcessor::commit();
+    AbstractScanResultProcessor::scanSucceeded();
 
-    m_lastErrors.append( m_collection->sqlStorage()->getLastErrors() );
+    // -- error reporting
+    m_messages.append( m_collection->sqlStorage()->getLastErrors() );
+
+    if( !m_messages.isEmpty() && QApplication::type() != QApplication::Tty )
+        QTimer::singleShot(0, this, SLOT(displayMessages())); // do in the UI thread
+
+    unblockUpdates();
+}
+
+void
+SqlScanResultProcessor::displayMessages()
+{
+    QString errorList = m_messages.join( "</li><li>" ).replace( '\n', "<br>" );
+    QString text = i18n( "<ul><li>%1</li></ul>"
+                         "In most cases this means that not all of your tracks were imported.<br>"
+                         "See <a href='http://userbase.kde.org/Amarok/Manual/Various/TroubleshootingAndCommonProblems#Duplicate_Tracks'>"
+                         "Amarok Manual</a> for information about duplicate tracks.", errorList );
+    KMessageBox::error( The::mainWindow(), text, i18n( "Errors During Collection Scan" ),
+                        KMessageBox::AllowLink );
+
+    m_messages.clear();
 }
 
 void
@@ -67,7 +106,13 @@ SqlScanResultProcessor::unblockUpdates()
 }
 
 void
-SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
+SqlScanResultProcessor::message( const QString& message )
+{
+    m_messages.append( message );
+}
+
+void
+SqlScanResultProcessor::commitDirectory( QSharedPointer<CollectionScanner::Directory> directory )
 {
     QString path = directory->path();
     // a bit of paranoia:
@@ -77,16 +122,25 @@ SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory
 
     // getDirectory() updates the directory entry mtime:
     int dirId = m_collection->registry()->getDirectory( path, directory->mtime() );
-    m_directoryIds.insert( directory, dirId );
+    // we never dereference key of m_directoryIds, it is safe to add it as a plain pointer
+    m_directoryIds.insert( directory.data(), dirId );
     m_foundDirectories.insert( path, dirId );
 
-    ScanResultProcessor::commitDirectory( directory );
+    AbstractScanResultProcessor::commitDirectory( directory );
+
+    // --- unblock every 5 second. Maybe not really needed, but still nice
+    if( m_blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
+    {
+        unblockUpdates();
+        m_blockedTime = QDateTime::currentDateTime();
+        blockUpdates();
+    }
 }
 
 void
 SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
 {
-    // debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist();
+    debug() << "commitAlbum on"<<album->name()<< "artist"<<album->artist();
 
     // --- get or create the album
     Meta::SqlAlbumPtr metaAlbum;
@@ -103,7 +157,7 @@ SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
     // we need to do this after the tracks are added in case of an embedded cover
     bool suppressAutoFetch = metaAlbum->suppressImageAutoFetch();
     metaAlbum->setSuppressImageAutoFetch( true );
-    if( m_type == FullScan )
+    if( m_type == GenericScanManager::FullScan )
     {
         if( !album->cover().isEmpty() )
         {
@@ -123,6 +177,8 @@ void
 SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
                                      CollectionScanner::Album *srcAlbum )
 {
+    // debug() << "commitTrack on"<<track->title()<< "album"<<srcAlbum->name() << "dir:" << track->directory()->path()<<track->directory();
+
     Q_ASSERT( track );
     Q_ASSERT( srcAlbum );
 
@@ -136,7 +192,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     {
         warning() << "commitTrack(): got track with empty unique id from the scanner,"
                   << "not adding it";
-        m_lastErrors.append( QString( "Not adding track %1 because it has no unique id." ).
+        m_messages.append( QString( "Not adding track %1 because it has no unique id." ).
                              arg(track->path()) );
         return;
     }
@@ -152,7 +208,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
         // we want translated version for GUI and non-translated for debug log
         warning() << "commitTrack():" << QString( pattern ).arg( old.path, track->path() );
-        m_lastErrors.append( i18n( pattern, old.path, track->path() ) );
+        m_messages.append( i18n( pattern, old.path, track->path() ) );
         return;
     }
 
@@ -201,7 +257,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         QString text = QString( "Something went wrong when importing track %1, metaTrack "
                 "is null while it shouldn't be." ).arg( track->path() );
         warning() << "commitTrack():" << text.toLocal8Bit().data();
-        m_lastErrors.append( text );
+        m_messages.append( text );
         return;
     }
     urlsCacheInsert( entry ); // removes the previous entry (by id) first if necessary
@@ -218,76 +274,76 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     metaTrack->setUidUrl( uid );
     metaTrack->setUrl( deviceId, rpath, directoryId );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->title().isEmpty() )
         metaTrack->setTitle( track->title() );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         albumId != -1 )
         metaTrack->setAlbum( albumId );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->artist().isEmpty() )
         metaTrack->setArtist( track->artist() );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->composer().isEmpty() )
         metaTrack->setComposer( track->composer() );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         track->year() >= 0 )
         metaTrack->setYear( (track->year() >= 0) ? track->year() : 0 );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->genre().isEmpty() )
         metaTrack->setGenre( track->genre() );
 
     metaTrack->setType( track->filetype() );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->bpm() >= 0 )
         metaTrack->setBpm( track->bpm() );
 
-    if( m_type == FullScan ||
+    if( m_type == GenericScanManager::FullScan ||
         !track->comment().isEmpty() )
         metaTrack->setComment( track->comment() );
 
-    if( (m_type == FullScan || metaTrack->score() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->score() == 0) &&
         track->score() >= 0 )
         metaTrack->setScore( track->score() );
 
-    if( (m_type == FullScan || metaTrack->rating() == 0.0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->rating() == 0.0) &&
         track->rating() >= 0 )
         metaTrack->setRating( track->rating() );
 
-    if( (m_type == FullScan || metaTrack->length() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->length() == 0) &&
         track->length() >= 0 )
         metaTrack->setLength( track->length() );
 
     // the filesize is updated every time after the
     // file is changed. Doesn't make sense to set it.
 
-    if( (m_type == FullScan || !metaTrack->modifyDate().isValid()) &&
+    if( (m_type == GenericScanManager::FullScan || !metaTrack->modifyDate().isValid()) &&
         track->modified().isValid() )
         metaTrack->setModifyDate( track->modified() );
 
-    if( (m_type == FullScan || metaTrack->sampleRate() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->sampleRate() == 0) &&
         track->samplerate() >= 0 )
         metaTrack->setSampleRate( track->samplerate() );
 
-    if( (m_type == FullScan || metaTrack->bitrate() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->bitrate() == 0) &&
         track->bitrate() >= 0 )
         metaTrack->setBitrate( track->bitrate() );
 
-    if( (m_type == FullScan || metaTrack->trackNumber() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->trackNumber() == 0) &&
         track->track() >= 0 )
         metaTrack->setTrackNumber( track->track() );
 
-    if( (m_type == FullScan || metaTrack->discNumber() == 0) &&
+    if( (m_type == GenericScanManager::FullScan || metaTrack->discNumber() == 0) &&
         track->disc() >= 0 )
         metaTrack->setDiscNumber( track->disc() );
 
-    if( m_type == FullScan && track->playcount() >= metaTrack->playCount() )
+    if( m_type == GenericScanManager::FullScan && track->playcount() >= metaTrack->playCount() )
         metaTrack->setPlayCount( track->playcount() );
 
 
@@ -309,31 +365,22 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 void
 SqlScanResultProcessor::deleteDeletedDirectories()
 {
-    DEBUG_BLOCK
     SqlStorage *storage = m_collection->sqlStorage();
 
-    // -- get a list of all mounted device ids
-    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
-    QString deviceIds;
-    foreach( int id, idList )
+    QList<DirectoryEntry> toCheck;
+    switch( m_type )
     {
-        if ( !deviceIds.isEmpty() )
-            deviceIds += ',';
-        deviceIds += QString::number( id );
+        case GenericScanManager::FullScan:
+        case GenericScanManager::UpdateScan:
+            toCheck = mountedDirectories();
+            break;
+        case GenericScanManager::PartialUpdateScan:
+            toCheck = deletedDirectories();
     }
 
-    // -- get all (mounted) directories
-    QString query = QString( "SELECT id, deviceid, dir FROM directories "
-                             "WHERE deviceid IN (%1)" ).arg( deviceIds );
-    QStringList res = storage->query( query );
-
     // -- check if the have been found during the scan
-    for( int i = 0; i < res.count(); )
+    foreach( const DirectoryEntry &e, toCheck )
     {
-        int dirId = res.at( i++ ).toInt();
-        int deviceId = res.at( i++ ).toInt();
-        QString dir = res.at( i++ );
-
         /* we need to match directories by their (absolute) path, otherwise following
          * scenario triggers statistics loss (bug 298275):
          *
@@ -349,32 +396,35 @@ SqlScanResultProcessor::deleteDeletedDirectories()
          * 5. Tracks disappear from the UI until full rescan, stats, lyrics, labels are
          *    lost forever.
          */
-        QString path = m_collection->mountPointManager()->getAbsolutePath( deviceId, dir );
+        QString path = m_collection->mountPointManager()->getAbsolutePath( e.deviceId, e.dir );
         bool deleteThisDir = false;
         if( !m_foundDirectories.contains( path ) )
             deleteThisDir = true;
-        else if( m_foundDirectories.value( path ) != dirId )
+        else if( m_foundDirectories.value( path ) != e.dirId )
         {
             int newDirId = m_foundDirectories.value( path );
             // as a safety measure, we don't delete the old dir if relocation fails
-            deleteThisDir = relocateTracksToNewDirectory( dirId, newDirId );
+            deleteThisDir = relocateTracksToNewDirectory( e.dirId, newDirId );
         }
 
         if( deleteThisDir )
         {
-            deleteDeletedTracks( dirId );
-            query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( dirId );
+            deleteDeletedTracks( e.dirId );
+            QString query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( e.dirId );
             storage->query( query );
         }
     }
 }
 
 void
-SqlScanResultProcessor::deleteDeletedTracks( CollectionScanner::Directory *directory )
+SqlScanResultProcessor::deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory )
 {
-    Q_ASSERT( m_directoryIds.contains( directory ) );
-    int directoryId = m_directoryIds.value( directory );
+    Q_ASSERT( m_directoryIds.contains( directory.data() ) );
+    int directoryId = m_directoryIds.value( directory.data() );
+    // only deletes tracks directly in this dir
     deleteDeletedTracks( directoryId );
+    // trigger deletion of deleted subdirectories in deleteDeletedDirectories():
+    m_scannedDirectoryIds.insert( directoryId );
 }
 
 void
@@ -472,11 +522,9 @@ void
 SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 {
     debug() << "removeTrack(" << entry << ")";
-    if( !m_lastErrors.isEmpty() )
-    {
-        warning() << "removeTrack(): there were errors, skipping destructive operations";
-        return;
-    }
+    // we used to skip track removal is m_messages wasn't empty, but that lead to to
+    // tracks left laying around. We now hope that the result processor got better and
+    // only removes tracks that should be removed.
 
     SqlRegistry *reg = m_collection->registry();
     // we must get the track by id, uid is not unique
@@ -485,10 +533,100 @@ SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
     track->remove();
 }
 
+QList<SqlScanResultProcessor::DirectoryEntry>
+SqlScanResultProcessor::mountedDirectories() const
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    // -- get a list of all mounted device ids
+    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
+    QString deviceIds;
+    foreach( int id, idList )
+    {
+        if ( !deviceIds.isEmpty() )
+            deviceIds += ',';
+        deviceIds += QString::number( id );
+    }
+
+    // -- get all (mounted) directories
+    QString query = QString( "SELECT id, deviceid, dir FROM directories "
+                             "WHERE deviceid IN (%1)" ).arg( deviceIds );
+    QStringList res = storage->query( query );
+
+    QList<DirectoryEntry> result;
+    for( int i = 0; i < res.count(); )
+    {
+        DirectoryEntry e;
+        e.dirId = res.at( i++ ).toInt();
+        e.deviceId = res.at( i++ ).toInt();
+        e.dir = res.at( i++ );
+        result << e;
+    }
+
+    return result;
+}
+
+QList<SqlScanResultProcessor::DirectoryEntry>
+SqlScanResultProcessor::deletedDirectories() const
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
+    foreach( int directoryId, m_scannedDirectoryIds )
+    {
+        QString query = QString( "SELECT deviceid, dir FROM directories WHERE id = %1" )
+                .arg( directoryId );
+        QStringList res = storage->query( query );
+        if( res.count() != 2 )
+        {
+            warning() << "unexpected query result" << res << "in deletedDirectories()";
+            continue;
+        }
+
+        int deviceId = res.at( 0 ).toInt();
+        QString dir = res.at( 1 );
+        // select all child directories
+        query = QString( "SELECT id, deviceid, dir FROM directories WHERE deviceid = %1 "
+                "AND dir LIKE '%2_%'" ).arg( deviceId ).arg( storage->escape( dir ) );
+        res = storage->query( query );
+        for( int i = 0; i < res.count(); )
+        {
+            DirectoryEntry e;
+            e.dirId = res.at( i++ ).toInt();
+            e.deviceId = res.at( i++ ).toInt();
+            e.dir = res.at( i++ );
+            idToDirEntryMap.insert( e.dirId, e );
+        }
+    }
+
+    // now we must fileter-out all found directories *and their children*, because the
+    // children are *not* in m_foundDirectories and deleteDeletedDirectories() would
+    // remove them errorneously
+    foreach( int foundDirectoryId, m_foundDirectories.values() )
+    {
+        if( idToDirEntryMap.contains( foundDirectoryId ) )
+        {
+            int existingDeviceId = idToDirEntryMap[ foundDirectoryId ].deviceId;
+            QString existingPath = idToDirEntryMap[ foundDirectoryId ].dir;
+            idToDirEntryMap.remove( foundDirectoryId );
+
+            // now remove all children of the existing directory
+            QMutableHashIterator<int, DirectoryEntry> it( idToDirEntryMap );
+            while( it.hasNext() )
+            {
+                const DirectoryEntry &e = it.next().value();
+                if( e.deviceId == existingDeviceId && e.dir.startsWith( existingPath ) )
+                    it.remove();
+            }
+        }
+    }
+
+    return idToDirEntryMap.values();
+}
+
 void
 SqlScanResultProcessor::urlsCacheInit()
 {
-    DEBUG_BLOCK
     SqlStorage *storage = m_collection->sqlStorage();
 
     QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
@@ -550,6 +688,23 @@ SqlScanResultProcessor::urlsCacheInsert( const UrlEntry &entry )
     m_uidCache.insert( entry.uid, entry.id );
     m_pathCache.insert( entry.path, entry.id );
     m_directoryCache.insert( entry.directoryId, entry.id );
+}
+
+void
+SqlScanResultProcessor::cleanupMembers()
+{
+    m_foundDirectories.clear();
+    m_foundTracks.clear();
+    m_scannedDirectoryIds.clear();
+    m_directoryIds.clear();
+    m_albumIds.clear();
+
+    m_urlsCache.clear();
+    m_uidCache.clear();
+    m_pathCache.clear();
+    m_directoryCache.clear();
+
+    AbstractScanResultProcessor::cleanupMembers();
 }
 
 void

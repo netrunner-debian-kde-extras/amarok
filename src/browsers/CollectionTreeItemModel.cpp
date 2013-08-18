@@ -40,61 +40,19 @@
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType )
     : CollectionTreeItemModelBase()
 {
-    CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
-    connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
-    //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->collections.clear();
-    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    CollectionManager *collMgr = CollectionManager::instance();
+    connect( collMgr, SIGNAL(collectionAdded(Collections::Collection*)), this, SLOT(collectionAdded(Collections::Collection*)), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL(collectionRemoved(QString)), this, SLOT(collectionRemoved(QString)) );
+
+    QList<Collections::Collection *> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
-        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        connect( coll, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
+        m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
-    //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
-    updateHeaderText();
+
     setLevels( levelType );
-    debug() << "Collection root has " << m_rootItem->childCount() << " children";
-}
-
-CollectionTreeItemModel::~CollectionTreeItemModel()
-{
-    DEBUG_BLOCK
-
-    KConfigGroup config = Amarok::config( "Collection Browser" );
-    QList<int> levelNumbers;
-    foreach( CategoryId::CatMenuId category, levels() )
-        levelNumbers.append( category );
-    config.writeEntry( "TreeCategory", levelNumbers );
-}
-
-void
-CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelType )
-{
-    if( m_levelType == levelType && m_rootItem )
-        return;
-
-    m_levelType = levelType;
-    delete m_rootItem; //clears the whole tree!
-    m_rootItem = new CollectionTreeItem( this );
-    d->collections.clear();
-    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Collections::Collection *coll, collections )
-    {
-        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
-    }
-    m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
-    updateHeaderText();
-    m_expandedItems.clear();
-    m_expandedSpecialNodes.clear();
-    d->runningQueries.clear();
-    d->childQueries.clear();
-    d->compilationQueries.clear();
-    reset();
-    if ( d->collections.count() == 1 )
-        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 Qt::ItemFlags
@@ -230,35 +188,27 @@ CollectionTreeItemModel::supportedDropActions() const
 void
 CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection )
 {
-    DEBUG_BLOCK
-
-    if ( !newCollection )
+    if( !newCollection )
         return;
 
-    connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+    connect( newCollection, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
 
     QString collectionId = newCollection->collectionId();
-    if ( d->collections.contains( collectionId ) )
+    if( m_collections.contains( collectionId ) )
         return;
-
-    debug() << "Added collection id:" << collectionId;
 
     //inserts new collection at the end.
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
+    m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
-    if( d->collections.count() == 1 )
-        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
+    if( m_collections.count() == 1 )
+        QTimer::singleShot( 0, this, SLOT(requestCollectionsExpansion()) );
 }
 
 void
 CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
 {
-    DEBUG_BLOCK
-
-    debug() << "Removed collection id:" << collectionId;
-
     int count = m_rootItem->childCount();
     for( int i = 0; i < count; i++ )
     {
@@ -267,7 +217,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
         {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
-            d->collections.remove( collectionId );
+            m_collections.remove( collectionId );
             m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }
@@ -280,9 +230,6 @@ CollectionTreeItemModel::filterChildren()
     int count = m_rootItem->childCount();
     for ( int i = 0; i < count; i++ )
     {
-        //CollectionTreeItem *item = m_rootItem->child( i );
-        //if( item )
-        //    item->setChildrenLoaded( false );
         markSubTreeAsDirty( m_rootItem->child( i ) );
         ensureChildrenLoaded( m_rootItem->child( i ) );
     }
@@ -291,22 +238,10 @@ CollectionTreeItemModel::filterChildren()
 void
 CollectionTreeItemModel::requestCollectionsExpansion()
 {
-    DEBUG_BLOCK
     for( int i = 0, count = m_rootItem->childCount(); i < count; i++ )
     {
         emit expandIndex( createIndex( i, 0, m_rootItem->child( i ) ) );
     }
 }
 
-void CollectionTreeItemModel::update()
-{
-    for( int i = 0; i < m_rootItem->childCount(); i++ )
-    {
-        markSubTreeAsDirty( m_rootItem->child( i ) );
-        ensureChildrenLoaded( m_rootItem->child( i ) );
-    }
-
-}
-
 #include "CollectionTreeItemModel.moc"
-

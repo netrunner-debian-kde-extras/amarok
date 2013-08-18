@@ -18,12 +18,13 @@
 
 #include "LastFmTreeView.h"
 
-#include "core/support/Debug.h"
-#include "LastFmTreeModel.h" //FIXME just for enums
 #include "PopupDropperFactory.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "services/lastfm/LastFmTreeModel.h" // FIXME just for enums
 
 #include <KMenu>
 
@@ -38,7 +39,7 @@ LastFmTreeView::LastFmTreeView ( QWidget* parent )
         , m_dragMutex()
         , m_ongoingDrag( false )
 {
-//     connect ( this, SIGNAL ( activated ( QModelIndex ) ), SLOT ( onActivated ( QModelIndex ) ) );
+//     connect ( this, SIGNAL (activated(QModelIndex)), SLOT (onActivated(QModelIndex)) );
 
     header()->hide();
 //     setRootIsDecorated( false );
@@ -95,7 +96,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
             {
                 m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-                connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
+                connect ( m_appendAction, SIGNAL (triggered()), this, SLOT (slotAppendChildTracks()) );
             }
 
             actions.append ( m_appendAction );
@@ -104,7 +105,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
             {
                 m_loadAction = new QAction ( KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "load" );
-                connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
+                connect ( m_loadAction, SIGNAL (triggered()), this, SLOT (slotReplacePlaylistByChildTracks()) );
             }
             actions.append ( m_loadAction );
         }
@@ -121,7 +122,7 @@ void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() && index.internalPointer() )
     {
-        playChildTracks( index, Playlist::AppendAndPlay );
+        playChildTracks( index, Playlist::OnDoubleClickOnSelectedItems );
     }
 }
 
@@ -196,7 +197,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
 
@@ -206,15 +207,15 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 }
 
 void
-LastFmTreeView::slotPlayChildTracks()
+LastFmTreeView::slotReplacePlaylistByChildTracks()
 {
-    playChildTracks ( m_currentItems, Playlist::LoadAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnReplacePlaylistAction );
 }
 
 void
 LastFmTreeView::slotAppendChildTracks()
 {
-    playChildTracks ( m_currentItems, Playlist::AppendAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnAppendToPlaylistAction );
 }
 
 void
@@ -237,5 +238,5 @@ LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOpt
             list << track;
     }
     qStableSort ( list.begin(), list.end(), Meta::Track::lessThan );
-    The::playlistController()->insertOptioned ( list, insertMode );
+    The::playlistController()->insertOptioned( list, insertMode );
 }

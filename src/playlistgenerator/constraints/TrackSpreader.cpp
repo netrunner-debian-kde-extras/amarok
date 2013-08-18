@@ -18,7 +18,10 @@
 
 #include "TrackSpreader.h"
 
+#include "core/meta/Meta.h"
 #include "playlistgenerator/Constraint.h"
+
+#include <QHash>
 
 #include <math.h>
 #include <stdlib.h>

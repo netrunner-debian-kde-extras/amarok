@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
@@ -21,8 +21,11 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
+#include "amarok_export.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
+
+#include <KUrl>
 
 #include <QMutex>
 #include <QObject>
@@ -37,10 +40,12 @@
 #include <Phonon/EffectParameter>
 #include <phonon/audiodataoutput.h>
 
-class QTimer;
+static const int s_equalizerBandsCount = 10; // Number of equalizer parameters excluding Preamp
 
+class Fadeouter;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
+class QTimer;
 
 /**
  * A thin wrapper around Phonon that implements Amarok-specific functionality like
@@ -52,6 +57,8 @@ class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
     Q_OBJECT
 
 public:
+    static const uint DATAOUTPUT_DATA_SIZE = 512;
+
     /**
      * Construct EngineController. Must be called from the main thread.
      */
@@ -103,14 +110,6 @@ public:
      * @p track will be played immediately.
      */
     void setNextTrack( Meta::TrackPtr track );
-
-    /** Returns the media object Amarok is using for playback.
-     *  Provides access to the Phonon MediaObject for components that need more information
-     *  This is not for normal use, except maybe when you really need
-     *  the stateChanged signal.
-     */
-    // const so that it can only be used for info
-    const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
 
     /**
      * Gets the volume
@@ -200,7 +199,7 @@ public slots:
      * Plays the specified track
      * This happens asynchronously.
      */
-    void play( Meta::TrackPtr track, uint offset = 0 );
+    void play( Meta::TrackPtr track, uint offset = 0, bool startPaused = false );
 
     /**
      * Replays the current track
@@ -240,7 +239,7 @@ public slots:
      *
      * @param ms the position in milliseconds (counting from the start of the track)
      */
-    void seek( int ms );
+    void seekTo( int ms );
 
     /**
      * Seeks forward or backward in the track
@@ -257,21 +256,7 @@ public slots:
      *
      * @param ms the offset from the current position in milliseconds
      */
-    void seekRelative( int ms );
-
-    /**
-     * Seeks forward in the track
-     *
-     * Same as seekRelative()
-     */
-    void seekForward( int ms = 10000 );
-
-    /**
-     * Seeks backward in the track
-     *
-     * Works identically to seekRelative(), but seeks in the opposite direction.
-     */
-    void seekBackward( int ms = 10000 );
+    void seekBy( int ms );
 
     /**
      * Increases the volume
@@ -317,6 +302,16 @@ public slots:
      */
     void eqUpdate();
 
+    /**
+     * Return true if current Phonon back-end supports fade-out.
+     */
+    bool supportsFadeout() const;
+
+    /**
+     * Return true if current Phonon back-end supports our implementation of
+     * Replay Gain adjustment.
+     */
+    bool supportsGainAdjustments() const;
 
 Q_SIGNALS:
     /**
@@ -473,12 +468,12 @@ private slots:
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
-    void slotPlayableUrlFetched(const KUrl&);
+    void slotPlayableUrlFetched( const KUrl &url );
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
-    void slotStopFadeout(); //called after the fade-out has finished
     void slotSeekableChanged( bool );
+    void slotPause();
 
     /**
      * For volume/mute changes from the phonon side
@@ -519,11 +514,9 @@ private:
      *
      * @param url the URL of the media
      * @param offset the position in the media to start at in milliseconds
+     * @param startPaused if true, go to paused state. if false, go to playing state (default)
      */
-    void playUrl( const KUrl &url, uint offset );
-
-    void createFadeoutEffect();
-    void resetFadeout();
+    void playUrl( const KUrl &url, uint offset, bool startPaused = false );
 
     /**
      * Try to detect MetaData spam in Streams etc.
@@ -559,8 +552,8 @@ private:
     Phonon::Path                            m_path;
     Phonon::Path                            m_dataPath;
 
-    Phonon::VolumeFaderEffect* m_fader;
-    QTimer* m_fadeoutTimer;
+    QWeakPointer<Fadeouter> m_fadeouter;
+    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
@@ -572,6 +565,7 @@ private:
     bool m_playWhenFetched;
     int m_volume;
     int m_currentAudioCdTrack;
+    QTimer *m_pauseTimer;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
     // last position (in ms) when the song changed (within the current stream) or -1 for non-stream

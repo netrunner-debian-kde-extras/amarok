@@ -39,17 +39,14 @@ Required
       http://www.kde.org
 
     * Phonon backend, one of the following is strongly recommended
-      * phonon-gstreamer 4.6.2 (or newer)
+      * phonon-gstreamer 4.6.3 (or newer)
       * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
-    * Qt 4.8 (or newer)
-      http://qt.nokia.com/
+    * Qt 4.8.3 (or newer)
+      http://qt-project.org
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
-      When compiling against 1.8 more file types are supported (MOD, IT, S3M, XM).
-      http://developer.kde.org/~wheeler/taglib.html
-      https://github.com/taglib/taglib
 
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
@@ -69,6 +66,11 @@ Required
       http://delta.affinix.com/qca/
 
 Optional
+    * Taglib 1.8 for support of MOD, IT, S3M and XM files
+    * Taglib 1.9 for support of Opus files
+      http://developer.kde.org/~wheeler/taglib.html
+      https://github.com/taglib/taglib
+
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/
@@ -79,6 +81,9 @@ Optional
     * libmtp 1.0.0 (or newer)
       (MTP device support)
       http://libmtp.sourceforge.net/
+
+    * Spectrum analyzer requires:
+      * QtOpenGL
 
     * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL http://www.openssl.org
@@ -105,7 +110,7 @@ Optional
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.0.6 (or newer)
+      * libmygpo-qt 1.0.7 (or newer)
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
@@ -152,27 +157,6 @@ and stutter!" please visit:
 --------------------------------------------------------------------------------
 
 
- INFORMATION FOR PACKAGERS
-===========================
-
-It is possible to build Amarok to use MySQL as the database backend. Using
-MySQL makes the Amarok collection faster.
-
-In order to limit the dependencies the Amarok package demands we suggest
-splitting Amarok into the following packages:
-
-   1. Amarok + Phonon Engine
-   2. iPod media device
-   3. MTP media device
-
-Amarok is modular and will be fully functional as long as one of 2 or 3 is
-also installed. Hence we suggest Amarok + one backend.
-
-If you make packages for Amarok please let us know and we'll link to you on the
-homepage (as long as you don't object).
---------------------------------------------------------------------------------
-
-
  CONTRIBUTING
 ==============
 
@@ -193,4 +177,3 @@ See you on IRC!
 WWW:  http://amarok.kde.org
 MAIL: amarok@kde.org
 IRC:  irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr
-

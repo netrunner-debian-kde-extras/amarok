@@ -19,10 +19,11 @@
 
 #include "LabelsEngine.h"
 
-#include "ContextObserver.h"
-#include "ContextView.h"
 #include "EngineController.h"
+#include "context/ContextObserver.h"
+#include "context/ContextView.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
@@ -46,10 +47,10 @@ LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(update()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(update()) );
 }
 
 LabelsEngine::~LabelsEngine()
@@ -76,9 +77,9 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->setQueryType( Collections::QueryMaker::Label );
         m_allLabels.clear();
 
-        connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ),
-                SLOT( resultReady( Meta::LabelList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+        connect( qm, SIGNAL(newResultReady(Meta::LabelList)),
+                SLOT(resultReady(Meta::LabelList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(queryDone()), SLOT(dataQueryDone()) );
 
         qm->run();
     }

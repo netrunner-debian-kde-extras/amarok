@@ -39,8 +39,7 @@ namespace PlaylistBrowserNS {
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PlaylistBrowserModel : public QAbstractItemModel,
-                          public Playlists::PlaylistObserver
+class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -53,12 +52,11 @@ class PlaylistBrowserModel : public QAbstractItemModel,
 
         enum
         {
-            DescriptionRole = Qt::UserRole,
-            ByLineRole, //show some additional info like count or status. Displayed under description
-            ActionCountRole,
-            ActionRole, //list of QActions for the index
-            ProviderRole,  // pointer to associated PlaylistProvider
-            CustomRoleOffset //first role that can be used by sublasses for their own data
+            ProviderRole = Qt::UserRole + 21, // pointer to associated PlaylistProvider
+            PlaylistRole = Qt::UserRole + 22, // PlaylistPtr for associated playlist or null
+            TrackRole = Qt::UserRole + 23, // TrackPtr for associated track or null
+            EpisodeIsNewRole = Qt::UserRole + 24, // for podcast episodes, supports setting, type: bool
+            CustomRoleOffset = Qt::UserRole + 25 //first role that can be used by sublasses for their own data
         };
 
         PlaylistBrowserModel( int PlaylistCategory );
@@ -79,7 +77,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
         virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore ( const QModelIndex &parent );
+        virtual void fetchMore( const QModelIndex &parent );
 
         virtual QStringList mimeTypes() const;
         virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
@@ -100,7 +98,6 @@ class PlaylistBrowserModel : public QAbstractItemModel,
 
     protected:
         virtual Playlists::PlaylistList loadPlaylists();
-        virtual QActionList actionsFor( const QModelIndex &idx ) const;
 
         Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
         Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
@@ -113,23 +110,14 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         Playlists::PlaylistProvider *getProviderByName( const QString &name );
 
     private slots:
-        void slotLoad();
-        void slotAppend();
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category );
-        void slotCreateEmptyPlaylist();
 
     private:
         int m_playlistCategory;
-        QAction *m_appendAction;
-        QAction *m_loadAction;
-        QAction *m_createEmptyPlaylistAction;
 };
 
 }
-
-//we store these in a QVariant for the load and append actions
-Q_DECLARE_METATYPE( QModelIndexList )
 
 #endif //AMAROK_PLAYLISTBROWSERMODEL_H

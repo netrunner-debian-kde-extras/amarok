@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,26 +19,15 @@
 #include "EqualizerDialog.h"
 
 #include "amarokconfig.h"
-#include "core/support/Amarok.h"
-#include "ActionClasses.h"
 #include "EngineController.h"
-#include "core/support/Debug.h"
 
-#include <KMessageBox>
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 EqualizerDialog * EqualizerDialog::s_instance = 0;
 
-
-EqualizerDialog * EqualizerDialog::instance()
-{
-    if( s_instance == 0 )
-        s_instance = new EqualizerDialog();
-
-    return s_instance;
-}
-
-EqualizerDialog::EqualizerDialog()
-    : KDialog( 0 )
+EqualizerDialog::EqualizerDialog( QWidget* parent )
+    : KDialog( parent )
 {
     DEBUG_BLOCK
 
@@ -45,307 +35,288 @@ EqualizerDialog::EqualizerDialog()
 
     setupUi( this );
 
-    // Set up equalizer items :
-    eqSetupUI();
-
-    adjustSize();
-}
-
-EqualizerDialog::~EqualizerDialog()
-{
-}
-
-void EqualizerDialog::showOnce()
-{
-    DEBUG_BLOCK
-    instance()->activateWindow();
-    instance()->show();
-    instance()->raise();
-    instance()->eqRememberOriginalSettings();
-}
-
-void
-EqualizerDialog::eqRememberOriginalSettings()
-{
-    mOriginalPreset = eqPresets->itemText(AmarokConfig::equalizerMode());
-    mOriginalGains = AmarokConfig::equalizerGains();
-}
-
-void
-EqualizerDialog::eqRestoreOriginalSettings()
-{
-    int originalPresetIndex = eqPresets->findText( mOriginalPreset );
-    if( originalPresetIndex == -1 ) {
-        // original preset seems to be deleted. will set eq to Off
-        originalPresetIndex = 0;
-    }
-    AmarokConfig::setEqualizerMode( originalPresetIndex );
-    AmarokConfig::setEqualizerGains( mOriginalGains );
-    eqUpdateUI( originalPresetIndex );
-    The::engineController()->eqUpdate();
-}
-
-void
-EqualizerDialog::eqSetupUI()
-{
+    // again the ui file does not define the dialog but a widget.
+    // Since we inherit from KDialog we have to do the following three
+    // lines.
     QGridLayout* layout = new QGridLayout( this );
-    layout->addWidget( EqualizerGroupBox );
-
-    setMainWidget( EqualizerGroupBox );
+    layout->addWidget( EqualizerWidget );
+    setMainWidget( EqualizerWidget );
 
     // Check if equalizer is supported - disable controls if not
     if( !The::engineController()->isEqSupported() )
     {
-        EqualizerGroupBox->setDisabled( true );
-        EqualizerGroupBox->setTitle( i18n( "Sorry, your current Phonon backend version does not provide equalizer support." ) );
-        eqPresetsGroupBox->hide();
-        eqBandsGroupBox->hide();
-        return;
+        EqualizerWidget->setDisabled( true );
+        activeCheckBox->setEnabled( false );
+        activeCheckBox->setChecked( false );
     }
 
-    connect(this, SIGNAL( cancelClicked() ), this, SLOT( eqRestoreOriginalSettings() ));
+    connect(this, SIGNAL(cancelClicked()), this, SLOT(restoreOriginalSettings()));
 
     // Assign slider items to vectors
-    mBands.append( eqPreampSlider );
-    mBands.append( eqBand0Slider );
-    mBands.append( eqBand1Slider );
-    mBands.append( eqBand2Slider );
-    mBands.append( eqBand3Slider );
-    mBands.append( eqBand4Slider );
-    mBands.append( eqBand5Slider );
-    mBands.append( eqBand6Slider );
-    mBands.append( eqBand7Slider );
-    mBands.append( eqBand8Slider );
-    mBands.append( eqBand9Slider );
-    mBandsValues.append( eqPreampValue );
-    mBandsValues.append( eqBand0Value );
-    mBandsValues.append( eqBand1Value );
-    mBandsValues.append( eqBand2Value );
-    mBandsValues.append( eqBand3Value );
-    mBandsValues.append( eqBand4Value );
-    mBandsValues.append( eqBand5Value );
-    mBandsValues.append( eqBand6Value );
-    mBandsValues.append( eqBand7Value );
-    mBandsValues.append( eqBand8Value );
-    mBandsValues.append( eqBand9Value );
-    mBandsLabels.append( eqPreampLabel );
-    mBandsLabels.append( eqBand0Label );
-    mBandsLabels.append( eqBand1Label );
-    mBandsLabels.append( eqBand2Label );
-    mBandsLabels.append( eqBand3Label );
-    mBandsLabels.append( eqBand4Label );
-    mBandsLabels.append( eqBand5Label );
-    mBandsLabels.append( eqBand6Label );
-    mBandsLabels.append( eqBand7Label );
-    mBandsLabels.append( eqBand8Label );
-    mBandsLabels.append( eqBand9Label );
-    // Configure signal and slots to handle presets
-    connect( eqPresets, SIGNAL( currentIndexChanged( int ) ), SLOT ( eqPresetChanged( int ) ) );
-    foreach( QSlider* mSlider, mBands )
-        connect( mSlider, SIGNAL(  valueChanged( int ) ), SLOT ( eqBandsChanged() ) );
-    connect( eqPresetSaveBtn, SIGNAL( clicked() ), SLOT( eqSavePreset() ) );
-    connect( eqPresetDeleteBtn, SIGNAL( clicked() ), SLOT( eqDeletePreset() ) );
-    connect( eqPresetResetBtn, SIGNAL( clicked() ), SLOT( eqRestorePreset() ) );
-    // Signals exchange to keep both config dialog and eq action in sync
-    connect( eqPresets, SIGNAL( currentIndexChanged( int ) ),
-             Amarok::actionCollection()->action( "equalizer_mode" ), SLOT( updateContent() ) );
-    connect( Amarok::actionCollection()->action( "equalizer_mode" ), SIGNAL( triggered(int) ),
-             SLOT( eqUpdateUI( int ) ) );
+    m_bands.append( eqPreampSlider );
+    m_bands.append( eqBand0Slider );
+    m_bands.append( eqBand1Slider );
+    m_bands.append( eqBand2Slider );
+    m_bands.append( eqBand3Slider );
+    m_bands.append( eqBand4Slider );
+    m_bands.append( eqBand5Slider );
+    m_bands.append( eqBand6Slider );
+    m_bands.append( eqBand7Slider );
+    m_bands.append( eqBand8Slider );
+    m_bands.append( eqBand9Slider );
+    m_bandValues.append( eqPreampValue );
+    m_bandValues.append( eqBand0Value );
+    m_bandValues.append( eqBand1Value );
+    m_bandValues.append( eqBand2Value );
+    m_bandValues.append( eqBand3Value );
+    m_bandValues.append( eqBand4Value );
+    m_bandValues.append( eqBand5Value );
+    m_bandValues.append( eqBand6Value );
+    m_bandValues.append( eqBand7Value );
+    m_bandValues.append( eqBand8Value );
+    m_bandValues.append( eqBand9Value );
+    m_bandLabels.append( eqPreampLabel );
+    m_bandLabels.append( eqBand0Label );
+    m_bandLabels.append( eqBand1Label );
+    m_bandLabels.append( eqBand2Label );
+    m_bandLabels.append( eqBand3Label );
+    m_bandLabels.append( eqBand4Label );
+    m_bandLabels.append( eqBand5Label );
+    m_bandLabels.append( eqBand6Label );
+    m_bandLabels.append( eqBand7Label );
+    m_bandLabels.append( eqBand8Label );
+    m_bandLabels.append( eqBand9Label );
+
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
     QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
     eqMaxEq->setText( QString("+") + mlblText );
     eqMinEq->setText( QString("-") + mlblText );
+
     // Ask engine for band frequencies and set labels
-    QStringList meqBandFrq = The::engineController()->eqBandsFreq();
-    QStringListIterator i( meqBandFrq );
-    foreach( QLabel* mLabel, mBandsLabels )
-        mLabel-> setText( i.hasNext() ?  i.next() : "N/A" );
+    QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
+    QStringListIterator i( equalizerBandFreq );
+    // Checking if preamp is present
+    if( equalizerBandFreq.size() == s_equalizerBandsCount )
+        eqPreampSlider->setDisabled( true );
+    else if( i.hasNext() ) // If preamp is present then skip its label as it is hard-coded in UI
+        i.next();
+    foreach( QLabel* mLabel, m_bandLabels )
+        if( mLabel->objectName() != "eqPreampLabel" )
+            mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
 
-    mBandsLabels.first()->setText( i18n( "%0\ndB" ).arg( mBandsLabels.first()->text() ) );
-    // Set initial preset to current with signal blocking to prevent circular loops
-    eqRepopulateUi();
-    eqUpdateUI( AmarokConfig::equalizerMode() );
+    updatePresets();
+    activeCheckBox->setChecked( AmarokConfig::equalizerMode() > 0 );
+    setPreset( AmarokConfig::equalizerMode() - 1 );
+    setGains( AmarokConfig::equalizerGains() );
+
+    // Configure signal and slots to handle presets
+    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(setActive(bool)) );
+    connect( eqPresets, SIGNAL(currentIndexChanged(int)), SLOT(setPreset(int)) );
+    connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
+    foreach( QSlider* mSlider, m_bands )
+        connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
+
+    eqPresetSaveBtn->setIcon( KIcon( "document-save" ) );
+    connect( eqPresetSaveBtn, SIGNAL(clicked()), SLOT(savePreset()) );
+
+    eqPresetDeleteBtn->setIcon( KIcon( "edit-delete" ) );
+    connect( eqPresetDeleteBtn, SIGNAL(clicked()), SLOT(deletePreset()) );
+
+    eqPresetResetBtn->setIcon( KIcon( "edit-undo" ) );
+    connect( eqPresetResetBtn, SIGNAL(clicked()), SLOT(restorePreset()) );
 }
 
-void
-EqualizerDialog::eqPresetChanged( int index ) //SLOT
+EqualizerDialog::~EqualizerDialog()
+{ }
+
+void EqualizerDialog::showOnce( QWidget *parent )
 {
     DEBUG_BLOCK
 
-    if( index < 0 )
-        return;
+    if( s_instance == 0 )
+        s_instance = new EqualizerDialog( parent );
 
-    // use offset by one since the first entry ("Off") is not part of the global list
-    if( index > mPresets.eqGlobalList().count() )
+    s_instance->activateWindow();
+    s_instance->show();
+    s_instance->raise();
+    s_instance->storeOriginalSettings();
+}
+
+QList<int>
+EqualizerDialog::gains() const
+{
+    QList<int> result;
+    foreach( QSlider* mSlider, m_bands )
+        result << mSlider->value();
+    return result;
+}
+
+void
+EqualizerDialog::setGains( QList<int> eqGains )
+{
+    for( int i = 0; i < m_bands.count() && i < eqGains.count(); i++ )
     {
-        eqSavePreset();
-        return;
+        // Update slider values with signal blocking to prevent circular loop
+        m_bands[i]->blockSignals( true );
+        m_bands[i]->setValue( eqGains[ i ] );
+        m_bands[i]->blockSignals( false );
     }
 
-    // new settings
-    AmarokConfig::setEqualizerMode( index );
-    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( eqSelectedPresetName() ) );
-    The::engineController()->eqUpdate();
-    // update controls
-    eqUpdateUI( index );
+    bandsChanged();
 }
 
 void
-EqualizerDialog::eqBandsChanged() //SLOT
+EqualizerDialog::storeOriginalSettings()
 {
-    DEBUG_BLOCK
-
-    // update values from sliders
-    QList<int> eqGains;
-    foreach( QSlider* mSlider, mBands )
-        eqGains << mSlider->value();
-
-    eqUpdateToolTips();
-    eqUpdateLabels( eqGains );
-    AmarokConfig::setEqualizerGains( eqGains );
-    The::engineController()->eqUpdate();
-    // Change preset to manual
-    eqPresets->blockSignals( true );
-    eqPresets->setCurrentIndex( 1 );
-    eqPresets->blockSignals( false );
+    m_originalActivated = activeCheckBox->isChecked();
+    m_originalPreset = selectedPresetName();
+    m_originalGains = gains();
 }
 
 void
-EqualizerDialog::eqUpdateToolTips()
+EqualizerDialog::restoreOriginalSettings()
 {
-    foreach( QSlider* mSlider, mBands )
-        mSlider->setToolTip( QString::number( mSlider->value()*mValueScale/100.0, 'f', 1 ) );
+    activeCheckBox->setChecked( m_originalActivated );
+    int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
+    setPreset( originalPresetIndex );
+    eqPresets->setEditText( m_originalPreset );
+    setGains( m_originalGains );
 }
 
 void
-EqualizerDialog::eqUpdateLabels( QList<int> & mEqGains )
+EqualizerDialog::setActive( bool active ) //SLOT
 {
-    QListIterator<int> i( mEqGains );
-    foreach( QLabel* mLabel, mBandsValues )
-        mLabel->setText( i.hasNext() ? QString::number( i.next()*mValueScale/100.0, 'f', 1 ) : QString::number( 0 ) );
+    Q_UNUSED( active );
+
+    updateUi();
+    updateEngine();
 }
 
-// SLOTS
-
 void
-EqualizerDialog::eqUpdateUI( int index ) // SLOT
+EqualizerDialog::setPreset( int index ) //SLOT
 {
     if( index < 0 )
-        return;
+        index = 0;
 
-    const bool enabledState = index > 0 ? true : false;
-    const bool userState = EqualizerPresets::eqUserList().contains( eqPresets->itemText(index) );
+    // if not called from the eqPreset->indexChanged signal we need
+    // to update the combo box too.
+    if( eqPresets->currentIndex() != index )
+    {
+        eqPresets->blockSignals( true );
+        eqPresets->setCurrentIndex( index );
+        eqPresets->blockSignals( false );
+    }
+
+    setGains( EqualizerPresets::eqCfgGetPresetVal( selectedPresetName() ) ); // this also does updatUi and updateEngine
+}
+
+void
+EqualizerDialog::bandsChanged() //SLOT
+{
+    updateToolTips();
+    updateLabels();
+    updateUi();
+    updateEngine();
+}
+
+void
+EqualizerDialog::updateUi() // SLOT
+{
+    const QString currentName = selectedPresetName();
+
+    const bool enabledState = activeCheckBox->isChecked();
+    const bool userState = EqualizerPresets::eqUserList().contains( currentName );
+    const bool modified = ( EqualizerPresets::eqCfgGetPresetVal( currentName ) != gains() );
+    const bool nameModified = ! EqualizerPresets::eqGlobalList().contains( currentName );
+    const bool resetable = EqualizerPresets::eqCfgCanRestorePreset( currentName );
+
+    eqPresets->setEnabled( enabledState );
     eqBandsGroupBox->setEnabled( enabledState );
-    eqPresetSaveBtn->setEnabled( enabledState );
+    eqPresetSaveBtn->setEnabled( enabledState && ( modified || nameModified ) );
     eqPresetDeleteBtn->setEnabled( enabledState && userState );
-    eqPresetResetBtn->setEnabled( enabledState && !userState );
-    QList<int> eqGains = AmarokConfig::equalizerGains();
-    QListIterator<int> i( eqGains );
-    // Update slider values with signal blocking to prevent circular loop
-    foreach( QSlider* mSlider, mBands )
-    {
-        mSlider->blockSignals( true );
-        mSlider->setValue( i.hasNext() ? i.next() : 0 );
-        mSlider->blockSignals( false );
-    }
-    eqUpdateToolTips();
-    eqUpdateLabels(eqGains);
-    // Update preset list - with signal blocking to prevent circular loop
-    eqPresets->blockSignals( true );
-    eqPresets->setCurrentIndex( index );
-    eqPresets->blockSignals( false) ;
+    eqPresetResetBtn->setEnabled( enabledState && ( resetable || modified ) );
 }
 
 void
-EqualizerDialog::eqRepopulateUi()
+EqualizerDialog::updatePresets()
 {
+    const QString currentName = selectedPresetName();
+
     eqPresets->blockSignals( true );
     eqPresets->clear();
-    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
-    eqPresets->addItems( mPresets.eqGlobalTranslatedList() );
+    eqPresets->addItems( EqualizerPresets::eqGlobalTranslatedList() );
+    const int index = EqualizerPresets::eqGlobalList().indexOf( currentName );
+    if( index >= 0 )
+        eqPresets->setCurrentIndex( index );
     eqPresets->blockSignals( false );
-    static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
 }
 
 void
-EqualizerDialog::eqDeletePreset() //SLOT
+EqualizerDialog::savePreset() //SLOT
 {
-    QString mPresetSelected = eqSelectedPresetName();
-    if( mPresets.eqCfgDeletePreset( mPresetSelected ) )
+    DEBUG_BLOCK
+
+    EqualizerPresets::eqCfgSetPresetVal( selectedPresetName(), gains() );
+
+    updatePresets(); // we might have a new one
+    updateUi();
+}
+
+void
+EqualizerDialog::deletePreset() //SLOT
+{
+    if( EqualizerPresets::eqCfgDeletePreset( selectedPresetName() ) )
     {
-        eqRepopulateUi();
-        eqPresets->setCurrentIndex( 1 );
-    }
-    else
-    {
-        KMessageBox::detailedSorry( 0, i18n( "Cannot delete this preset" ),
-                                       i18n( "Default presets can not be deleted" ),
-                                       i18n( "Error deleting preset" ) );
+        updatePresets();
+        setPreset( 0 );
     }
 }
 
 QString
-EqualizerDialog::eqSelectedPresetName() const
+EqualizerDialog::selectedPresetName() const
 {
-    const int index = eqPresets->currentIndex();
-    if( index <= 0 || index > mPresets.eqGlobalList().count() )
-        return QString();
+    const QString currentText = eqPresets->currentText();
+    const int index = EqualizerPresets::eqGlobalTranslatedList().indexOf( currentText );
+    if( index < 0 )
+        return currentText;
 
-    // use offset by one since the first entry ("Off") is not part of the global list
-    return mPresets.eqGlobalList().at( index - 1 );
+    return EqualizerPresets::eqGlobalList().at( index );
 }
 
 void
-EqualizerDialog::eqRestorePreset() //SLOT
+EqualizerDialog::restorePreset() //SLOT
 {
     DEBUG_BLOCK
 
-    const QString mPresetSelected = eqSelectedPresetName();
-    if( !mPresets.eqCfgRestorePreset( mPresetSelected ) )
-    {
-        KMessageBox::detailedSorry( 0, i18n( "Cannot restore this preset" ),
-                                       i18n( "Only default presets can be restored" ),
-                                       i18n( "Error restoring preset" ) );
-        return;
-    }
-    // new settings
-    ///AmarokConfig::setEqualizerMode( eqPresets->currentIndex() );
-    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( mPresetSelected ) );
+    EqualizerPresets::eqCfgRestorePreset( selectedPresetName() );
+    setGains( EqualizerPresets::eqCfgGetPresetVal( selectedPresetName() ) );
+}
+
+void
+EqualizerDialog::updateToolTips()
+{
+    foreach( QSlider* mSlider, m_bands )
+        mSlider->setToolTip( QString::number( mSlider->value()*mValueScale/100.0, 'f', 1 ) );
+}
+
+void
+EqualizerDialog::updateLabels()
+{
+    for( int i = 0; i < m_bandValues.count() && i < m_bands.count(); i++ )
+        m_bandValues[i]->setText( QString::number( m_bands[i]->value() * mValueScale / 100.0, 'f', 1 ) );
+}
+
+void
+EqualizerDialog::updateEngine() //SLOT
+{
+    DEBUG_BLOCK
+
+    AmarokConfig::setEqualizerMode( activeCheckBox->isChecked() ?
+                                    eqPresets->currentIndex() + 1 : 0 ); // equalizer mode 0 is off
+    AmarokConfig::setEqualizerGains( gains() );
     The::engineController()->eqUpdate();
-    // update controls
-    eqUpdateUI( eqPresets->currentIndex() );
 }
 
-void
-EqualizerDialog::eqSavePreset() //SLOT
-{
-    DEBUG_BLOCK
-
-    const QString presetName = eqPresets->currentText();
-    if( presetName == i18n("Manual") )
-    {
-        KMessageBox::detailedSorry( 0, i18n( "Cannot save this preset" ),
-                                       i18n( "Preset 'Manual' is reserved for momentary settings.\n\
-                                              Please choose different name and try again." ),
-                                       i18n( "Error saving preset" ) );
-        return;
-    }
-
-    QList<int> eqGains;
-    foreach( QSlider* mSlider, mBands )
-        eqGains << mSlider->value();
-    mPresets.eqCfgSetPresetVal( presetName, eqGains );
-    eqRepopulateUi();
-    eqPresets->setCurrentIndex( eqPresets->findText( presetName ) );
-}
-
-namespace The {
-
-    EqualizerDialog* equalizer()
-    {
-        return EqualizerDialog::instance();
-    }
-}
 
 #include "EqualizerDialog.moc"

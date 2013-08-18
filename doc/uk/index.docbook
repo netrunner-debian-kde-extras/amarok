@@ -37,9 +37,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->22 грудня 2012 року</date>
+>13 серпня 2013 року</date>
       <releaseinfo
->2.7.0</releaseinfo>
+>2.8.0</releaseinfo>
 <abstract>
 <para
 >&amarok; — це вільний, гнучкий і потужний програвач музичних композицій для &Linux;. Версії останньої серії випусків, 2.x, які часто називають «Amarok 2», можуть працювати на багатьох платформах (зокрема &Linux;, &MacOS; і &Microsoft; &Windows;). Код цих версій було повністю переписано, що надасть авторам змогу реалізувати чудові нові можливості під час розвитку проекту. Поточною стабільною версією є 2.4.</para>
@@ -66,7 +66,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-12-23T12:57:51Z</timestamp
+>2013-07-30T12:51:14Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -86,7 +86,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -100,7 +100,7 @@
   <row>
     <entry>
     <para
->Amarok 2.7, відтворюється музика з Jamendo</para
+>Типове компонування вікна Amarok 2.8</para
 ></entry>
   </row>
   </tbody>
@@ -421,7 +421,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -471,7 +471,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokrightmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_systray_window.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -492,7 +492,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amaroksystray.png" format="PNG"/>
+      <imagedata fileref="amarok_systray_2-8_4-11.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -527,11 +527,11 @@
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.5 після встановлення</phrase>
+>Amarok 2.8 після встановлення</phrase>
     </textobject>
     <caption>
       <para
->Amarok 2.5 після встановлення</para>
+>Amarok 2.8 після встановлення</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -626,15 +626,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Діалогове вікно налаштовування збірки у версії 2.7</phrase>
+>Діалогове вікно налаштовування збірки у версії 2.8</phrase>
     </textobject>
     <caption>
       <para
->Діалогове вікно налаштування збірки у версії 2.5</para>
+>Діалогове вікно налаштування збірки у версії 2.8</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1170,15 +1170,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4collectionsortingmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionsortingmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Список варіантів впорядкування збірки</phrase>
+>Список варіантів впорядкування збірки у версії 2.8</phrase>
     </textobject>
     <caption>
       <para
->Список варіантів впорядкування збірки</para>
+>Список варіантів впорядкування збірки у версії 2.8</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1269,7 +1269,7 @@
 >Додавання композицій до списку відтворення</title
 > 
 <para
->Передбачено чотири способи додавання музики до списку композицій на <emphasis
+>Передбачено п’ять способів додавання музики до списку композицій на <emphasis
 >панелі списку відтворення</emphasis
 >. </para>
 <para>
@@ -1278,12 +1278,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7addtoplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_popupdropperadd.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Контекстна панель скидання під час додавання однієї композиції</phrase>
     </textobject>
+    <caption>
+      <para
+>Контекстна панель скидання під час додавання однієї композиції</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -1317,8 +1321,14 @@
 <listitem
 ><para
 ><keycap
->Двічі клацнути лівою кнопкою миші</keycap
-> на позначці альбому/композиції, яку слід додати до списку відтворення.</para
+>Двічі клацніть лівою кнопкою миші</keycap
+> на позначці альбому/композиції, щоб додати композицію до списку відтворення, але не розпочинати відтворення негайно.</para
+></listitem>
+<listitem
+><para
+><keycap
+>Клацніть середньою кнопкою миші</keycap
+> на позначці альбому/композиції, щоб додати її до списку відтворення і негайно розпочати відтворення списку.</para
 ></listitem>
 <listitem
 ><para
@@ -1423,12 +1433,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7removefromplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_popupdropperremove.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Контекстна панель скидання під час вилучення композиції</phrase>
     </textobject>
+    <caption>
+      <para
+>Контекстна панель скидання під час вилучення композиції</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -1664,15 +1678,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7saveplaylistchoices.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_savecurrentplaylistoptions.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Натисніть кнопку миші і утримуйте її. Прокрутіть коліщатко, щоб зберегти список композицій.</phrase>
+>Варіанти збереження поточного списку відтворення</phrase>
     </textobject>
     <caption>
       <para
->Натисніть кнопку миші і утримуйте її. Прокрутіть коліщатко, щоб зберегти список композицій.</para>
+>Варіанти збереження поточного списку відтворення</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1723,19 +1737,25 @@
 >Типове компонування</title
 > 
 <para
->За типових налаштувань панель контексту виконує пошук тексту пісні, яка зараз відтворюється. Якщо текст буде знайдено, програма покаже його у нижній половині панелі контексту. У верхній половині панелі контексту буде показано зображення з обкладинки альбому та відомості щодо поточної композиції. </para>
+>На типовій панелі <emphasis
+>контексту</emphasis
+> буде показано такі елементи: панель поточної композиції, аналізатор звуку, панель Вікіпедії та панель тексту пісні. Залежно від розміру вікна, панель тексту пісні може бути невидимою. Зробити її видимою можна за допомогою натискання кнопки у нижній частині панелі. Якщо зараз програмою не відтворюється жодна композиція, на панелі аплету поточної композиції буде показано список останніх відтворених композицій та дані щодо локальної збірки. </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok-context.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Типове вікно Amarok 2.8</phrase>
     </textobject>
+    <caption>
+      <para
+>Типове вікно Amarok 2.8</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -1747,7 +1767,7 @@
 <para
 >У нижній частині панелі <emphasis
 >контексту</emphasis
-> розташовано три кнопки типових аплетів. Праворуч від цих кнопок розташовано кнопку <inlinemediaobject
+> розташовано чотири кнопки типових аплетів. Праворуч від цих кнопок розташовано кнопку <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -1776,7 +1796,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="applet_explorer.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_appletexplorer_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1958,19 +1978,23 @@
 >Вікно &amarok;</title
 > 
 <para
->Після першого запуску &amarok;, щойно зникне вітальне вікно і &amarok; буде повністю завантажено, ви побачите таке: </para>
+>Після запуску &amarok;, щойно &amarok; буде повністю завантажено, ви побачите таке: </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7aftersplash.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_startwindowdefault.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Типове вікно після запуску</phrase>
     </textobject>
+    <caption>
+      <para
+>Типове вікно після запуску</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -2042,7 +2066,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7themediasources.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_mediasourcespanedefault.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2067,7 +2091,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokwindow_context.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2092,7 +2116,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistpane.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2128,7 +2152,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1viewmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6viewconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2402,7 +2426,7 @@
     </entry>
     <entry>
     <para
->Копіює закладку до буфера обміну даними KDE.</para>
+>Копіює закладку до буфера обміну даними системи.</para>
     </entry>
   </row>
   <row>
@@ -2459,7 +2483,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1non-mergedviewcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowser_nonmerged.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2480,7 +2504,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1mergedviewcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowser_merged.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2511,7 +2535,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="media_sources3.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionsortingmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3048,15 +3072,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="contextpanestopped.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Панель контексту з аплетами поточної композиції, тексту пісні та акордів</phrase>
+>Панель контексту, коли не відтворюється жодна композиція</phrase>
     </textobject>
     <caption>
       <para
->Панель контексту з аплетами поточної композиції, тексту пісні та акордів</para>
+>Панель контексту, коли не відтворюється жодна композиція</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3097,7 +3121,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6appletbrowser.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_appletexplorer_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3124,38 +3148,25 @@
 ><title
 >Аплети</title
 > 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="contextpane.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Панель контексту, на якій показано текст пісні та дані щодо неї</phrase>
-    </textobject>
-    <caption>
-      <para
->Панель контексту, на якій показано текст пісні та дані щодо неї</para>
-    </caption>
-  </mediaobject>
-</screenshot>
-</para>
 <para
 >Ви можете розташувати на панелі <emphasis
 >Контекст</emphasis
 > певний набір з декількох аплетів. Нижче наведено опис кожного з аплетів. </para>
 <para>
 <informaltable>
-  <tgroup cols="2">
+  <tgroup cols="3">
   <tbody>
   <row>
     <entry>
     <para
 ><guilabel
 >Аплет</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+><guilabel
+>Піктограма</guilabel
 ></para>
     </entry>
     <entry>
@@ -3173,8 +3184,27 @@
 ></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-current-track-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
     <para
->Дані щодо поточної композиції. Ви можете оцінити композицію, натискаючи панель з зірочками, додати позначку позиції або змінити метадані композиції.</para>
+>Інформація щодо поточної композиції. Ви можете змінити оцінку композиції клацанням на полі з зірочками, додати позначку позиції або відкрити вікно редагування метаданих щодо композиції. Якщо програма нічого не відтворює, аплет показуватиме дані щодо збірки та <emphasis
+>список нещодавно відтворених композицій</emphasis
+>, за допомогою якого ви зможете знову додати ці композиції до списку відтворення.</para>
     </entry>
   </row>
   <row>
@@ -3182,6 +3212,23 @@
     <para
 ><guilabel
 >Подібні виконавці</guilabel
+></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-similarartists-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
 ></para>
     </entry>
     <entry>
@@ -3199,6 +3246,23 @@
 ></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-upcomingevents-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
     <para
 >Показує наступні події, у яких братиме участь виконавець або група виконавців, які є авторами пісні, яка відтворюється. Вказати місце проведення подій можна за допомогою параметрів аплету (сторінка «Улюблені місця»).</para>
     </entry>
@@ -3208,6 +3272,10 @@
     <para
 ><guilabel
 >Вікіпедія</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
 ></para>
     </entry>
     <entry>
@@ -3227,6 +3295,23 @@
 ></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-label-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
     <para
 >Надає змогу переглядати, додавати та редагувати мітки поточної композиції. Щоб додати мітку, вкажіть її у полі для введення тексту і натисніть клавішу &Enter;. Пропонованими мітками будуть вказані користувачами <emphasis
 >Last.fm</emphasis
@@ -3241,6 +3326,23 @@
 ></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-filename-genre-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
     <para
 >Отримує і показує гітарні та басові акорди (якщо такі буде знайдено). Редагувати акорди не можна.</para>
     </entry>
@@ -3250,6 +3352,23 @@
     <para
 ><guilabel
 >Текст пісні</guilabel
+></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-amarok_lyrics.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
 ></para>
     </entry>
     <entry>
@@ -3267,6 +3386,23 @@
 ></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-filename-album-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
     <para
 >Показує список альбомів поточного виконавця або групи виконавців, які зберігаються у вашій локальній збірці.</para>
     </entry>
@@ -3276,6 +3412,23 @@
     <para
 ><guilabel
 >Фотографії</guilabel
+></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-image-x-generic.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
 ></para>
     </entry>
     <entry>
@@ -3289,7 +3442,53 @@
     <entry>
     <para
 ><guilabel
+>Аналізатор</guilabel
+></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-view-media-analyzer-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
+    <para
+>Це новий аплет, який з’явився у версії 2.8. На його панелі буде показано один з декількох базових варіантів візуалізації. Клацніть на аплеті правою кнопкою миші, щоб налаштувати параметри його роботи.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
 >Інформація</guilabel
+></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-info-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
 ></para>
     </entry>
     <entry>
@@ -3317,7 +3516,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistpane.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3340,15 +3539,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_manipulation.png" format="PNG"/>
+      <imagedata fileref="amarok2dot8pud.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Контекстне меню списку відтворення</phrase>
+>Меню контекстної панелі скидання</phrase>
     </textobject>
     <caption>
       <para
->Контекстне меню списку відтворення</para>
+>Меню контекстної панелі скидання</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3376,9 +3575,11 @@
 <para
 >Подвійне клацання на позначеному пункті на панелі <emphasis
 >Джерела даних</emphasis
-> призводить до виконання тієї ж дії, що і пункт <guilabel
+> або натискання клавіші &Enter;, якщо позначено пункт композиції, призводить до виконання тієї ж дії, що і пункт <guilabel
 >Додати до списку відтворення</guilabel
 >. </para>
+<para
+>Клацанням середньою кнопкою миші на пункті у списку можна наказати програмі додати його до списку відтворення і розпочати відтворення з початку списку. </para>
 <para
 >Якщо ви відкриєте підтримуваний файл мультимедійних даних на панелі перегляду файлів, &amarok; додасть позначений файл до поточного списку відтворення. У деяких файлах мультимедійних даних містяться списки відтворення або з файлом може бути пов’язано назвою файл списку відтворення (наприклад файл <emphasis
 >wav</emphasis
@@ -3512,7 +3713,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlistsearch.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistfilteroptions.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3610,7 +3811,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="sorting2.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistsortinglevels.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3685,7 +3886,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="albumbar.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistbottombar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4000,12 +4201,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoggeneral2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoggeneral.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Загальні параметри налаштування</phrase>
     </textobject>
+    <caption>
+      <para
+>Загальні параметри налаштування</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -4016,9 +4221,7 @@
 <para
 >На наведеному вище знімку вікна можна бачити деякі з <emphasis
 >загальних параметрів</emphasis
->, які ви можете встановити. Типові значення параметрів залежать від використаного вами дистрибутива. Наприклад, іноді розробники вимикають <emphasis
->вікно вітання</emphasis
->. Щоб ознайомитися з підказкою щодо кожного з пунктів, ви можете навести на нього вказівник миші і трохи зачекати. </para>
+>, які ви можете встановити. Типові значення параметрів залежать від використаного вами дистрибутива. Щоб ознайомитися з підказкою щодо кожного з пунктів, ви можете навести на нього вказівник миші і трохи зачекати. </para>
 <para
 >Загальні параметри: </para>
 <para>
@@ -4033,18 +4236,6 @@
   </row>
   </thead>
   <tbody>
-  <row>
-    <entry>
-    <para
-><guilabel
->Показувати вікно вітання під час запуску</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Позначте, якщо хочете бачити вікно вітання під час запуску &amarok;.</para>
-    </entry>
-  </row>
   <row>
     <entry>
     <para
@@ -4142,12 +4333,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Налаштування локальної збірки</phrase>
     </textobject>
+    <caption>
+      <para
+>Налаштування локальної збірки</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -4440,12 +4635,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7playback.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplayback.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Діалогове вікно налаштовування відтворення</phrase>
     </textobject>
+    <caption>
+      <para
+>Діалогове вікно налаштовування відтворення</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -4479,12 +4678,48 @@
     <entry>
     <para
 ><guilabel
+>Поступове зменшення гучності при призупиненні</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Якщо позначити цей пункт, &amarok; повільно знижуватиме гучність відтворення композиції у разі призупинення відтворення поточної композиції.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
 >Тривалість поступового зменшення гучності</guilabel
 ></para>
     </entry>
     <entry>
     <para
 >Тривалість поступового зменшення гучності, в мілісекундах.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Запобігати автоматичному присиплянню у режимі відтворення</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Якщо позначено цей пункт, &amarok; намагатиметься запобігти вимиканню комп’ютера, якщо відтворюється композиція.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Призупинити відтворення у разі присипляння</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Якщо позначено цей пункт, &amarok; призупинятиме відтворення поточної композиції, коли комп’ютер переходитиме до стану призупинення роботи.</para>
     </entry>
   </row>
   <row>
@@ -4629,12 +4864,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7notifications.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialognotifications.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Діалогове вікно налаштовування сповіщень</phrase>
     </textobject>
+    <caption>
+      <para
+>Діалогове вікно налаштовування сповіщень</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -4777,12 +5016,16 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7database.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogdatabase.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Діалогове вікно налаштовування зовнішньої бази даних</phrase>
     </textobject>
+    <caption>
+      <para
+>Діалогове вікно налаштовування зовнішньої бази даних</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -4901,15 +5144,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsplugins.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Натисніть, щоб збільшити</phrase>
+>Діалогове вікно налаштовування додатків</phrase>
     </textobject>
     <caption>
       <para
->Натисніть, щоб збільшити</para>
+>Діалогове вікно налаштовування додатків</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5297,7 +5540,7 @@
 >Джерела даних</emphasis
 >, виберіть розділ «Інтернет» і натисніть пункт крамниці Magnatune. Програма виконає звантаження каталогу, у якому ви зможете знайти і вибрати музичні твори, записи яких ви хотіли б придбати. </para>
 </sect2>
-<sect2 id="mp3-store-configuration"
+<sect2 id="mpthree-store-configuration"
 ><title
 >Налаштовування доступу до крамниці MP3</title
 > 
@@ -5352,7 +5595,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -5534,11 +5777,13 @@
 <para
 >Видимістю всіх трьох панелей &amarok; можна керувати за допомогою меню <guilabel
 >Перегляд</guilabel
-> (пункт головного меню програми, див. вище). Якщо ви розблокуєте компонування, перед пунктом кожної з панелей буде показано поле для позначки. За допомогою цих полів для позначки можна керувати вмістом вікна &amarok;. Натискання поля з позначкою <guilabel
+> (пункт головного меню програми). Якщо ви розблокуєте компонування, перед пунктом кожної з панелей буде показано поле для позначки. За допомогою цих полів для позначки можна керувати вмістом вікна &amarok;. Натискання поля з позначкою <guilabel
 >X</guilabel
 > закриває панель. Закриту таким чином панель можна знову відкрити позначенням порожнього поля у меню <guilabel
 >Перегляд</guilabel
->. </para>
+>. Вибір пункту <guilabel
+>Відновити типове компонування</guilabel
+>, звичайно ж, поверне типовий варіант компонування. </para>
 <sect3 id="undocking-amarok-panes"
 ><title
 >Розблокування панелей Amarok</title
@@ -5662,7 +5907,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist-layout-editor-amarok.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistlayouteditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -6132,7 +6377,7 @@
 ></listitem>
 <listitem
 ><para
->Альбоми з назвами «Live», «Greatest Hits» та іншими подібними назвами завжди вважатимуться окремими альбомом.</para
+>Альбоми з назвами «Best Of», «Anthology», «Hit collection», «Greatest Hits», «All Time Greatest Hits» and «Live» та іншими подібними назвами завжди вважатимуться окремими альбомом.</para
 ></listitem>
 <listitem
 ><para
@@ -6183,7 +6428,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="searchincollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowsersearchfield.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -6198,6 +6443,8 @@
 > 
 <para
 >У відповідь на введення вами символів у поле для введення тексту &amarok; виконуватиме пошук у всіх доступних програмі мітках, зокрема мітках виконавців, альбомів та назв композицій. Програма автоматично виключатиме зі списку всі невідповідні пункти. </para>
+<para
+>Натискання клавіші &Enter; після завершення пошуку перенесе усіх знайдені запис до списку відтворення і спорожнити поле для пошуку. Це чудовий спосіб швидко додати сотні або тисячі композицій одним натисканням клавіші! </para>
 <para
 >Щоб виконати пошук за певною міткою, введіть у полі для пошуку комбінацію <varname
 >мітка:значення</varname
@@ -6512,6 +6759,12 @@
 >Організувати файли</guimenuitem
 ></menuchoice
 >. </para>
+<para
+><warning
+><para
+>За допомогою цього пункту можна пересунути усі файли до нового каталогу. Ви повинні мати відповідні права доступу до каталогів походження і призначення файлів, а також достатньо вільного місця, зазвичай удвічі більше за загальний розмір файлів, щоб дію було виконано швидко і без проблем. Якщо ви не певні щодо наслідків, не користуйтеся цим пунктом.</para
+></warning>
+</para>
 <para>
 <screenshot>
 <screeninfo
@@ -6544,19 +6797,52 @@
 >Інтерфейс впорядковування файлів</title
 > 
 <para
->Впорядковування виконується за допомогою такого інтерфейсу: </para>
+>Після вибору пункту <guilabel
+>Впорядкувати файли</guilabel
+> ви побачите пропозицію щодо пересування файлів на нове місце, а також зможете виконати одночасне перекодування усіх файлів. Залежно від переліку встановлених у системі кодеків, деякі з пунктів у списку можуть бути недоступні (такі пункти буде показано сірим кольором): </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4organizefilesbasicdialog.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_organizefilestranscode.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-></phrase>
+>Перша сторінка майстра після вибору пункту впорядковування файлів</phrase>
     </textobject>
+    <caption>
+      <para
+>Перша сторінка майстра після вибору пункту впорядковування файлів</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Щоб дізнатися більше про перекодування, будь ласка, зверніться до  <link linkend="transcoding"
+>розділу, присвяченого перекодуванню</link
+>. </para>
+<para
+>Після натискання кнопки <guilabel
+>Пересунути</guilabel
+> у верхній частині вікна буде показано таке вікно: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_organizetracks.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Діалогове вікно впорядковування композицій</phrase>
+    </textobject>
+    <caption>
+      <para
+>Діалогове вікно впорядковування композицій</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -6728,21 +7014,6 @@
 ><title
 >Додаткові дані</title
 > 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="advancedtok.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
 <para
 >Версія перегляду <guilabel
 >Панелі елементів</guilabel
@@ -7012,13 +7283,25 @@
 ><title
 >Вибір каталогів для індексування</title
 > 
+<para
+>Список каталогів, вміст яких буде проіндексовано можна змінити за допомогою пункту програми <menuchoice
+><guimenu
+>Системні параметри</guimenu
+><guisubmenu
+>Стільничний пошук</guisubmenu
+><guimenuitem
+>Індексування</guimenuitem
+><guimenuitem
+>Налаштування тек індексування</guimenuitem
+></menuchoice
+>. У &kde; 4.11 у цьому діалоговому вікні ви побачите таке: </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="desktop_search.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_nepomukindexfolders_dialog_kde_4-11.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7027,18 +7310,6 @@
   </mediaobject>
 </screenshot>
 </para>
-<para
->Список каталогів, вміст яких буде проіндексовано можна змінити за допомогою пункту програми <menuchoice
-><guimenu
->Системні параметри</guimenu
-><guisubmenu
->Стільничний пошук</guisubmenu
-><guimenuitem
->Стільничний запит</guimenuitem
-><guimenuitem
->Налаштування тек індексування</guimenuitem
-></menuchoice
->. </para>
 </sect4>
 <sect4 id="enabling-nepomuk-collection-in-amarok"
 ><title
@@ -7050,7 +7321,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amaroknepomukpluginconfig2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7179,6 +7450,21 @@
 ><title
 >Клієнт Ampache</title
 > 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
 <para
 >Активуйте службу <guilabel
 >Ampache</guilabel
@@ -7190,26 +7476,11 @@
 ><guimenuitem
 >Додатки</guimenuitem
 ></menuchoice
->. </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok2-6pluginsconfigmenu.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Натисніть кнопку з гайковим ключем, щоб відкрити діалогове вікно налаштування</phrase>
-    </textobject>
-    <caption>
-      <para
->Натисніть кнопку з гайковим ключем, щоб відкрити діалогове вікно налаштування</para>
-    </caption>
-  </mediaobject>
-</screenshot>
-</para>
+>. Натисніть піктограму <inlinemediaobject
+> <imageobject
+> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
+> </inlinemediaobject
+>, щоб відкрити діалогове вікно налаштовування. </para>
 <para
 >Виберіть <guilabel
 >Додати сервер</guilabel
@@ -7364,7 +7635,7 @@
 <para
 >У дистрибутивах, заснованих на <guilabel
 >Debian</guilabel
->, зокрема &ubuntu;, ви можете встановити встановити розширення &dolphin; для керування спільними ресурсами за допомогою такої команди: </para>
+>, зокрема &ubuntu;, ви можете встановити розширення &dolphin; для керування спільними ресурсами за допомогою такої команди: </para>
 <para
 ><userinput
 >sudo apt-get install kdenetwork-filesharing</userinput>
@@ -7379,7 +7650,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_samba_server.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_remotecollections_samba_server.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7389,16 +7660,20 @@
 </screenshot>
 </para>
 <para
->Натисніть кнопку <guilabel
->Налаштувати спільний доступ до файлів...</guilabel
->, щоб відкрити діалогове вікно налаштування. </para>
+>Щоб надати теку у спільне користування, просто позначте пункт <guilabel
+>Оприлюднити за допомогою Samba (Microsoft Windows)</guilabel
+> і вкажіть назву спільного ресурсу у полі <guilabel
+>Назва</guilabel
+>. Позначте пункт <guilabel
+>Дозволити гостьовий доступ</guilabel
+>, якщо хочете дозволити анонімним користувачам отримувати доступ до теки. </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_samba_server1.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_remotecollections_samba_server1.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7408,65 +7683,9 @@
 </screenshot>
 </para>
 <para
->Змініть спосіб доступу на <guilabel
->Розширений спільний доступ</guilabel
->, а для <guilabel
->Дозволених користувачів</guilabel
-> виберіть варіант <guilabel
->Дозволити всім користувачам спільний доступ до тек</guilabel
->. </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="remotecollections_samba_server2.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->Після цього ви можете додати теку до ваших спільних ресурсів. Натисніть кнопку <guilabel
->Додати...</guilabel
-> і оприлюдніть вміст бажаної теки за допомогою <guilabel
->Samba</guilabel
->. </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="remotecollections_samba_server3.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->Тепер доступ до теки можна буде отримати з мережі. Щоб повідомити &amarok; про те, що дані слід шукати у вашому каталозі спільного використання <guilabel
->Samba</guilabel
->, позначте пункт <menuchoice
-><guimenu
->Параметри</guimenu
-><guisubmenu
->Налаштувати Amarok</guisubmenu
-><guimenuitem
->Додатки</guimenuitem
-><guimenuitem
->Модулі локальної збірки</guimenuitem
-></menuchoice
->. Після цього пункти ваших композицій мають з’явитися у списку <guilabel
->Локальна збірка</guilabel
->. </para>
+>Тепер доступ до теки з мережі має бути відкрито. Будь ласка, зверніться до <link linkend="client"
+>розділу, присвяченого клієнту</link
+>, щоб дізнатися про те, як користуватися ним у &amarok;. </para>
 </sect3>
 <sect3 id="universal-plug-and-play-upnp---dlna"
 ><title
@@ -7489,9 +7708,43 @@
 ><guimenuitem
 >Збірки</guimenuitem
 ></menuchoice
->, на якій слід позначити відповідний пункт. У разі виявлення мультимедійного спільного ресурсу його пункт буде показано на панелі <guilabel
+>, на якій слід позначити відповідний пункт додатка <guilabel
+>Збірка UPnP</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_upnp_collection_plugin.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У разі виявлення мультимедійного спільного ресурсу його пункт буде показано на панелі <guilabel
 >Локальна музика</guilabel
 >. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_upnp_collection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
 <para
 >Можливість використання UPnP залежить від підтримки сервера UPnP у &kde;. </para>
 </sect3>
@@ -7638,7 +7891,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_client.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogdatabaseenabled.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7962,6 +8215,29 @@
   </tgroup>
 </informaltable>
 </para>
+</sect3>
+<sect3 id="troubleshooting-media-device-support"
+><title
+>Усування проблем з підтримкою мультимедійних пристроїв</title
+> 
+<para
+>З версією &amarok; 2.8 мають працювати такі пристрої: </para>
+<itemizedlist>
+<listitem
+><para
+>Звичайні мультимедійні програвачі, з’єднані з використанням протоколу UMS.</para
+></listitem>
+<listitem
+><para
+>iPod-и та iPhone-и, залежно від рівня підтримки цих пристроїв у бібліотеці libgpod. Стан підтримки залежить від версії бібліотеки, встановленої у системі. Будь ласка, ознайомтеся зі <ulink url="http://www.gtkpod.org/wiki/Home"
+>списком підтримуваних libgpod пристроїв</ulink
+> на домашній сторінці програми.</para
+></listitem>
+<listitem
+><para
+>Обмежений набір пристроїв, що використовують протокол MTP. Підтримку нових пристроїв під керуванням Android реалізовано у наступній версії &amarok;.</para
+></listitem>
+</itemizedlist>
 </sect3>
 </sect2>
 </sect1>
@@ -8356,7 +8632,7 @@
 >Отримати мітки з MusicBrainz</title
 > 
 <para
->У &amarok; 2.7 ви зможете скористатися можливістю визначення міток на основі бази даних <guilabel
+>У &amarok; 2.8 ви зможете скористатися можливістю визначення міток на основі бази даних <guilabel
 >MusicBrainz</guilabel
 >. Натисніть кнопку <guilabel
 >Отримати мітки з MusicBrainz</guilabel
@@ -8452,13 +8728,13 @@
 >Приклад</title
 > 
 <para
->Назва файла: 03-social_distortion-dont_take_me_for_granted.mp3 </para>
+>Назва файла: 01-The Beatles-Hey Jude.mp3 </para>
 <para
->Номер доріжки: 03 </para>
+>Номер доріжки: 01 </para>
 <para
->Виконавець: Social Distortion </para>
+>Виконавець: The Beatles </para>
 <para
->Назва: Don't Take Me For Granted </para>
+>Назва: Hey Jude </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8502,13 +8778,13 @@
 >Приклад</title
 > 
 <para
->Назва файла: 03-social_distortion-dont_take_me_for_granted.mp3 </para>
+>Назва файла: 01-The Beatles-Hey Jude.mp3 </para>
 <para
->Номер доріжки: 03 </para>
+>Номер доріжки: 01 </para>
 <para
->Виконавець: Social Distortion </para>
+>Виконавець: The Beatles </para>
 <para
->Назва: Don't Take Me For Granted </para>
+>Назва: Hey Jude </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8532,8 +8808,8 @@
 >Перекодування</title
 > 
 <para
->За допомогою можливості <emphasis
->Перекодування</emphasis
+>За допомогою можливості <guilabel
+>Перекодування</guilabel
 > ви зможете виконувати перекодування файлів мультимедійних даних до одного з потрібних вам форматів під час копіювання або пересування цих файлів до вашої збірки. У версії &amarok; 2.6 передбачено перекодування під час завантаження даних до збірок <guilabel
 >Локальна збірка</guilabel
 >, <guilabel
@@ -8552,9 +8828,9 @@
 >Впорядковування збірки</guilabel
 >. </para>
 </sect2>
-<sect2 id="transcode-dialog"
+<sect2 id="transcode-tracks-dialog"
 ><title
->Діалогове вікно перекодування</title
+>Діалогове вікно перекодування композицій</title
 > 
 <para
 >Якщо ви накажете програмі скопіювати або пересунути файли до збірки, буде відкрито таке діалогове вікно: </para>
@@ -8564,7 +8840,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6transcodemenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_organizefilestranscode.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -8607,6 +8883,42 @@
 >Список встановлених у системі засобів кодування. Виберіть один з них, щоб уможливити перекодування. Якщо список порожній, вам слід встановити <emphasis
 >FFmpeg</emphasis
 >.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Перекодувати всі композиції</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Перекодувати усі позначені композиції з використанням вказаного кодека.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Перетворювати, лише якщо потрібно для відтворення</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Виконати перекодування лише тих композицій, які слід перекодувати для відтворення у системі призначення.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Перекодовувати, лише якщо початковий формат і формат призначення є різними</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Перекодовувати, лише якщо початковий формат і формат призначення є різними.</para>
     </entry>
   </row>
   <row>
@@ -8769,7 +9081,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogscripts.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -9008,7 +9320,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlistsearch.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistfilteroptions.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -9474,7 +9786,7 @@
 >Упередження</title
 > 
 <para
->Нижче наведено пояснення щодо кожного з доступних упереджень та його параметрів. </para>
+>Оскільки можна визначати доволі багато упереджень, іноді у &amarok; ви отримуватимете порожній список відтворення. Таке трапляється, якщо визначено набір умов, яким не задовольняє жодна композиція. Щоб уникнути таких ситуацій і краще зрозуміти принципи роботи усі упереджень та параметри, які можна для них визначати, ознайомтеся з такими розділами: </para>
 <variablelist>
   <varlistentry
 ><term
@@ -10181,7 +10493,9 @@
 >Користування</title
 > 
 <para
->У поточній версії файли .mood доведеться створювати вручну. Для того, щоб зробити це для всіх композицій у збірці, скористайтеся <link linkend="moodbar-file-generation-script"
+>У поточній версії файли .mood доведеться створювати <emphasis
+>вручну</emphasis
+>, у &amarok; немає засобів для автоматичної створення цих файлів. Для того, щоб зробити це для всіх композицій у збірці, скористайтеся <link linkend="moodbar-file-generation-script"
 >скриптом створення файлів смужки настрою</link
 >, описаним нижче. </para>
 <para
@@ -10947,7 +11261,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 <para
 ><warning
 ><para
->На цій сторінці має бути розміщено знімки вікон &amarok; 2.6</para
+>На цій сторінці має бути розміщено знімки вікон &amarok; 2.8</para
 ></warning>
 </para>
 <para
@@ -11083,23 +11397,11 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 <para
 ><warning
 ><para
->У поточних Macports 2.1.2 ви зможете знайти лише застарілу версію Amarok 2.4.3</para
+>У поточних Macports 2.1.3 ви зможете знайти лише застарілу версію Amarok 2.6.0</para
 ></warning>
 </para>
 <para
 >&amarok; можна встановити і використовувати у &MacOS; X. </para>
-<sect3 id="dependencies"
-><title
->Залежності</title
-> 
-<para
->Нижче наведено список залежностей, які слід встановити для встановлення &amarok; у &MacOS; X. Ці залежності буде встановлено автоматично, якщо ви скористаєтеся MacPorts. </para>
-<para
-><screen
->automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdelibs4 aspell texinfo xz aspell-dict-en attica phonon glib2 avahi dbus-python26 dbus-glib gtk-doc docbook-xml docbook-xml-4.1.2 docbook-xml-4.2 docbook-xml-4.3 docbook-xml-4.4 docbook-xml-4.5 docbook-xml-5.0 gnome-doc-utils intltool gnome-common p5-getopt-long p5-pathtools p5-scalar-list-utils p5-xml-parser iso-codes py27-libxml2 python27 rarian getopt py26-gobject libffi libdaemon libglade2 gtk2 atk gdk-pixbuf2 jasper pango cairo libpixman shared-mime-info xorg-libXcomposite xorg-compositeproto xorg-libXfixes xorg-fixesproto xorg-libXcursor xorg-libXdamage xorg-damageproto xorg-libXi xorg-libXinerama xorg-xineramaproto xorg-libXrandr xorg-randrproto py26-gtk py26-cairo py26-numpy atlas gcc44 gmp mpfr gzip fftw-3 py26-nose dbusmenu-qt qjson enchant hunspell flex gmake grantlee libart_lgpl liblzma openexr ilmbase gsed pcre qca shared-desktop-ontologies soprano clucene libiodbc redland raptor rasqal strigi virtuoso gawk libssh openslp oxygen-icons qimageblitz libgpod libplist swig-python python_select swig libusb py27-gobject py27-mutagen taglib liblastfm fftw-3-single libsamplerate libsndfile flac libogg libvorbis ruby libmtp libusb-compat loudmouth gnutls libgcrypt libgpg-error libtasn1 lzo qtscriptgenerator taglib-extras
-</screen>
-</para>
-</sect3>
 <sect3 id="installation-using-macports"
 ><title
 >Встановлення за допомогою MacPorts</title
@@ -11345,19 +11647,81 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 </screenshot>
 </para>
 <para
->Найімовірнішою причиною є те, що у вашій збірці зберігається два однакових файли у різних теках. Для перевірки цього припущення ви можете скористатися переглядачем файлів &amarok;. Зазвичай достатньо просто вилучити дублікати файлів. Якщо ви впевнені, що композиції у файлах не є тотожніми, ви можете скористатися програмою <guilabel
->amarok_afttagger</guilabel
-> для скидання унікального ідентифікатора для однієї з композицій: </para>
-<para
-><userinput
->amarok_afttagger --newid --verbose шлях/до/однієї/з/композицій.mp3</userinput>
-</para>
-<para
->Ви також можете просто вилучити унікальний ідентифікатор одної з композицій, втративши при цьому доступ до функціональної можливості стеження за сторонніми змінами у файлі композиції: </para>
-<para
-><userinput
->amarok_afttagger --delete --verbose шлях/до/однієї/з/композицій.mp3</userinput>
-</para>
+>Найімовірнішою причиною є те, що у вашій збірці зберігається два однакових файли у різних теках. Для перевірки цього припущення ви можете скористатися переглядачем файлів &amarok;. Зазвичай достатньо просто вилучити дублікати файлів. Якщо ви впевнені, що композиції у файлах не є тотожними, може бути декілька причин, через які &amarok; вважає композиції дублікатами: </para>
+<orderedlist>
+<listitem
+><para
+>Вміст файлів абсолютно тотожній один одному<itemizedlist>
+<listitem
+><para
+>Для перевірки ви можете скористатися, наприклад, програмою <varname
+>md5sum</varname
+></para
+></listitem>
+<listitem
+><para
+>Ви можете виконати редагування метаданих одного з файлів за допомогою панелі перегляду &amarok;, щоб зробити файли трохи різними. Наприклад, можна вказати різні значення назви альбому, виконавця, року, композитора або коментаря.</para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>Файли мають однакове значення унікального ідентифікатора &amarok;<itemizedlist>
+<listitem
+><para
+>Це часто буває результатом запуску amarok_afttagger з наступним створенням декількох копій розміченого файла. З метою перевірки можна скористатися Kid3 або MP3Diags. Шукайте рядок <varname
+>Amarok 2 AFTv1</varname
+> у мітках.</para
+></listitem>
+<listitem
+><para
+>Ви можете скористатися інструментом командного рядка <varname
+>amarok_afttagger</varname
+> для скидання значення унікального ідентифікатора для однієї з композицій: <userinput
+>amarok_afttagger --newid --verbose шлях/до/однієї/з/композицій.mp3</userinput
+></para
+></listitem>
+<listitem
+><para
+>Ви також можете просто вилучити унікальний ідентифікатор одної з композицій, втративши при цьому доступ до функціональної можливості стеження за сторонніми змінами у файлі композиції: <userinput
+>amarok_afttagger --delete --verbose шлях/до/однієї/з/композицій.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>(для Amarok до <ulink url="http://commits.kde.org/amarok/216c18bdaf1"
+>v2.7.0-96-g216c18b</ulink
+>) Файли мають однакове значення ідентифікатора MusicBrainz<itemizedlist>
+<listitem
+><para
+>У випущених версіях до &amarok; 2.7 включно ідентифікатор MusizBrainz, вбудований до міток (заповнений за допомогою інструмента визначення міток з підтримкою MusicBrainz, зокрема Picard), вважається унікальним ідентифікатором композицій. Втім, у MusicBrainz, з часу реалізації взаємодії цієї бібліотеки у &amarok;, змінено семантику ідентифікатора, тепер вона означає «ідентифікатор запису». Це призводити до помилкового визначення дублікатів, наприклад для композицій, які включено до початкового альбому та до альбому найкращих записів. Докладніший запис можна знайти у <emphasis role="strikethrough"
+><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329"
+>повідомленні про ваду 315329</ulink
+></emphasis
+>.</para
+></listitem>
+<listitem
+><para
+>Ви можете скористатися для перевірки програмою для читання міток (шукайте у мітках рядок <varname
+>MusicBrainz</varname
+>) і вилучити ідентифікатор MusicBrainz з однієї з композицій</para
+></listitem>
+<listitem
+><para
+>Альтернативним вирішенням проблеми є використання <varname
+>amarok_afttagger</varname
+> для додавання ідентифікатора AFT &amarok; до однієї з композицій, оскільки тоді &amarok; надаватиме перевагу власному ідентифікатору над ідентифікатором MusicBrainz: <userinput
+>amarok_afttagger --newid --verbose шлях/до/однієї/з/композицій.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+</orderedlist>
 </sect3>
 </sect2>
 <sect2 id="problems-playing-files"
@@ -11484,7 +11848,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >цього розділу</link
 >. </para>
 </sect2>
-<sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"
+<sect2 id="what-are-the-differences-between-amarok-two-and-the-previous-versions"
 ><title
 >У чому полягають відмінності між Amarok 2 і попередніми версіями програми?</title
 > 
@@ -11732,7 +12096,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >Як відтворити дані зі звукового компакт-диска?</title
 > 
 <para
->Після вставляння звукового компакт-диска до лотка його пункт буде показано на панелі локальної збірки. Перетягніть позначені композиції до списку відтворення або <emphasis
+>Звукові компакт-диски обробляються програмою у спосіб, відмінний від способу обробки компакт-дисків з даними, роботу з якими у програмі теж передбачено. Після вставляння звукового компакт-диска до лотка його пункт буде показано на панелі локальної збірки. Перетягніть позначені композиції до списку відтворення або <emphasis
 >панелі скидання</emphasis
 > чи просто клацніть правою кнопкою миші на пункті однієї з позначених композицій і виберіть у контекстному меню пункт <guilabel
 >Додати до списку відтворення</guilabel
@@ -11758,7 +12122,9 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >цього розділу</link
 >. </para>
 <para
->Ми рекомендуємо користуватися модулем Gstreamer або модулем VLC, оскільки обидва ці модулі активно розвиваються. Не користуйтеся іншими модулями, оскільки вони вважаються розробниками застарілими. </para>
+>Ми рекомендуємо користуватися модулем Gstreamer або модулем VLC, оскільки обидва ці модулі активно розвиваються. Якщо ви будете відтворювати за допомогою програми потокове інтернет-мовлення, скористайтеся модулем VLC, оскільки модуль Gstreamer має певні вади з відтворенням таких даних. Не користуйтеся іншими модулями, оскільки вони вважаються розробниками застарілими. </para>
+<para
+>Якщо ви користуєтеся модулем Phonon gstreamer, переконайтеся, що використовуються додатки тієї ж самої версії gstreamer, інакше можливі помилки з відтворенням. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
 ><title
@@ -11889,12 +12255,37 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >Інструменти</guilabel
 >. </para>
 </sect3>
+<sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"
+><title
+>Як можна змінювати гучність лише у Amarok, не змінюючи гучність у KMix?</title
+> 
+<para
+>У більшості дистрибутивів для відтворення звуку використовується звуковий сервер <guilabel
+>Pulseuadio</guilabel
+>, який обробляє параметри звуку на загальному для системи рівні. Якщо ви не можете змінити гучність у &amarok;, незалежно від гучності у &kmix;, скористайтеся відповідним параметром налаштувань <application
+>PulseAudio</application
+>: </para>
+<para
+> <userinput
+>flat-volume=yes</userinput>
+</para>
+<para
+>Залежно від вашого дистрибутива, цей рядок може бути розташовано або у файлі <filename
+>$HOME/.pulse/daemon.conf</filename
+>, або у загальносистемному файлі <filename
+>/etc/pulse/daemon.conf</filename
+>. Докладніше про параметри налаштувань Pulseudio можна дізнатися зі <ulink url="http://linux.die.net/man/5/pulse-daemon.conf"
+>сторінки підручника (man) pulse-daemon.conf</ulink
+>. </para>
+</sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
 ><title
 >Як увімкнути візуалізацію відтворення?</title
 > 
 <para
->Візуалізацію ще не реалізовано, але її буде реалізовано у найближчих версіях. </para>
+>Візуалізації реалізовано у формі аплету. Щоб дізнатися про нього більше, зверніться до <link linkend="applets"
+>сторінки опису аплетів</link
+>. Розробку візуалізацій ще не завершено, іноді можуть бути певні помилки. </para>
 </sect3>
 <sect3 id="how-can-i-add-podcasts"
 ><title
@@ -11999,7 +12390,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >у цьому розділі</link
 >. </para>
 </sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"
 ><title
 >Чи можу я скористатися старою збіркою Amarok у Amarok 2? Чи буде втрачено мої мітки, оцінки та рахунки?</title
 > 
@@ -12034,7 +12425,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 ></menuchoice
 >. </para>
 </sect3>
-<sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"
+<sect3 id="can-i-use-amarok-one-four-scripts-in-amarok-2"
 ><title
 >Чи можу я користуватися скриптами Amarok 1.4 у Amarok 2?</title
 > 
@@ -12649,7 +13040,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1viewmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6viewconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -14356,6 +14747,20 @@ ftpProxy=http://користувач:пароль@сервер:порт/
   <row>
     <entry>
     <para
+>Перемішати список</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>H</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
 >Відтворити з носія...</para>
     </entry>
     <entry>
@@ -14386,9 +14791,19 @@ ftpProxy=http://користувач:пароль@сервер:порт/
     </entry>
     <entry>
     <para
+>&Backspace;</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Скопіювати дані щодо виконавця і назви поточної відтворюваної композиції до буфера обміну даними</para>
+    </entry>
+    <entry>
+    <para
 ><keycombo
 >&Ctrl;<keycap
->Ліворуч</keycap
+>C</keycap
 ></keycombo
 ></para>
     </entry>
@@ -14438,24 +14853,80 @@ ftpProxy=http://користувач:пароль@сервер:порт/
   <row>
     <entry>
     <para
->Перемотати назад</para>
+>Перемотати вперед на 2 секунди*</para>
     </entry>
     <entry>
     <para
-><keycap
->Ліворуч</keycap
+><keycombo
+>&Ctrl;<keycap
+>→</keycap
+></keycombo
 ></para>
     </entry>
   </row>
   <row>
     <entry>
     <para
->Перемотати вперед</para>
+>Перемотати вперед на 10 секунд*</para>
     </entry>
     <entry>
     <para
 ><keycap
->Праворуч</keycap
+>→</keycap
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Перемотати вперед на 60 секунд*</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Shift;<keycap
+>→</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Перемотати назад на 2 секунди*</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>←</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Перемотати назад на 10 секунд*</para>
+    </entry>
+    <entry>
+    <para
+><keycap
+>←</keycap
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Перемотати назад на 60 секунд*</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Shift;<keycap
+>←</keycap
+></keycombo
 ></para>
     </entry>
   </row>
@@ -14545,6 +15016,14 @@ ftpProxy=http://користувач:пароль@сервер:порт/
   </tgroup>
 </informaltable>
 </para>
+<itemizedlist>
+<listitem
+><para
+>Налаштувати ці інтервали часу можна за допомогою файла <filename
+>amarokrc</filename
+>.</para
+></listitem>
+</itemizedlist>
 </sect3>
 <sect3 id="how-to-make-shortcuts"
 ><title
@@ -14721,7 +15200,7 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 <para
 >© Mark Kretschmann (kretschmann kde.org), 2002–2003. </para>
 <para
->© Команда розробників Amarok, 2003–2012. </para>
+>© Команда розробників Amarok, 2003–2013. </para>
 </sect1>
 <sect1 id="documentation-copyright"
 ><title
@@ -14761,6 +15240,8 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >Mayank Madan (mayankmadan live.com) </para>
 <para
 >Myriam Schweingruber (myriam kde.org) </para>
+<para
+>Nick Adams (runey676 gmail.com) </para>
 <para
 >Paul Ivan (bit.alex001 gmail.com) </para>
 <para

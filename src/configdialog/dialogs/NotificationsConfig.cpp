@@ -17,21 +17,26 @@
 
 #include "NotificationsConfig.h"
 
-#include "KNotificationBackend.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "widgets/Osd.h"
+#include "KNotificationBackend.h"
+
+#include <KWindowSystem>
 
 #include <QDesktopWidget>
 
 NotificationsConfig::NotificationsConfig( QWidget* parent )
-    : ConfigDialogBase( parent )
+    : ConfigDialogBase( parent ) 
+    , m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )
+    , m_oldYOffset( AmarokConfig::osdYOffset() )
 {
     setupUi( this );
 
+    connect( this, SIGNAL(changed()), parent, SLOT(updateButtons()) );
+
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
-    m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
+    m_osdPreview->setYOffset( AmarokConfig::osdYOffset() );
     m_osdPreview->setFontScale( AmarokConfig::osdFontScaling() );
     m_osdPreview->setTranslucent( AmarokConfig::osdUseTranslucency() );
 
@@ -39,30 +44,31 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
         growl->setChecked( AmarokConfig::growlEnabled() );
         gridLayout_5->addWidget( growl, 2, 0, 1, 1 );
-        connect( growl,         SIGNAL( toggled( bool ) ),
-                 this,                      SLOT( setGrowlEnabled( bool ) ) );
+        connect( growl,         SIGNAL(toggled(bool)),
+                 this,                      SLOT(setGrowlEnabled(bool)) );
     #endif
-    // Enable/disable the translucency option depending on whether the QWidget has the WindowOpacity property
-    // kcfg_OsdUseTranslucency->setEnabled( CheckHasWindowOpacityProperty )
 
-    connect( m_osdPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );
+    // Enable/disable the translucency option depending on availablity of desktop compositing
+    kcfg_OsdUseTranslucency->setEnabled( KWindowSystem::compositingActive() );
+
+    connect( m_osdPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
 
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 
-    connect( kcfg_OsdTextColor,        SIGNAL( changed( const QColor& ) ),
-             m_osdPreview,             SLOT( setTextColor(const QColor& ) ) );
-    connect( kcfg_OsdUseCustomColors,  SIGNAL( toggled( bool ) ),
-             this,                     SLOT( useCustomColorsToggled( bool ) ) );
-    connect( kcfg_OsdScreen,           SIGNAL( activated( int ) ),
-             m_osdPreview,             SLOT( setScreen( int ) ) );
-    connect( kcfg_OsdEnabled,          SIGNAL( toggled( bool ) ),
-             m_osdPreview,             SLOT( setVisible( bool ) ) );
-    connect( kcfg_OsdUseTranslucency,  SIGNAL( toggled( bool ) ),
-             m_osdPreview,             SLOT( setTranslucent( bool ) ) );
-    connect( kcfg_OsdFontScaling,      SIGNAL( valueChanged( int ) ),
-             m_osdPreview,             SLOT( setFontScale( int ) ) );
+    connect( kcfg_OsdTextColor,        SIGNAL(changed(QColor)),
+             m_osdPreview,             SLOT(setTextColor(QColor)) );
+    connect( kcfg_OsdUseCustomColors,  SIGNAL(toggled(bool)),
+             this,                     SLOT(useCustomColorsToggled(bool)) );
+    connect( kcfg_OsdScreen,           SIGNAL(activated(int)),
+             m_osdPreview,             SLOT(setScreen(int)) );
+    connect( kcfg_OsdEnabled,          SIGNAL(toggled(bool)),
+             m_osdPreview,             SLOT(setVisible(bool)) );
+    connect( kcfg_OsdUseTranslucency,  SIGNAL(toggled(bool)),
+             m_osdPreview,             SLOT(setTranslucent(bool)) );
+    connect( kcfg_OsdFontScaling,      SIGNAL(valueChanged(int)),
+             m_osdPreview,             SLOT(setFontScale(int)) );
 
     /*
     Amarok::QStringx text = i18n(
@@ -104,7 +110,9 @@ NotificationsConfig::~NotificationsConfig()
 bool
 NotificationsConfig::hasChanged()
 {
-    return false;
+    DEBUG_BLOCK
+
+    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->yOffset() != m_oldYOffset );
 }
 
 bool
@@ -119,9 +127,8 @@ NotificationsConfig::updateSettings()
     DEBUG_BLOCK
 
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
-    AmarokConfig::setOsdYOffset( m_osdPreview->offset() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->yOffset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
-    //AmarokConfig::setOsdTextScaling( m_osdPreview->); //FIXME?
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );
 
@@ -138,12 +145,14 @@ NotificationsConfig::updateSettings()
 void
 NotificationsConfig::slotPositionChanged()
 {
+    DEBUG_BLOCK
+
     kcfg_OsdScreen->blockSignals( true );
     kcfg_OsdScreen->setCurrentIndex( m_osdPreview->screen() );
     kcfg_OsdScreen->blockSignals( false );
 
     // Update button states (e.g. "Apply")
-    //emit settingsChanged();
+    emit changed();
 }
 
 void

@@ -19,7 +19,6 @@
 
 #include "FileView.h"
 
-#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
@@ -27,16 +26,14 @@
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "core/interfaces/Logger.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/support/TrackLoader.h"
 #include "dialogs/TagDialog.h"
-#include "widgets/AmarokContextMenu.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -74,8 +71,8 @@ FileView::FileView( QWidget *parent )
     setEditTriggers( EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
-                                    SLOT(newPalette( const QPalette & )) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
+                                    SLOT(newPalette(QPalette)) );
 }
 
 void
@@ -96,7 +93,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
-    Amarok::ContextMenu menu;
+    KMenu menu;
     foreach( QAction *action, actionsForIndices( indices, PlaylistAction ) )
         menu.addAction( action );
     menu.addSeparator();
@@ -117,6 +114,16 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     }
     if( !writableCollections.isEmpty() )
     {
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
+        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        foreach( Collections::Collection *coll, writableCollections )
+        {
+            CollectionAction *copyAction = new CollectionAction( coll, &menu );
+            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
+            copyMenu->addAction( copyAction );
+        }
+        menu.addMenu( copyMenu );
+
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
         moveMenu->setIcon( KIcon( "go-jump" ) );
         foreach( Collections::Collection *coll, writableCollections )
@@ -126,25 +133,9 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
             moveMenu->addAction( moveAction );
         }
         menu.addMenu( moveMenu );
-
-        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
-        // HACK: menu tooltip != action tooltip in QMenu::event();
-        copyMenu->menuAction()->setToolTip( i18n( "Press Shift key for move" ) );
-        foreach( Collections::Collection *coll, writableCollections )
-        {
-            CollectionAction *copyAction = new CollectionAction( coll, &menu );
-            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
-            copyMenu->addAction( copyAction );
-        }
-        menu.addMenu( copyMenu );
-
-        menu.setAlternatives( copyMenu->menuAction(), moveMenu->menuAction(), Qt::Key_Shift );
     }
     foreach( QAction *action, actionsForIndices( indices, OrganizeAction ) )
         menu.addAction( action );
-    m_moveToTrashAction->setVisible( true ); // could be left invisible by previous menu
-    menu.setAlternatives( m_moveToTrashAction, m_deleteAction, Qt::Key_Shift );
     menu.addSeparator();
 
     foreach( QAction *action, actionsForIndices( indices, EditAction ) )
@@ -159,13 +150,13 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
-        event->accept();
+        PrettyTreeView::mouseReleaseEvent( event );
         return;
     }
 
     if( state() == QAbstractItemView::NoState && event->button() == Qt::MidButton )
     {
-        addIndexToPlaylist( index, Playlist::AppendAndPlay );
+        addIndexToPlaylist( index, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -207,7 +198,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl url = file.url();
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-            addIndexToPlaylist( index, Playlist::AppendAndPlay );
+            addIndexToPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         else
             emit navigateToDirectory( index );
 
@@ -227,19 +218,24 @@ FileView::keyPressEvent( QKeyEvent *event )
 
     switch( event->key() )
     {
+        case Qt::Key_Enter:
         case Qt::Key_Return:
         {
             KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
             KUrl url = file.url();
             if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-                addIndexToPlaylist( index, Playlist::AppendAndPlay );
+                // right, we test the current item, but then add the selection to playlist
+                addSelectionToPlaylist( Playlist::OnReturnPressedOnSelectedItems );
             else
                 emit navigateToDirectory( index );
 
             return;
         }
         case Qt::Key_Delete:
-            slotDelete( Qt::NoButton, event->modifiers() );
+            slotMoveToTrash( Qt::NoButton, event->modifiers() );
+            break;
+        case Qt::Key_F5:
+            emit refreshBrowser();
             break;
         default:
             break;
@@ -251,13 +247,13 @@ FileView::keyPressEvent( QKeyEvent *event )
 void
 FileView::slotAppendToPlaylist()
 {
-    addSelectionToPlaylist( Playlist::AppendAndPlay );
+    addSelectionToPlaylist( Playlist::OnAppendToPlaylistAction );
 }
 
 void
 FileView::slotReplacePlaylist()
 {
-    addSelectionToPlaylist( Playlist::Replace );
+    addSelectionToPlaylist( Playlist::OnReplacePlaylistAction );
 }
 
 void
@@ -287,8 +283,8 @@ FileView::slotPrepareMoveTracks()
     if( list.isEmpty() )
         return;
 
-    // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
+    // prevent bug 313003, require full metadata
+    TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -309,8 +305,8 @@ FileView::slotPrepareCopyTracks()
     if( list.isEmpty() )
         return;
 
-    // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
+    // prevent bug 313003, require full metadata
+    TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -388,9 +384,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                       this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-        // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-        m_appendAction->setShortcut( Qt::Key_Enter );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
+        connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
     }
     if( type & PlaylistAction )
         actions.append( m_appendAction );
@@ -400,7 +394,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these",
                                            "&Replace Playlist" ), this );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
+        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotReplacePlaylist()) );
     }
     if( type & PlaylistAction )
         actions.append( m_loadAction );
@@ -411,9 +405,8 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
-        m_moveToTrashAction->setToolTip( i18n( "Press Shift key to delete") );
         connect( m_moveToTrashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+                 this, SLOT(slotMoveToTrash(Qt::MouseButtons,Qt::KeyboardModifiers)) );
     }
     if( type & OrganizeAction )
         actions.append( m_moveToTrashAction );
@@ -424,8 +417,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-        connect( m_deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+        connect( m_deleteAction, SIGNAL(triggered(bool)), SLOT(slotDelete()) );
     }
     if( type & OrganizeAction )
         actions.append( m_deleteAction );
@@ -435,7 +427,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+        connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );
     }
     if( type & EditAction )
     {
@@ -460,13 +452,16 @@ FileView::addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions optio
 }
 
 void
-FileView::addIndicesToPlaylist( const QModelIndexList &indices, Playlist::AddOptions options )
+FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions options )
 {
     if( indices.isEmpty() )
         return;
 
+    // let tracks & playlists appear in playlist as they are shown in the view:
+    qSort( indices );
+
     QList<KUrl> urls;
-    foreach( const QModelIndex& index, indices )
+    foreach( const QModelIndex &index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl url = file.url();
@@ -516,7 +511,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
 
@@ -561,7 +556,7 @@ FileView::tracksForEdit() const
 }
 
 void
-FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
 {
     Q_UNUSED( buttons )
     DEBUG_BLOCK
@@ -570,10 +565,10 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
     if( indices.isEmpty() )
         return;
 
-    const bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
+    const bool deleting = modifiers.testFlag( Qt::ShiftModifier );
     QString caption;
     QString labelText;
-    if( skipTrash )
+    if( deleting  )
     {
         caption = i18nc( "@title:window", "Confirm Delete" );
         labelText = i18np( "Are you sure you want to delete this item?",
@@ -597,23 +592,22 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
         urls << file.url();
     }
 
-    KGuiItem confirmButton = skipTrash ? KStandardGuiItem::del() : KStandardGuiItem::remove();
-    const bool cont = KMessageBox::warningContinueCancelList( 0, labelText, filepaths,
-            caption, confirmButton ) == KMessageBox::Continue;
+    KGuiItem confirmButton = deleting ? KStandardGuiItem::del() : KStandardGuiItem::remove();
 
-    if( !cont )
+    if( KMessageBox::warningContinueCancelList( this, labelText, filepaths, caption, confirmButton ) != KMessageBox::Continue )
         return;
 
-    KIO::Job *job = skipTrash
-        ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
-        : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
-
-    if( job )
+    if( deleting )
     {
-        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file",
-                                     "Moving to trash: %1 files", urls.count() );
-        Amarok::Components::logger()->newProgressOperation( job, statusText );
+        KIO::del( urls, KIO::HideProgressInfo );
+        return;
     }
+
+    KIO::trash( urls, KIO::HideProgressInfo );
 }
 
-#include "FileView.moc"
+void
+FileView::slotDelete()
+{
+    slotMoveToTrash( Qt::NoButton, Qt::ShiftModifier );
+}

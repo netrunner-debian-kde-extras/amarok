@@ -18,11 +18,15 @@
 #define PLAYLISTBROWSERCATEGORY_H
 
 #include "browsers/BrowserCategory.h"
-#include "widgets/PrettyTreeView.h"
 
-#include <QModelIndex>
-#include <QPoint>
-#include <QSortFilterProxyModel>
+#include <QMap>
+
+namespace Amarok {
+    class PrettyTreeView;
+}
+
+class QAbstractItemDelegate;
+class QTreeView;
 
 class KAction;
 class KActionMenu;
@@ -31,7 +35,6 @@ class KToolBar;
 
 class PlaylistsInFoldersProxy;
 class PlaylistsByProviderProxy;
-class PlaylistTreeItemDelegate;
 class PlaylistBrowserFilterProxy;
 
 namespace Playlists {
@@ -87,11 +90,11 @@ private:
     KActionMenu *m_providerMenu;
     QMap<const Playlists::PlaylistProvider *, QAction *> m_providerActions;
 
-    QTreeView *m_playlistView;
+    Amarok::PrettyTreeView *m_playlistView;
 
     KAction *m_addFolderAction;
 
-    PlaylistTreeItemDelegate *m_byProviderDelegate;
+    QAbstractItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemDelegate;
     PlaylistsInFoldersProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;

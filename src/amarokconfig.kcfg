@@ -74,25 +74,10 @@
         <whatsthis>Enable/Disable context view in Amarok.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Animate Tray Icon" type="Bool">
-        <label>Whether to animate the systray icon</label>
-        <whatsthis>Enable/Disable tray icon animation.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Track Delay Length" type="Int">
-        <label>Delay between tracks, in milliseconds</label>
-        <whatsthis>Delay between tracks, in milliseconds.</whatsthis>
-        <default>0</default>
-    </entry>
     <entry key="Undo Levels" type="Int">
         <label>Number of undo levels in playlist</label>
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
         <default>30</default>
-    </entry>
-    <entry key="Show Splash Screen" type="Bool">
-        <label>Whether a splash-screen should be displayed on startup</label>
-        <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
-        <default>true</default>
     </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
@@ -140,19 +125,9 @@
         <whatsthis>If set, Organize files will overwrite any existing destination.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Group By Filetype" type="Bool">
-        <label>Whether organize files will group directories according to their filetype.</label>
-        <whatsthis>If set, Organize files will group directories containing the same filetype.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Group Artists" type="Bool">
-        <label>Whether organize files will group artists whose names start with the same character.</label>
-        <whatsthis>If set, Organize files will group artists whose names start with the same character.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Ignore The" type="Bool">
-        <label>Whether organize files will ignore The in artist names.</label>
-        <whatsthis>If set, Organize files will ignore The in artist names.</whatsthis>
+        <label>Whether organize files will move The in artist names to the end.</label>
+        <whatsthis>If set, Organize files will move The in artist names to the end as in "Beatles, The".</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Replace Space" type="Bool">
@@ -225,36 +200,21 @@
         <whatsthis>Mute/Unmute sound.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Crossfade" type="Bool">
-        <label>Whether to crossfade between tracks</label>
-        <whatsthis>Enable/Disable crossfading between track changes.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Crossfade Length" type="Int">
-        <label>Length of crossfade, in milliseconds</label>
-        <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
-        <default>4000</default>
-        <min>400</min>
-    </entry>
-    <entry key="Crossfade Type" type="Int">
-        <label>When to Crossfade</label>
-        <whatsthis>Determines whether to crossfade always, or on automatic/manual track changes only.</whatsthis>
-        <default>0</default>
-    </entry>
-    <entry key="Fadeout" type="Bool">
+    <entry key="FadeoutOnStop" type="Bool">
         <label>Whether to fade out tracks when pressing stop.</label>
+        <whatsthis>Enable/Disable fadeout.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="FadeoutOnPause" type="Bool">
+        <label>Whether to fade out tracks when pressing pause.</label>
         <whatsthis>Enable/Disable fadeout.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Fadeout Length" type="Int">
         <label>Length of fadeout, in milliseconds</label>
         <whatsthis>The length of the fadeout in milliseconds.</whatsthis>
-        <default>2500</default>
+        <default>2000</default>
         <min>400</min>
-    </entry>
-    <entry key="FadeoutOnExit" type="Bool">
-        <label>Whether to fade out when exiting the program.</label>
-        <default>true</default>
     </entry>
     <entry key="EqualizerMode" type="Int">
         <label>Equalizer mode - 0 = off, 1 to n = preset no</label>
@@ -288,6 +248,33 @@
         </choices>
         <default>Track</default>
     </entry>
+    <entry key="Seek Short" type="Int">
+        <label>The length of a short seek, in seconds.</label>
+        <default>2</default>
+        <min>1</min>
+    </entry>
+    <entry key="Seek Medium" type="Int">
+        <label>The length of a medium seek, in seconds.</label>
+        <default>10</default>
+        <min>1</min>
+    </entry>
+    <entry key="Seek Long" type="Int">
+        <label>The length of a long seek, in seconds.</label>
+        <default>60</default>
+        <min>1</min>
+    </entry>
+    <entry key="Pause On Suspend" type="Bool">
+        <label>Whether Amarok should pause the currently playing track on suspend.</label>
+        <default>false</default>
+    </entry>
+    <entry key="Inhibit Suspend" type="Bool">
+        <label>Whether Amarok should prevent the system from sleeping if it is playing a track.</label>
+        <default>true</default>
+    </entry>
+    <entry key="Start Playing On Add" type="Bool">
+        <label>Whether Amarok should start playing if a track is added to playlist (and nothing else is playing).</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Cover Manager">
@@ -320,19 +307,9 @@
         <default>true</default>
     </entry>
     <entry key="Growl Enabled" type="Bool">
-    <label>Use Growl for notifications</label>
-    <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
-    <default>false</default>
-    </entry>
-    <entry key="Osd Use Playlist Columns" type="Bool">
-        <label>Display the same information in the OSD as in the playlist columns.</label>
-        <whatsthis>If enabled, the OSD will display the same information and in the same order as the columns in the playlist.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Osd Text" type="String">
-        <label>The OSD text to show</label>
-        <whatsthis>Customize the OSD display text.</whatsthis>
-        <default>%artist - %title {(%length)}\n%album</default>
+        <label>Use Growl for notifications</label>
+        <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
+        <default>false</default>
     </entry>
     <entry key="Osd Use Translucency" type="Bool">
         <label>Translucency Toggle</label>
@@ -351,10 +328,10 @@
     </entry>
     <entry key="Osd Font Scaling" type="Int">
         <label>Font scaling for OSD</label>
-        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
+        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;normal size&#8221;.</whatsthis>
         <default>115</default>
-	<min>0</min>
-	<max>1000</max>
+        <min>0</min>
+        <max>1000</max>
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed for</label>
@@ -373,11 +350,6 @@
         <label>OSD screen</label>
         <whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
         <default>0</default>
-    </entry>
-    <entry key="Osd Cover" type="Bool">
-        <label>Whether the album cover should be shown</label>
-        <whatsthis>If enabled, shows the album cover in the OSD.</whatsthis>
-        <default>true</default>
     </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
@@ -407,6 +379,10 @@
     <entry key="Resume Track" type="Path">
         <label>Track URL to resume upon startup</label>
         <whatsthis>Internal: URL of the track to resume on startup.</whatsthis>
+    </entry>
+    <entry key="Resume Paused" type="Bool">
+        <label>Internal: Resume playback in paused state</label>
+        <default>false</default>
     </entry>
     <entry key="Resume Time" type="Int">
         <label>Time to resume at, in milliseconds</label>

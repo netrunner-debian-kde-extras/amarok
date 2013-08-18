@@ -19,14 +19,15 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "CoverFetcher"
-#include "core/support/Debug.h"
 
 #include "CoverFetcher.h"
 
+#include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
-#include "amarokconfig.h"
+#include "core/support/Debug.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
 #include "CoverFetchUnit.h"
@@ -67,8 +68,8 @@ CoverFetcher::CoverFetcher()
                       SLOT(slotFetch(CoverFetchUnit::Ptr)) );
     s_instance = this;
 
-    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
-             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
+    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
+             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -348,8 +349,8 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
         }
 
         m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
-                           SLOT(queueQuery(Meta::AlbumPtr, const QString&, int)) );
+        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr,QString,int)),
+                           SLOT(queueQuery(Meta::AlbumPtr,QString,int)) );
         connect( m_dialog.data(), SIGNAL(accepted()), SLOT(slotDialogFinished()) );
         connect( m_dialog.data(), SIGNAL(rejected()), SLOT(slotDialogFinished()) );
 

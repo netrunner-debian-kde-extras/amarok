@@ -17,52 +17,47 @@
 #include "LayoutEditWidget.h"
 
 #include "core/support/Debug.h"
-#include "playlist/PlaylistColumnNames.h"
 #include "playlist/PlaylistDefines.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KHBox>
+#include <KLocale>
 #include <KMessageBox>
 
+#include <QBoxLayout>
 #include <QCheckBox>
-#include <QSpinBox>
-#include <QSpacerItem>
 #include <QLayout>
 
 using namespace Playlist;
 
 LayoutEditWidget::LayoutEditWidget( QWidget *parent )
-    : KVBox(parent)
+    : QWidget( parent )
 {
-    m_tokenFactory = new TokenWithLayoutFactory;
-    m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
-    m_dragstack->setCustomTokenFactory( m_tokenFactory );
-    connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
-    connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
 
-    // top-align content by adding a stretch
-    QBoxLayout *l = qobject_cast<QBoxLayout*>(layout());
-    l->setStretch( 0, 0 );
-    l->addStretch( 1 );
+    m_dragstack = new TokenDropTarget( this );
+    m_dragstack->setCustomTokenFactory( new TokenWithLayoutFactory() );
+    mainLayout->addWidget( m_dragstack, 1 );
 
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
+    // connect ( m_dragstack, SIGNAL(focusReceived(QWidget*)), this, SIGNAL(focusReceived(QWidget*)) );
+    connect ( m_dragstack, SIGNAL(changed()), this, SIGNAL(changed()) );
+
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ), this );
+    connect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
+    mainLayout->addWidget( m_showCoverCheckBox, 0 );
 }
 
 
 LayoutEditWidget::~LayoutEditWidget()
-{
-//     delete m_tokenFactory; m_tokenFactory = 0;
-}
+{ }
 
 void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     DEBUG_BLOCK
     int rowCount = config.rows();
 
-    delete m_showCoverCheckBox;
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
+    disconnect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
     m_showCoverCheckBox->setChecked( config.showCover() );
-    connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
+    connect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
 
     m_dragstack->clear();
 
@@ -93,7 +88,10 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 
             }
 
-            TokenWithLayout *token =  new TokenWithLayout( columnNames( element.value() ), iconNames[element.value()], element.value() );
+            Column col = static_cast<Column>(element.value());
+            TokenWithLayout *token =  new TokenWithLayout( columnName( col ),
+                                                           iconName( col ),
+                                                           element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setUnderline( element.underline() );
@@ -103,7 +101,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             token->setSuffix( element.suffix() );
             m_dragstack->insertToken( token, i, j );
             // Do all modifications on the token above that line, otherwise the dialog will think it's been modified by the user
-            connect ( token, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+            connect ( token, SIGNAL(changed()), this, SIGNAL(changed()) );
         }
 
     }
@@ -122,7 +120,7 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
 
         LayoutItemConfigRow currentRowConfig;
 
-        QList<Token *> tokens = m_dragstack->drags( i );
+        QList<Token *> tokens = m_dragstack->tokensAtRow( i );
 
         foreach( Token * token, tokens ) {
             if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )

@@ -21,15 +21,24 @@
 #include "SqlMeta.h"
 
 #include "amarokconfig.h"
+
+#include "SqlCapabilities.h"
+#include "SqlCollection.h"
+#include "SqlQueryMaker.h"
+#include "SqlRegistry.h"
+#include "SqlReadLabelCapability.h"
+#include "SqlWriteLabelCapability.h"
+
 #include "MetaTagLib.h" // for getting an embedded cover
+
+#include "amarokurls/BookmarkMetaActions.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/db/sql/CapabilityDelegate.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlQueryMaker.h"
-#include "core-impl/collections/db/sql/SqlRegistry.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "covermanager/CoverCache.h"
@@ -145,7 +154,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
     m_albumGain = 0.0;
     m_albumPeakGain = 0.0;
 
-    m_batchUpdate = 0; // reset in-batch-update without commiting
+    m_batchUpdate = 0; // reset in-batch-update without committing
 
     m_filetype = Amarok::Unknown;
 }
@@ -159,9 +168,12 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
 {
     QStringList::ConstIterator iter = result.constBegin();
     m_urlId = (*(iter++)).toInt();
+    Q_ASSERT( m_urlId > 0 && "refusing to create SqlTrack with non-positive urlId, please file a bug" );
     m_deviceId = (*(iter++)).toInt();
+    Q_ASSERT( m_deviceId != 0 && "refusing to create SqlTrack with zero deviceId, please file a bug" );
     m_rpath = *(iter++);
     m_directoryId = (*(iter++)).toInt();
+    Q_ASSERT( m_directoryId > 0 && "refusing to create SqlTrack with non-positive directoryId, please file a bug" );
     m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
@@ -259,30 +271,6 @@ SqlTrack::prettyName() const
     return  prettyTitle( m_url.fileName() );
 }
 
-
-QString
-SqlTrack::fullPrettyName() const
-{
-    QString artistName;
-    Meta::ArtistPtr artist = this->artist();
-    if( artist )
-        artistName = artist->name();
-
-    //FIXME doesn't work for resume playback
-
-    QString s;
-    if( !artistName.isEmpty() )
-        s = i18n("%1 - %2", artist->name(), name() );
-
-    if( s.isEmpty() )
-        s = name();
-
-    if( s.isEmpty() )
-        s = prettyTitle( playableUrl().fileName() );
-
-    return s;
-}
-
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
@@ -354,13 +342,10 @@ SqlTrack::setUidUrl( const QString &uid )
     }
 }
 
-bool
-SqlTrack::isPlayable() const
+QString
+SqlTrack::notPlayableReason() const
 {
-    QReadLocker locker( &m_lock );
-
-    //a song is not playable anymore if the collection was removed
-    return m_collection && QFile::exists( m_url.path() );
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 bool
@@ -965,9 +950,9 @@ SqlTrack::commitIfInNonBatchUpdate()
         m_bpm = m_cache.value( Meta::valBpm ).toDouble();
 
     // --- write the file
-    if( m_writeFile )
+    if( m_writeFile && AmarokConfig::writeBack() )
     {
-        Meta::Tag::writeTags( m_url.path(), m_cache );
+        Meta::Tag::writeTags( m_url.path(), m_cache, AmarokConfig::writeBackStatistics() );
         // unique id may have changed
         QString uid = Meta::Tag::readTags( m_url.path() ).value( Meta::valUniqueId ).toString();
         if( !uid.isEmpty() )
@@ -995,8 +980,12 @@ SqlTrack::commitIfInNonBatchUpdate()
     }
 
     // --- add to the registry dirty list
-    SqlRegistry *registry = m_collection->registry();
+    SqlRegistry *registry = 0;
+    // prevent writing to the db when we don't know the directory, bug 322474. Note that
+    // m_urlId is created by registry->commitDirtyTracks() if there is none.
+    if( m_deviceId != 0 && m_directoryId > 0 )
     {
+        registry = m_collection->registry();
         QMutexLocker locker2( &registry->m_blockMutex );
         registry->m_dirtyTracks.insert( Meta::SqlTrackPtr( this ) );
         if( oldArtist )
@@ -1020,6 +1009,12 @@ SqlTrack::commitIfInNonBatchUpdate()
         if( newYear )
             registry->m_dirtyYears.insert( newYear );
     }
+    else
+        error() << Q_FUNC_INFO << "non-positive urlId, zero deviceId or non-positive"
+                << "directoryId encountered in track" << m_url
+                << "urlId:" << m_urlId << "deviceId:" << m_deviceId
+                << "directoryId:" << m_directoryId << "- not writing back metadata"
+                << "changes to the database.";
 
     m_lock.unlock(); // or else we provoke a deadlock
 
@@ -1038,7 +1033,10 @@ SqlTrack::commitIfInNonBatchUpdate()
         newAlbum->setSuppressImageAutoFetch( newSupp );
     }
 
-    registry->commitDirtyTracks(); // calls notifyObservers() as appropriate
+    if( registry )
+        registry->commitDirtyTracks(); // calls notifyObservers() as appropriate
+    else
+        notifyObservers();
     m_lock.lockForWrite(); // reset back to state it was during call
 
     if( m_uid != oldUid )
@@ -1176,16 +1174,55 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 bool
 SqlTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return m_collection->trackCapabilityDelegate() &&
-        m_collection->trackCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+    case Capabilities::Capability::Organisable:
+    case Capabilities::Capability::BookmarkThis:
+    case Capabilities::Capability::WriteTimecode:
+    case Capabilities::Capability::LoadTimecode:
+    case Capabilities::Capability::ReadLabel:
+    case Capabilities::Capability::WriteLabel:
+    case Capabilities::Capability::FindInSource:
+        return true;
+    default:
+        return Track::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
 SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( m_collection->trackCapabilityDelegate() )
-        return m_collection->trackCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+    {
+            QList<QAction*> actions;
+            //TODO These actions will hang around until m_collection is destructed.
+            // Find a better parent to avoid this memory leak.
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
+
+            return new Capabilities::ActionsCapability( actions );
+    }
+    case Capabilities::Capability::Organisable:
+        return new Capabilities::OrganiseCapabilityImpl( this );
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
+    case Capabilities::Capability::WriteTimecode:
+        return new Capabilities::TimecodeWriteCapabilityImpl( this );
+    case Capabilities::Capability::LoadTimecode:
+        return new Capabilities::TimecodeLoadCapabilityImpl( this );
+    case Capabilities::Capability::ReadLabel:
+        return new Capabilities::SqlReadLabelCapability( this, sqlCollection()->sqlStorage() );
+    case Capabilities::Capability::WriteLabel:
+        return new Capabilities::SqlWriteLabelCapability( this, sqlCollection()->sqlStorage() );
+    case Capabilities::Capability::FindInSource:
+        return new Capabilities::FindInSourceCapabilityImpl( this );
+
+    default:
+        return Track::createCapabilityInterface( type );
+    }
+
 }
 
 void
@@ -1228,7 +1265,6 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
             locker.unlock();
             notifyObservers();
             sqlLabel->invalidateCache();
-            sqlLabel->notifyObservers();
         }
     }
 }
@@ -1266,7 +1302,6 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
         }
         notifyObservers();
         sqlLabel->invalidateCache();
-        sqlLabel->notifyObservers();
     }
 }
 
@@ -1295,6 +1330,12 @@ SqlTrack::labels() const
     {
         return Meta::LabelList();
     }
+}
+
+TrackEditorPtr
+SqlTrack::editor()
+{
+    return TrackEditorPtr( isEditable() ? this : 0 );
 }
 
 StatisticsPtr
@@ -1383,16 +1424,25 @@ SqlArtist::tracks()
 bool
 SqlArtist::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return m_collection->artistCapabilityDelegate() &&
-        m_collection->artistCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::BookmarkThis:
+        return true;
+    default:
+        return Artist::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
 SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( m_collection->artistCapabilityDelegate() )
-        return m_collection->artistCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkArtistAction( 0, Meta::ArtistPtr( this ) ) );
+    default:
+        return Artist::createCapabilityInterface( type );
+    }
 }
 
 
@@ -1918,7 +1968,9 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
+                if( AmarokConfig::writeBack() )
+                    Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes,
+                                          AmarokConfig::writeBackStatistics() );
             }
             /* TODO: delete all old tracks albums */
         }
@@ -1945,7 +1997,9 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
+                if( AmarokConfig::writeBack() )
+                    Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes,
+                                          AmarokConfig::writeBackStatistics() );
             }
             /* TODO //step 5: delete the original album, if necessary */
         }
@@ -1960,8 +2014,14 @@ SqlAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     if( m_name.isEmpty() )
         return false;
 
-    return m_collection->albumCapabilityDelegate() &&
-        m_collection->albumCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+    case Capabilities::Capability::BookmarkThis:
+        return true;
+    default:
+        return Album::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
@@ -1970,9 +2030,15 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
     if( m_name.isEmpty() )
         return 0;
 
-    if( m_collection->albumCapabilityDelegate() )
-        return m_collection->albumCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+        return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( 0, Meta::AlbumPtr( this ) ) );
+    default:
+        return Album::createCapabilityInterface( type );
+    }
 }
 
 //---------------SqlComposer---------------------------------

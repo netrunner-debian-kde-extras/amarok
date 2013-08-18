@@ -362,19 +362,19 @@ AudioCdCollection::trackLength(int i) const
 QString
 AudioCdCollection::collectionId() const
 {
-    return "AudioCd";
+    return QLatin1String( "AudioCd" );
 }
 
 QString
 AudioCdCollection::prettyName() const
 {
-    return "Audio CD";
+    return i18n( "Audio CD" );
 }
 
 KIcon
 AudioCdCollection::icon() const
 {
-    return KIcon( "media-optical-audio");
+    return KIcon( "media-optical-audio" );
 }
 
 void
@@ -547,7 +547,7 @@ AudioCdCollection::trackForUrl( const KUrl &url )
     QRegExp trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
     if( trackUrlScheme.indexIn( url.url() ) != 0 )
     {
-        warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct sheme" << trackUrlScheme;
+        warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct scheme" << trackUrlScheme;
         return Meta::TrackPtr();
     }
 

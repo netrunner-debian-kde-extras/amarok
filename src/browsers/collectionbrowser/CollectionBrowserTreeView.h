@@ -26,17 +26,8 @@
 class CollectionBrowserTreeView : public CollectionTreeView
 {
     public:
-        CollectionBrowserTreeView( QWidget *parent = 0 );
+        explicit CollectionBrowserTreeView( QWidget *parent = 0 );
         ~CollectionBrowserTreeView();
-
-    protected:
-        virtual void mouseMoveEvent( QMouseEvent *event );
-        virtual void mousePressEvent( QMouseEvent *event );
-        virtual void mouseReleaseEvent( QMouseEvent *event );
-        virtual bool viewportEvent( QEvent *event );
-
-    private:
-        QAction *decoratorActionAt( const QModelIndex &idx, const QPoint pos );
 };
 
 #endif

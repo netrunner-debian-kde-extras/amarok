@@ -18,9 +18,9 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "Version.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KActionCollection>
 #include <KConfig>
@@ -169,6 +169,21 @@ namespace Amarok
     AMAROK_CORE_EXPORT QString asciiPath( const QString &path );
 
     /**
+     * Define how Amarok::vfatPath() should behave wrt path separators:
+     *
+     * AutoBehaviour: use WindowsBehaviour when compiled in Windows and UnixBehaviour
+     * on everything else
+     * UnixBehaviour: treat / as path separator and \ as a valid part of file name
+     * WindowsBehaviour: treat \ as path separator and / as a valid part of file name
+     */
+    enum PathSeparatorBehaviour
+    {
+        AutoBehaviour,
+        UnixBehaviour,
+        WindowsBehaviour
+    };
+
+    /**
      * Transforms path into one valid on VFAT file systems, leaves QDir::separator()s untouched.
      * Beware: Truncates path to 255 characters!
      * Replacement rules: illegal characters are being replaced by '_'
@@ -177,11 +192,13 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_CORE_EXPORT QString vfatPath( const QString &path );
+    AMAROK_CORE_EXPORT QString vfatPath( const QString &path,
+                                         PathSeparatorBehaviour behaviour = AutoBehaviour );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).
+     * If there is no "the" in the name then the string is not changed.
      * @param str the string to manipulate
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */

@@ -29,7 +29,6 @@ if(IPOD_FOUND AND WITH_IPOD)
     IpodCollectionFactory.cpp
     IpodCollectionLocation.cpp
     IpodMeta.cpp
-    IpodMetaEditCapability.cpp
     IpodPlaylist.cpp
     IpodPlaylistProvider.cpp
     jobs/IpodCopyTracksJob.cpp
@@ -39,7 +38,6 @@ if(IPOD_FOUND AND WITH_IPOD)
     support/IphoneMountPoint.cpp
     support/IpodDeviceHelper.cpp
     support/IpodTranscodeCapability.cpp
-    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
   )
 
   kde4_add_ui_files(amarok_collection-ipodcollection_PART_SRCS
@@ -51,6 +49,7 @@ if(IPOD_FOUND AND WITH_IPOD)
   kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
 
   target_link_libraries(amarok_collection-ipodcollection
+    amarokshared
     amarokcore
     amaroklib
     amarok-transcoding
@@ -79,4 +78,4 @@ if(IPOD_FOUND AND WITH_IPOD)
     ${SERVICES_INSTALL_DIR}
   )
 
-endif (IPOD_FOUND AND WITH_IPOD)
+endif( IPOD_FOUND AND WITH_IPOD )

@@ -18,8 +18,9 @@
 
 #include "PlaylistQueueEditor.h"
 
-#include "PlaylistActions.h"
-#include "PlaylistModelStack.h"
+#include "core/meta/Meta.h"
+#include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModelStack.h"
 
 static const int s_idRole = Qt::UserRole;
 static const int s_myType = QListWidgetItem::UserType;
@@ -33,16 +34,16 @@ PlaylistQueueEditor::PlaylistQueueEditor()
 {
     m_ui.setupUi( this );
     updateView();
-    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), SLOT( queueChanged() ) );
+    connect( The::playlist()->qaim(), SIGNAL(queueChanged()), SLOT(queueChanged()) );
     m_ui.upButton->setIcon( KIcon( "go-up" ) );
     m_ui.downButton->setIcon( KIcon( "go-down" ) );
     m_ui.dequeueTrackButton->setIcon( KIcon( "list-remove" ) );
     m_ui.clearButton->setIcon( KIcon( "edit-clear-list" ) );
-    connect( m_ui.upButton, SIGNAL( clicked() ), SLOT( moveUp() ) );
-    connect( m_ui.downButton, SIGNAL( clicked() ), SLOT( moveDown() ) );
-    connect( m_ui.clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
-    connect( m_ui.dequeueTrackButton, SIGNAL( clicked() ), SLOT( dequeueTrack() ) );
-    connect( m_ui.buttonBox->buttons().first(), SIGNAL( clicked() ), SLOT( accept() ) );
+    connect( m_ui.upButton, SIGNAL(clicked()), SLOT(moveUp()) );
+    connect( m_ui.downButton, SIGNAL(clicked()), SLOT(moveDown()) );
+    connect( m_ui.clearButton, SIGNAL(clicked()), SLOT(clear()) );
+    connect( m_ui.dequeueTrackButton, SIGNAL(clicked()), SLOT(dequeueTrack()) );
+    connect( m_ui.buttonBox->buttons().first(), SIGNAL(clicked()), SLOT(accept()) );
 }
 
 void
@@ -53,11 +54,15 @@ PlaylistQueueEditor::updateView()
 
     m_ui.listWidget->clear();
     int i = 1;
-    foreach ( quint64 id, The::playlistActions()->queue() ) {
+    foreach( quint64 id, The::playlistActions()->queue() )
+    {
         QListWidgetItem *item = new QListWidgetItem( m_ui.listWidget, s_myType );
         item->setData( s_idRole, id );
-        QString itemText = QString("%1: %2").arg( QString::number( i++ ),
-                               The::playlist()->trackForId( id )->fullPrettyName() );
+        Meta::TrackPtr track = The::playlist()->trackForId( id );
+        Meta::ArtistPtr artist = track->artist();
+        QString itemText = i18nc( "Iten in queue, %1 is position, %2 artist, %3 track",
+                "%1: %2 - %3", i++, artist ? artist->prettyName() : i18n( "Unknown Artist" ),
+                track->prettyName() );
         item->setText( itemText );
     }
 }

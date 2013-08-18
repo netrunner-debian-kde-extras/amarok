@@ -20,7 +20,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/ipodcollection/IpodCollection.h"
-#include "core-impl/collections/ipodcollection/IpodMetaEditCapability.h"
 #include "core-impl/collections/ipodcollection/config-ipodcollection.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
@@ -141,32 +140,6 @@ Track::~Track()
         QFile::remove( m_tempImageFilePath );
 }
 
-bool
-Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return true;
-        default:
-            break;
-    }
-    return false;
-}
-
-Capabilities::Capability*
-Track::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return new EditCapability( KSharedPtr<Track>( this ) );
-        default:
-            break;
-    }
-    return 0;
-}
-
 QString
 Track::name() const
 {
@@ -229,15 +202,10 @@ Track::uidUrl() const
         return m_mountPoint + relPath;
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.path() );
-    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
-        return true;
-
-    return false;
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 Meta::AlbumPtr
@@ -649,13 +617,19 @@ Track::setType( const QString &newType )
 bool
 Track::inCollection() const
 {
-    return !m_coll.isNull();
+    return m_coll; // converts to bool nicely
 }
 
 Collections::Collection*
 Track::collection() const
 {
     return m_coll.data();
+}
+
+Meta::TrackEditorPtr
+Track::editor()
+{
+    return Meta::TrackEditorPtr( isEditable() ? this : 0 );
 }
 
 Meta::StatisticsPtr
@@ -728,6 +702,14 @@ void Track::endUpdate()
     Q_ASSERT( m_batch > 0 );
     m_batch--;
     commitIfInNonBatchUpdate();
+}
+
+bool
+Track::isEditable() const
+{
+    if( !inCollection() )
+        return false;
+    return collection()->isWritable(); // IpodCollection implements this nicely
 }
 
 void

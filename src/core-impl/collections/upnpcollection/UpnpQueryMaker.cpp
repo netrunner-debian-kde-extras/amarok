@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
 #define DEBUG_PREFIX "UpnpQueryMaker"
 
 #include "UpnpQueryMaker.h"
@@ -38,14 +39,14 @@ UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     reset();
     connect( m_internalQM, SIGNAL(done()), this, SLOT(slotDone()) );
 
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::TrackList ) ),
-             this, SLOT( handleTracks(Meta::TrackList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::ArtistList ) ),
-             this, SLOT( handleArtists(Meta::ArtistList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::AlbumList ) ),
-             this, SLOT( handleAlbums(Meta::AlbumList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( const KIO::UDSEntryList & ) ),
-             this, SLOT( handleCustom( const KIO::UDSEntryList &)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::TrackList)),
+             this, SLOT(handleTracks(Meta::TrackList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::ArtistList)),
+             this, SLOT(handleArtists(Meta::ArtistList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::AlbumList)),
+             this, SLOT(handleAlbums(Meta::AlbumList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(KIO::UDSEntryList)),
+             this, SLOT(handleCustom(KIO::UDSEntryList)) );
 }
 
 UpnpQueryMaker::~UpnpQueryMaker()
@@ -88,6 +89,10 @@ DEBUG_BLOCK
                 m_query.reset();
                 m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
                 baseUrl.addQueryItem( "getCount", "1" );
+                break;
+            case Sum:
+            case Max:
+            case Min:
                 break;
         }
     }

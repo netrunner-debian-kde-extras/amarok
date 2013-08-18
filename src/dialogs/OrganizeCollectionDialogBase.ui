@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>469</height>
+    <width>686</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,10 +22,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="_3">
-     <property name="margin">
-      <number>5</number>
-     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_1">
      <item>
       <widget class="QLabel" name="folderLabel">
        <property name="sizePolicy">
@@ -85,12 +82,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>640</width>
-          <height>100</height>
-         </size>
         </property>
         <property name="horizontalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>

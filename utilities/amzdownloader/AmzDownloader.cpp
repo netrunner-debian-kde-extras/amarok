@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2012 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -60,10 +60,10 @@ AmzDownloader::AmzDownloader( QWidget* parent ) :
     if( !m_amzList.isEmpty() )
         ui->amzFileEdit->setText( m_amzList.at( 0 ) );
 
-    connect( ui->quitButton, SIGNAL( clicked() ), this, SLOT( quitClicked() ) );
-    connect( ui->selectAmzButton, SIGNAL( clicked() ), this, SLOT( selectAmzClicked() ) );
-    connect( ui->selectDirectoryButton, SIGNAL( clicked() ), this, SLOT( selectDirectoryClicked() ) );
-    connect( ui->startButton, SIGNAL( clicked() ), this, SLOT( startClicked() ) );
+    connect( ui->quitButton, SIGNAL(clicked()), this, SLOT(quitClicked()) );
+    connect( ui->selectAmzButton, SIGNAL(clicked()), this, SLOT(selectAmzClicked()) );
+    connect( ui->selectDirectoryButton, SIGNAL(clicked()), this, SLOT(selectDirectoryClicked()) );
+    connect( ui->startButton, SIGNAL(clicked()), this, SLOT(startClicked()) );
 }
 
 AmzDownloader::~AmzDownloader()
@@ -124,9 +124,9 @@ AmzDownloader::startClicked()
     m_clamzProcess.setProcessChannelMode( QProcess::MergedChannels );
     m_clamzProcess.start( "clamz", arguments );
 
-    connect( &m_clamzProcess, SIGNAL( error() ), this, SLOT( clamzError() ) );
-    connect( &m_clamzProcess, SIGNAL( readyRead() ), this, SLOT( clamzOutputAvailable() ) );
-    connect( &m_clamzProcess, SIGNAL( finished(int,QProcess::ExitStatus) ), this, SLOT( clamzFinished(int,QProcess::ExitStatus) ) );
+    connect( &m_clamzProcess, SIGNAL(error()), this, SLOT(clamzError()) );
+    connect( &m_clamzProcess, SIGNAL(readyRead()), this, SLOT(clamzOutputAvailable()) );
+    connect( &m_clamzProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(clamzFinished(int,QProcess::ExitStatus)) );
 
     ui->selectAmzButton->setDisabled( true );
     ui->startButton->setDisabled( true );
@@ -187,7 +187,7 @@ AmzDownloader::clamzFinished( int exitCode, QProcess::ExitStatus exitStatus )
     if( exitCode == 0 )
         QMessageBox::information( this, tr( "Download finished" ), tr( "Download finished successfully. Have fun listening to your music." ) );
     else
-        QMessageBox::warning( this, tr( "Download failed" ), tr( "Please check the progress output for further infos." ) );
+        QMessageBox::warning( this, tr( "Download failed" ), tr( "Please check the progress output for further information." ) );
 
     ui->selectAmzButton->setDisabled( false );
     ui->startButton->setDisabled( false );

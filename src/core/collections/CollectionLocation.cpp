@@ -24,6 +24,7 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocationDelegate.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingConfiguration.h"
@@ -139,8 +140,8 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_removeSources = false;
     m_isRemoveAction = false;
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -187,8 +188,8 @@ CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_isRemoveAction = false;
     m_removeSources = true;
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -223,8 +224,8 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
     m_isRemoveAction = true;
     m_removeSources = false;
 
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -333,9 +334,16 @@ CollectionLocation::getDestinationTranscodingConfig()
     if( collection() && collection() == destination()->collection() )
         operation = CollectionLocationDelegate::Move; // organizing
     configuration = delegate->transcode( tc->playableFileTypes(), &saveConfiguration,
-                                         operation, destCollection->prettyName() );
-    if( configuration.isValid() && saveConfiguration )
-        tc->setSavedConfiguration( configuration );
+                                         operation, destCollection->prettyName(),
+                                         saved );
+    if( configuration.isValid() )
+    {
+        if( saveConfiguration )
+            tc->setSavedConfiguration( configuration );
+        else //save the trackSelection value for restore anyway
+            tc->setSavedConfiguration( Transcoding::Configuration( Transcoding::INVALID,
+                                        configuration.trackSelection() ) );
+    }
     return configuration; // may be invalid, it means user has hit cancel
 }
 
@@ -548,7 +556,7 @@ CollectionLocation::slotFinishRemove()
 
     if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )
     {
-        debug() << "Removeing empty directories";
+        debug() << "Removing empty directories";
         dirsToRemove.removeDuplicates();
         dirsToRemove.sort();
         while( !dirsToRemove.isEmpty() )
@@ -618,25 +626,25 @@ CollectionLocation::queryDone()
 void
 CollectionLocation::setupConnections()
 {
-    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ),
-             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ) );
-    connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ),
-             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ) );
-    connect( m_destination, SIGNAL( finishCopy() ),
-             this, SLOT( slotFinishCopy() ) );
-    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
-    connect( m_destination, SIGNAL( aborted() ), SLOT( slotAborted() ) );
+    connect( this, SIGNAL(prepareOperation(Meta::TrackList,bool,Transcoding::Configuration)),
+             m_destination, SLOT(slotPrepareOperation(Meta::TrackList,bool,Transcoding::Configuration)) );
+    connect( m_destination, SIGNAL(operationPrepared()), SLOT(slotOperationPrepared()) );
+    connect( this, SIGNAL(startCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)),
+             m_destination, SLOT(slotStartCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)) );
+    connect( m_destination, SIGNAL(finishCopy()),
+             this, SLOT(slotFinishCopy()) );
+    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
+    connect( m_destination, SIGNAL(aborted()), SLOT(slotAborted()) );
 }
 
 void
 CollectionLocation::setupRemoveConnections()
 {
-    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
-    connect( this, SIGNAL( startRemove() ),
-             this, SLOT( slotStartRemove() ) );
-    connect( this, SIGNAL( finishRemove() ),
-             this, SLOT( slotFinishRemove() ) );
+    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
+    connect( this, SIGNAL(startRemove()),
+             this, SLOT(slotStartRemove()) );
+    connect( this, SIGNAL(finishRemove()),
+             this, SLOT(slotFinishRemove()) );
 }
 
 void

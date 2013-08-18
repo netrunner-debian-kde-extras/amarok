@@ -15,15 +15,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlQueryMaker.h"
-
 #define DEBUG_PREFIX "SqlQueryMaker"
 
-#include "core/support/Debug.h"
+#include "SqlQueryMaker.h"
 
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/db/MountPointManager.h"
 
 #include <QWeakPointer>
 #include <QStack>
@@ -594,7 +594,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
                 sqlfunction = "MIN";
                 break;
             default:
-                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
+                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + QString::number( function );
         }
         d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
         d->returnValueType = value;
@@ -1046,7 +1046,7 @@ SqlQueryMaker::nameForValue( qint64 value )
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.modifydate";
         default:
-            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
+            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + QString::number( value );
     }
 }
 

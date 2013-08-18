@@ -19,9 +19,8 @@
 
 #include "amarokconfig.h"
 #include "MetaTagLib.h"
-#include "core-impl/collections/db/ScanManager.h"
+#include "scanner/GenericScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "core-impl/collections/db/sql/SqlRegistry.h"
 #include "core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h"
@@ -29,9 +28,11 @@
 #include "config-amarok-test.h"
 #include "SqlMountPointManagerMock.h"
 
-#include <QTest>
-
 #include <qtest_kde.h>
+
+#include <QTest>
+#include <QScopedPointer>
+#include <ThreadWeaver/Weaver>
 
 QTEST_KDEMAIN_CORE( TestSqlScanManager )
 
@@ -48,6 +49,10 @@ TestSqlScanManager::initTestCase()
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
 
+    //Tell GenericScanManager that we want to use the recently built scanner, not an installed version.
+    const QString overridePath = QString( AMAROK_OVERRIDE_UTILITIES_PATH );
+    qApp->setProperty( "overrideUtilitiesPath", overridePath );
+
     // that is the original mp3 file that we use to generate the "real" tracks
     m_sourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
     QVERIFY( QFile::exists( m_sourcePath ) );
@@ -55,8 +60,12 @@ TestSqlScanManager::initTestCase()
     m_tmpDatabaseDir = new KTempDir();
     QVERIFY( m_tmpDatabaseDir->exists() );
     m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
-    m_collection = Collections::SqlCollectionFactory().createSqlCollection( "testId", "testscanmanager", m_storage );
-    connect( m_collection, SIGNAL( updated() ), this, SLOT( slotCollectionUpdated() ) );
+
+    m_collection = new Collections::SqlCollection( m_storage );
+    connect( m_collection, SIGNAL(updated()), this, SLOT(slotCollectionUpdated()) );
+
+    // TODO: change the mock mount point manager so that it doesn't pull
+    //       in all the devices. Not much of a mock like this.
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( mock );
     m_scanManager = m_collection->scanManager();
@@ -87,7 +96,14 @@ TestSqlScanManager::initTestCase()
 void
 TestSqlScanManager::cleanupTestCase()
 {
+    // aborts a ThreadWeaver job that would otherwise cause next statement to stall
     delete m_collection;
+
+    // we cannot simply call WeaverInterface::finish(), it stops event loop
+    if( !ThreadWeaver::Weaver::instance()->isIdle() )
+        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Weaver::instance(),
+                SIGNAL(finished()), 5000 ), "threads did not finish in timeout" );
+
     //m_storage is deleted by SqlCollection
     delete m_tmpDatabaseDir;
 }
@@ -128,10 +144,8 @@ void
 TestSqlScanManager::testScanSingle()
 {
     m_collectionUpdatedCount = 0;
-
     createSingleTrack();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     QVERIFY( m_collectionUpdatedCount > 0 );
 
@@ -170,8 +184,7 @@ TestSqlScanManager::testScanSingle()
     // -- check that a further scan doesn't change anything
     m_collectionUpdatedCount = 0;
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     QCOMPARE( m_collectionUpdatedCount, 0 );
 }
@@ -180,8 +193,7 @@ void
 TestSqlScanManager::testScanDirectory()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -211,8 +223,7 @@ TestSqlScanManager::testDuplicateUid()
     values.insert( Meta::valTitle, QVariant("Track 2") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
@@ -242,8 +253,7 @@ TestSqlScanManager::testLongUid()
     values.insert( Meta::valTitle, QVariant("Track 2") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
@@ -303,8 +313,7 @@ TestSqlScanManager::testCompilation()
     values.insert( Meta::valAlbum, QVariant("The Last Unicorn") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -342,37 +351,11 @@ TestSqlScanManager::testCompilation()
     QVERIFY( !album->isCompilation() );
 }
 
-
-void
-TestSqlScanManager::testRestartScanner()
-{
-#ifndef QT_NO_DEBUG
-    createAlbum();
-
-    // the scanner crashes at a special file:
-    Meta::FieldHash values;
-    values.clear();
-    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
-    values.insert( Meta::valUrl, QVariant("Thriller/crash_amarok_here.ogg") );
-    createTrack( values );
-
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
-
-    // -- check the commit
-    Meta::AlbumPtr album;
-    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
-    QVERIFY( album );
-    QCOMPARE( album->tracks().count(), 9 );
-
-#else
-    QSKIP( "Collection scanner only crashes in debug build.", SkipAll );
-#endif
-}
-
 void
 TestSqlScanManager::testBlock()
 {
+    /** TODO: do we need blocking at all?
+
     createSingleTrack();
     Meta::TrackPtr track;
 
@@ -389,18 +372,17 @@ TestSqlScanManager::testBlock()
     // it might or might not continue with the old scan
 
     waitScannerFinished(); // in case it does continue after all
+    */
 }
 
 void
 TestSqlScanManager::testAddDirectory()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     createCompilation();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -420,8 +402,7 @@ TestSqlScanManager::testRemoveDir()
 
     createAlbum();
     createCompilation();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -435,14 +416,14 @@ TestSqlScanManager::testRemoveDir()
     QVERIFY( album->isCompilation() );
 
     // -- remove one album
+
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
     QVERIFY( album );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // this one is still here
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -455,7 +436,6 @@ TestSqlScanManager::testRemoveDir()
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
 
-
     // -- remove the second album
     // this time it's a directory inside a directory
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -463,13 +443,12 @@ TestSqlScanManager::testRemoveDir()
     QCOMPARE( album->tracks().count(), 9 );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
-    // QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( "Pop" ) );
 
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
-    // this both are gone
+    incrementalScanAndWait();
+
+    // this time both are gone
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
@@ -483,8 +462,7 @@ void
 TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     Meta::AlbumPtr album;
     Meta::TrackList tracks;
@@ -511,7 +489,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
         KUrl url = track->playableUrl();
         QVERIFY( url.isLocalFile() );
-        Meta::Tag::writeTags( url.path(), uidChange );
+        Meta::Tag::writeTags( url.path(), uidChange, true );
     }
 
     // move album directory
@@ -520,8 +498,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
     QVERIFY( QFile::rename( base, base + "Albums" ) );
 
     // do an incremental scan
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    incrementalScanAndWait();
 
     // recheck album
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -545,8 +522,7 @@ TestSqlScanManager::testRemoveTrack()
     QDateTime aDate = QDateTime::currentDateTime();
 
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -561,8 +537,7 @@ TestSqlScanManager::testRemoveTrack()
     // -- remove one track
     QVERIFY( QFile::remove( track->playableUrl().path() ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check that the track is really gone
     QCOMPARE( album->tracks().count(), 8 );
@@ -581,8 +556,7 @@ TestSqlScanManager::testMove()
     Meta::TrackPtr track;
     QDateTime aDate = QDateTime::currentDateTime();
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -599,8 +573,7 @@ TestSqlScanManager::testMove()
     const QString targetPath = m_tmpCollectionDir->name() + "moved.mp3";
     QVERIFY( QFile::rename( track->playableUrl().path(), targetPath ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check that the track is moved
     QVERIFY( createDate == track->createDate() ); // create date should not have changed
@@ -619,8 +592,7 @@ TestSqlScanManager::testMove()
                             m_tmpCollectionDir->name() + "Top Gun - Soundtrack" ) );
 
     // do an incremental scan
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    incrementalScanAndWait();
 
     // check that the track is now moved (but still the old object)
     QCOMPARE( album->tracks().count(), 10 ); // no doublicate tracks
@@ -641,8 +613,7 @@ TestSqlScanManager::testFeat()
     values.insert( Meta::valAlbum, QVariant("The Last Unicorn") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -673,8 +644,7 @@ TestSqlScanManager::testAlbumImage()
     targetPath = m_tmpCollectionDir->name() + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
     Meta::Tag::setEmbeddedCover( targetPath, QImage( 200, 200, QImage::Format_RGB32 ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -710,8 +680,7 @@ TestSqlScanManager::testMerges()
     createTrack( values );
 
     // -- check the commit
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     QVERIFY( track );
@@ -727,7 +696,6 @@ TestSqlScanManager::testMerges()
     values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
     values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
-    values.insert( Meta::valAlbumArtist, QVariant("Various Artists") );
     values.insert( Meta::valAlbum, QVariant("Big Screen Adventures") );
     values.insert( Meta::valComposer, QVariant("Unknown Composer") );
     values.insert( Meta::valComment, QVariant("Amazon.com Song ID: 210541237") );
@@ -738,8 +706,7 @@ TestSqlScanManager::testMerges()
     values.insert( Meta::valPlaycount, QVariant(5) );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     QCOMPARE( track->name(), QString("Theme From Armageddon") );
@@ -747,7 +714,6 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
-    QVERIFY( track->album()->isCompilation() ); // the track is by various artists
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
     QCOMPARE( track->year()->year(), 2009 );
@@ -766,16 +732,14 @@ TestSqlScanManager::testMerges()
 
 
     // -- now do an incremental scan
-    createAlbum();
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    createAlbum(); // add a new album
+    incrementalScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
 
     // the old track is still there
-    // and it's still has an album artist "various artists" so it's still a compilation
-    album = m_collection->registry()->getAlbum( "Big Screen Adventures", QString() );
+    album = m_collection->registry()->getAlbum( "Big Screen Adventures", "Soundtrack & Theme Orchestra" );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 1 );
 
@@ -892,8 +856,7 @@ TestSqlScanManager::testLargeInsert()
     aDate = QDateTime::currentDateTime();
     // -- feed the scanner in batch mode
     buffer->seek( 0 );
-    m_scanManager->requestImport( buffer );
-    waitScannerFinished();
+    importAndWait( buffer );
 
     qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() );
 
@@ -921,8 +884,7 @@ TestSqlScanManager::testLargeInsert()
     // -- feed the scanner in batch mode
     buffer = new QBuffer(&byteArray); // the old scanner deleted the old buffer.
     buffer->open(QIODevice::ReadWrite);
-    m_scanManager->requestImport( buffer );
-    waitScannerFinished();
+    importAndWait( buffer );
 
     qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() );
 
@@ -976,8 +938,7 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
     values.insert( Meta::valAlbum, QVariant("Top Gun") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Top Gun", QString() );
@@ -988,17 +949,181 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
 }
 
 void
+TestSqlScanManager::testAlbumArtistMerges()
+{
+    // three tracks with the same artist but different album artist.
+    // (one is unset)
+    // Those should end up in different albums.
+
+    Meta::FieldHash values;
+
+    values.insert( Meta::valUniqueId, QVariant("1ef9fede5b3f98deb088b33428b0398e") );
+    values.insert( Meta::valUrl, QVariant("test1/song1.mp3") );
+    values.insert( Meta::valTitle, QVariant("title1") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbumArtist, QVariant("albumArtist1") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("2ef9fede5b3f98deb088b33428b0398b") );
+    values.insert( Meta::valUrl, QVariant("test1/song2.mp3") );
+    values.insert( Meta::valTitle, QVariant("title2") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbumArtist, QVariant("albumArtist2") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("3ef9fede5b3f98deb088b33428b0398c") );
+    values.insert( Meta::valUrl, QVariant("test1/song3.mp3") );
+    values.insert( Meta::valTitle, QVariant("title3") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    fullScanAndWait();
+
+    // -- check the commit
+    Meta::AlbumPtr album;
+
+    album = m_collection->registry()->getAlbum( "test1", QString() );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( album->isCompilation() );
+
+    album = m_collection->registry()->getAlbum( "test1", QString("albumArtist1") );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( !album->isCompilation() );
+
+    album = m_collection->registry()->getAlbum( "test1", QString("albumArtist2") );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( !album->isCompilation() );
+}
+
+void
+TestSqlScanManager::testCrossRenaming()
+{
+    createAlbum();
+
+    // we use the created and first played attributes for identifying the moved tracks.
+    // currently those are not written back to the track
+
+    Meta::AlbumPtr album;
+    Meta::TrackPtr track;
+
+    fullScanAndWait();
+
+    // -- check the commit
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 9 );
+    QVERIFY( !album->isCompilation() );
+
+    // --- cross-rename two track
+    track = album->tracks().at( 0 );
+    static_cast<Meta::SqlTrack*>(track.data())->setRating( 1 );
+    QString path1 = track->playableUrl().path();
+
+    track = album->tracks().at( 1 );
+    static_cast<Meta::SqlTrack*>(track.data())->setRating( 2 );
+    QString path2 = track->playableUrl().path();
+
+    QString targetPath = m_tmpCollectionDir->name() + "moved.mp3";
+    QVERIFY( QFile::rename( path2, targetPath ) );
+    QVERIFY( QFile::rename( path1, path2 ) );
+    QVERIFY( QFile::rename( targetPath, path1 ) );
+
+    fullScanAndWait();
+
+    // -- check that the tracks are moved correctly
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 9 );
+
+    track = album->tracks().at( 0 );
+    QCOMPARE( track->statistics()->rating(), 1 );
+    QCOMPARE( track->playableUrl().path(), path2 );
+
+    track = album->tracks().at( 1 );
+    QCOMPARE( track->statistics()->rating(), 2 );
+    QCOMPARE( track->playableUrl().path(), path1 );
+}
+
+
+void
 TestSqlScanManager::slotCollectionUpdated()
 {
     m_collectionUpdatedCount++;
 }
 
 void
+TestSqlScanManager::fullScanAndWait()
+{
+    QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
+    if( csc )
+    {
+        csc->startFullScan();
+        waitScannerFinished();
+    }
+}
+
+void
+TestSqlScanManager::incrementalScanAndWait()
+{
+    // incremental scans use the modification time of the file system.
+    // this time is only in seconds, so to be sure that the incremental scan
+    // works we need to wait at least one second.
+    QTest::qWait( 1000 );
+
+    QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
+    if( csc )
+        csc->startIncrementalScan();
+
+    waitScannerFinished();
+}
+
+void
+TestSqlScanManager::importAndWait( QIODevice* input )
+{
+    QScopedPointer<Capabilities::CollectionImportCapability> csc( m_collection->create<Capabilities::CollectionImportCapability>());
+    if( csc )
+        csc->import( input, 0 );
+
+    waitScannerFinished();
+}
+
+void
 TestSqlScanManager::waitScannerFinished()
 {
     QVERIFY( m_scanManager->isRunning() );
-    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(scanDone(ScannerJob*)), 60*1000 ),
-              "ScanManager didn't finish scan within timeout" );
+    QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()) );
+    QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)) );
+
+    // connect the result signal *after* the spies to ensure they are updated first
+    connect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
+    connect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()));
+    const bool ok = QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000 );
+    disconnect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
+    disconnect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()) );
+    QVERIFY2( ok, "Scan Manager timed out without a result" );
+
+    if( failSpy.count() > 0 )
+    {
+        QStringList errors;
+        foreach( const QList<QVariant> &arguments, static_cast<QList<QList<QVariant> > >( failSpy ) )
+            errors << arguments.value( 0 ).toString();
+        // this will fire each time:
+        qWarning() << "ScanManager failed with an error:" << errors.join( ", " );
+    }
+    QCOMPARE( qMakePair( succeedSpy.count(), failSpy.count() ), qMakePair( 1, 0 ) );
+
+    QVERIFY( !m_scanManager->isRunning() );
 }
 
 void
@@ -1012,7 +1137,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
-    Meta::Tag::writeTags( targetPath, values );
+    Meta::Tag::writeTags( targetPath, values, true );
 }
 
 void

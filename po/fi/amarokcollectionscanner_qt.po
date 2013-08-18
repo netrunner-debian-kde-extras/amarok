@@ -1,76 +1,48 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Tommi Nieminen <translator@legisign.org>, 2011.
+# Lasse Liehu <lasse.liehu@gmail.com>, 2013.
 #
-# KDE 4.9 Finnish translation sprint 2012-06/07
+# KDE Finnish translation sprint participants:
+# Author: Lliehu
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
-"PO-Revision-Date: 2011-06-06 20:29+0300\n"
-"Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
+"PO-Revision-Date: 2013-01-21 20:20+0200\n"
+"Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-POT-Import-Date: 2012-06-15 07:05:17+0000\n"
-"X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-07-04\n"
+"X-POT-Import-Date: 2012-12-01 22:20:43+0000\n"
+"X-Generator: Lokalize 1.5\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
-msgstr "Tiedostoa ”%1” ei löytynyt."
+msgstr "Tiedostoa ”%1” ei löydy."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Tiedostoa ”%1” ei voitu avata."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Valitsimelta %1 puuttuu parametri"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
-#, fuzzy
-#| msgid ""
-#| "Amarok Collection Scanner\n"
-#| "Scans directories and outputs a xml file with the results.\n"
-#| "For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
-#| "\n"
-#| "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
-#| "User-modifiable Options:\n"
-#| "<Folder(s)>             : list of folders to scan\n"
-#| "-h, --help              : This help text\n"
-#| "-v, --version           : Print the version of this tool\n"
-#| "-r, --recursive         : Scan folders recursively\n"
-#| "-i, --incremental       : Incremental scan (modified folders only)\n"
-#| "-s, --restart           : After a crash, restart the scanner in its last "
-#| "position\n"
-#| "    --idlepriority      : Run at idle priority\n"
-#| "    --sharedmemory <key> : A shared memory segment to be used for "
-#| "restarting a scan\n"
-#| "    --newer <path>      : Only scan directories if modification time is "
-#| "new than <path>\n"
-#| "                          Only useful in incremental scan mode\n"
-#| "    --batch <path>      : Add the directories from the batch xml file\n"
-#| "                          batch file format should look like this:\n"
-#| "   <scanner>\n"
-#| "    <directory>\n"
-#| "     <path>/absolute/path/of/directory</path>\n"
-#| "     <mtime>1234</mtime>   (this is optional)\n"
-#| "    </directory>\n"
-#| "   </scanner>\n"
-#| "                          You can also use a previous scan result for "
-#| "that.\n"
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -99,7 +71,8 @@ msgid ""
 msgstr ""
 "Amarokin kokoelmahaku\n"
 "Tarkistaa kansiot ja luo tuloksista XML-tiedoston.\n"
-"Lisätietoja osoitteesta http://amarok.kde.org/wiki/Batch_Mode\n"
+"Lisätietoja osoitteesta http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Käyttö: amarokcollectionscanner [valitsimet] <Kansio(t)>\n"
 "Käytettävissä olevat asetukset:\n"

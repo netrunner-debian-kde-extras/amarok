@@ -56,7 +56,8 @@ UmsCollectionLocation::actualLocation() const
 bool
 UmsCollectionLocation::isWritable() const
 {
-    return m_umsCollection->isWritable();
+    const QFileInfo info( m_umsCollection->musicPath().toLocalFile() );
+    return info.isWritable();
 }
 
 bool
@@ -78,7 +79,8 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         i.next();
         Meta::TrackPtr track = i.key();
         KUrl destination;
-        if( configuration.isJustCopy() )
+        bool isJustCopy = configuration.isJustCopy( track );
+        if( isJustCopy )
             destination = m_umsCollection->organizedUrl( track );
         else
             destination = m_umsCollection->organizedUrl( track, Amarok::Components::
@@ -91,7 +93,10 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
             abort();
         }
         m_sourceUrlToTrackMap.insert( i.value(), track ); // needed for slotTrackTransferred()
-        transferJob->addCopy( i.value(), destination );
+        if( isJustCopy )
+            transferJob->addCopy( i.value(), destination );
+        else
+            transferJob->addTranscode( i.value(), destination );
     }
 
     connect( transferJob, SIGNAL(sourceFileTransferDone(KUrl)),
@@ -124,7 +129,7 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
-    connect( delJob, SIGNAL(finished( KJob * )), SLOT(slotRemoveOperationFinished()) );
+    connect( delJob, SIGNAL(finished(KJob*)), SLOT(slotRemoveOperationFinished()) );
 }
 
 void
@@ -168,17 +173,23 @@ UmsTransferJob::UmsTransferJob( UmsCollectionLocation* location,
 void
 UmsTransferJob::addCopy( const KUrl &from, const KUrl &to )
 {
-    m_transferList << KUrlPair( from, to );
+    m_copyList << KUrlPair( from, to );
+}
+
+void
+UmsTransferJob::addTranscode( const KUrl &from, const KUrl &to )
+{
+    m_transcodeList << KUrlPair( from, to );
 }
 
 void
 UmsTransferJob::start()
 {
     DEBUG_BLOCK;
-    if( m_transferList.isEmpty() )
+    if( m_copyList.isEmpty() && m_transcodeList.isEmpty() )
         return;
 
-    m_totalTracks = m_transferList.size();
+    m_totalTracks = m_transcodeList.size() + m_copyList.size();
     startNextJob();
 }
 
@@ -191,20 +202,31 @@ UmsTransferJob::slotCancel()
 void
 UmsTransferJob::startNextJob()
 {
-    if( m_transferList.isEmpty() || m_abort )
+    if( m_abort )
     {
         emitResult();
         return;
     }
 
-    KUrlPair urlPair = m_transferList.takeFirst();
     KJob *job;
-    if( m_transcodingConfiguration.isJustCopy() )
-        job = KIO::file_copy( urlPair.first, urlPair.second, -1, KIO::HideProgressInfo );
-    else
+    if( !m_transcodeList.isEmpty() )
+    {
+        KUrlPair urlPair = m_transcodeList.takeFirst();
         job = new Transcoding::Job( urlPair.first, urlPair.second, m_transcodingConfiguration );
-    connect( job, SIGNAL(percent( KJob *, unsigned long )),
-             SLOT(slotChildJobPercent( KJob *, unsigned long )) );
+    }
+    else if( !m_copyList.isEmpty() )
+    {
+        KUrlPair urlPair = m_copyList.takeFirst();
+        job = KIO::file_copy( urlPair.first, urlPair.second, -1, KIO::HideProgressInfo );
+    }
+    else
+    {
+        emitResult();
+        return;
+    }
+
+    connect( job, SIGNAL(percent(KJob*,ulong)),
+             SLOT(slotChildJobPercent(KJob*,ulong)) );
     addSubjob( job );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }
@@ -214,7 +236,7 @@ UmsTransferJob::slotChildJobPercent( KJob *job, unsigned long percentage )
 {
     Q_UNUSED(job)
     // the -1 is for the current track that is being processed but already removed from transferList
-    int alreadyTransferred = m_totalTracks - m_transferList.size() - 1;
+    int alreadyTransferred = m_totalTracks - m_transcodeList.size() - m_copyList.size() - 1;
     emitPercent( alreadyTransferred * 100.0 + percentage, 100.0 * m_totalTracks );
 }
 
@@ -240,7 +262,11 @@ UmsTransferJob::slotResult( KJob *job )
         else
             Debug::warning() << __PRETTY_FUNCTION__ << "invalid job passed to me!";
     }
+    else
+        Debug::warning() << __PRETTY_FUNCTION__ << "job failed with" << job->error();
+
     // transcoding job currently doesn't emit percentage, so emit it at least once for track
-    emitPercent( m_totalTracks - m_transferList.size() , m_totalTracks );
+    emitPercent( m_totalTracks - ( m_transcodeList.size() + m_copyList.size() ),
+                 m_totalTracks );
     startNextJob();
 }

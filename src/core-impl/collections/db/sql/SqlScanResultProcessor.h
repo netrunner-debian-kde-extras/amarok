@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2009-2010 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,67 +20,51 @@
 #ifndef AMAROK_SQL_SCANRESULTPROCESSOR_H
 #define AMAROK_SQL_SCANRESULTPROCESSOR_H
 
-#include "core-impl/collections/db/ScanResultProcessor.h"
+#include "scanner/AbstractScanResultProcessor.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
-
-#include <QFileInfo>
-#include <QList>
-#include <QMap>
-#include <QPair>
-#include <QString>
-#include <QStringList>
-#include <QVariant>
-
-#include "amarok_sqlcollection_export.h"
-
-namespace Collections
-{
-    class DatabaseCollection;
-}
-
-namespace CollectionScanner
-{
-    class Album;
-    class Track;
-    class Directory;
-    class Playlist;
-}
-
-class SqlStorage;
-class DatabaseUpdater;
 
 /** The ScanResulProcessor class takes the results from the ScanManager and puts them into the database.
  */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResultProcessor
+class SqlScanResultProcessor : public AbstractScanResultProcessor
 {
     Q_OBJECT
 
     public:
-        SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent = 0 );
+        SqlScanResultProcessor( GenericScanManager* manager,
+                                Collections::SqlCollection *collection,
+                                QObject *parent = 0 );
         virtual ~SqlScanResultProcessor();
 
-        virtual void commit();
+
+    protected slots:
+        virtual void scanStarted( GenericScanManager::ScanType type );
+        virtual void scanSucceeded();
+
+        virtual void displayMessages();
 
     protected:
-        virtual void blockUpdates();
-        virtual void unblockUpdates();
+        virtual void message( const QString& message );
 
-        void commitDirectory( CollectionScanner::Directory *dir );
-        void commitAlbum( CollectionScanner::Album *album );
-        void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum );
+        virtual void commitDirectory( QSharedPointer<CollectionScanner::Directory> directory );
+        virtual void commitAlbum( CollectionScanner::Album *album );
+        virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum );
 
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
-        void deleteDeletedDirectories();
+        virtual void deleteDeletedDirectories();
 
-        void deleteDeletedTracks( CollectionScanner::Directory *directory );
+        virtual void deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory );
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
-        void deleteDeletedTracks( int directoryId );
+        virtual void deleteDeletedTracks( int directoryId );
+
+        virtual void cleanupMembers();
+
+        void blockUpdates();
+        void unblockUpdates();
 
     private:
         // to speed up the scanning we buffer the whole urls table
-        struct UrlEntry
-        {
+        struct UrlEntry {
             int id;
             QString path;
             int directoryId;
@@ -110,14 +95,45 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
          */
         void removeTrack( const UrlEntry &entry );
 
-        Collections::SqlCollection* m_collection;
+        struct DirectoryEntry {
+            int dirId;
+            int deviceId;
+            QString dir;
+        };
 
-        /** Contains all found directories with their absolute path and id */
+        /**
+         * Get a list of all mounted directories from the database.
+         */
+        QList<DirectoryEntry> mountedDirectories() const;
+
+        /**
+         * Get a list of directories that have been physically removed during the
+         * PartialUpdateScan.
+         */
+        QList<DirectoryEntry> deletedDirectories() const;
+
+        Collections::SqlCollection *m_collection;
+
+        /**
+         * Contains all found directories with their absolute path and id
+         */
         QHash<QString, int> m_foundDirectories;
-        /** Contains all found tracks with the unique id and url id. QMultiHash only
-         *  because it implements contains( key, value ) */
+
+        /**
+         * Contains all found tracks with the unique id and url id. QMultiHash only
+         * because it implements contains( key, value )
+         */
         QMultiHash<QString, int> m_foundTracks;
 
+        /**
+         * In UpdateScan and PartialUpdateScan this set gets filled with directory ids
+         * that have been (non-recursively) fully scanned (not skipped). Direct child
+         * directories from the database that are not contained in m_foundDirectories can
+         * be considered deleted.
+         */
+        QSet<int> m_scannedDirectoryIds;
+
+        // never dereference they key, it might be a stale pointer in corner cases
         QHash<CollectionScanner::Directory*, int> m_directoryIds;
         QHash<CollectionScanner::Album*, int> m_albumIds;
 
@@ -138,6 +154,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         QHash<QString, int> m_pathCache;
         /// maps directory id to UrlEntry id
         QMultiHash<int, int> m_directoryCache;
+
+        QDateTime m_blockedTime;
+        QStringList m_messages;
 };
 
 QDebug operator<<( QDebug dbg, const SqlScanResultProcessor::UrlEntry &entry );

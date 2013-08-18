@@ -6,7 +6,7 @@ macro_log_feature( GOOGLEMOCK_FOUND "gmock" "Used in Amarok's tests." "http://co
 set( AMAROK_SOURCE_TREE ${CMAKE_SOURCE_DIR}/src )
 set( AMAROK_TEST_TREE ${CMAKE_SOURCE_DIR}/tests )
 set( AMAROK_UTILITY_TREE ${CMAKE_SOURCE_DIR}/utilities )
-
+set( AMAROK_UTILITIES_DIR ${CMAKE_BINARY_DIR}/utilities )
 set( STRESS_TEST_TRACK_COUNT 20000 )
 
 configure_file(config-amarok-test.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok-test.h )
@@ -27,6 +27,7 @@ add_subdirectory( dynamic )
 add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
+add_subdirectory( scanner )
 add_subdirectory( services )
 add_subdirectory( synchronization )
 
@@ -142,5 +143,5 @@ add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 add_dependencies( testtrackorganizer gtest )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_SOLID_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
 

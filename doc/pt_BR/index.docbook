@@ -51,14 +51,14 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->22-12-2012</date>
+>24/04/2013</date>
       <releaseinfo
 >2.7.0</releaseinfo>
 <abstract>
 <para
->O &amarok; é um reprodutor de música gratuito, versátil e poderoso para o &Linux;. A última série de versões 2.x, normalmente conhecida por <quote
+>&amarok; é um reprodutor de música gratuito, versátil e poderoso para o &Linux;. A última série de versões 2.x, normalmente conhecida por <quote
 >Amarok&nbsp;2</quote
->, é multi-plataforma (poderá ser usado em várias plataformas, incluindo o &Linux;, &MacOS; e o &Microsoft; &Windows;) e implementa um código completamente remodelado que permitirá incorporar diversas empolgantes funcionalidades à medida que a versão vai amadurecendo. A versão estável neste momento é a 2.4.</para>
+>, é multiplataforma (poderá ser usado em várias plataformas, incluindo o &Linux;, &MacOS; e o &Microsoft; &Windows;) e implementa um código completamente remodelado que permitirá incorporar diversas empolgantes funcionalidades à medida que a versão vai amadurecendo. A versão estável neste momento é a 2.4.</para>
       </abstract>
 <keywordset>
  <keyword
@@ -82,7 +82,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-12-23T12:57:51Z</timestamp
+>2013-04-24T10:00:01Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -124,7 +124,7 @@
 </informaltable>
 </para>
 <para
->O &amarok; é um aplicativo de música de primeira linha, Livre e de Código Aberto. Mais do que simplesmente um reprodutor, o &amarok; o ajuda a redescobrir suas músicas. A interface inovadora fornece à você um controle sem precedentes sobre toda a sua coleção, e permite-lhe encontrar sua música em qualquer lugar. Use nosso <link linkend="quick-start-guide"
+>&amarok; é um aplicativo de música de primeira linha, Livre e de Código Aberto. Mais do que simplesmente um reprodutor, o &amarok; o ajuda a redescobrir suas músicas. A interface inovadora fornece-lhe um controle sem precedentes sobre toda a sua coleção, e permite encontrar suas músicas em qualquer lugar. Use nosso <link linkend="quick-start-guide"
 >Guia de introdução</link
 > para se familiarizar rapidamente, ou pesquise informações mais detalhadas neste manual. </para>
 </chapter>
@@ -348,7 +348,7 @@
 > 
 <para
 >Se estiver executando o <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
->Espaço de trabalho do Plasma</ulink
+>Espaço de Trabalho Plasma</ulink
 >, você pode iniciar o &amarok;: </para>
 <itemizedlist>
 <listitem
@@ -1976,7 +1976,7 @@
 ><guimenuitem
 >Scripts</guimenuitem
 ></menuchoice
->. Adiciona mais fontes de letras, estações de rádio, salve capas para as pastas dos seus álbuns, grave &CD;s a partir de listas de músicas, &etc;. </para>
+>. Adiciona mais fontes de letras, estações de rádio, salve capas para as pastas dos seus álbuns, grave &CD;s a partir de listas de músicas, &etc; </para>
 </sect2>
 <sect2 id="scrobble"
 ><title
@@ -2009,7 +2009,7 @@
 >Marcas</title
 > 
 <para
->As informações sobre cada uma das faixas que você ouve, &eg; nome do álbum, título da faixa, compositor, artista, ano, &etc;. Existe um padrão chamado ID3 para incluir esta informação em CDs de áudio. Você pode editar as marcas de faixas individuais com o &amarok; se as permissões do arquivo estiverem corretas. </para>
+>As informações sobre cada uma das faixas que você ouve, &eg; nome do álbum, título da faixa, compositor, artista, ano, &etc; Existe um padrão chamado ID3 para incluir esta informação em CDs de áudio. Você pode editar as marcas de faixas individuais com o &amarok; se as permissões do arquivo estiverem corretas. </para>
 </sect2>
 </sect1>
 </chapter>
@@ -2324,7 +2324,7 @@
 >Serviços Internet</emphasis
 > que você tiver ativado. Aqui você pode navegar por listas de estações de rádio e podcasts; ouvir e/ou inscrever-se a eles, interagir com sua conta do <ulink url="http://www.last.fm"
 >last.fm</ulink
->, comprar músicas de lojas on-line, como a nova loja de MP3 da Amazon ou a <ulink url="http://www.magnatune.com/"
+>, comprar músicas de lojas on-line, como a nova loja Amazon MP3 ou a <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
 > e baixar músicas de artistas independentes a partir da <ulink url="http://www.jamendo.com/"
 >Jamendo</ulink
@@ -2460,7 +2460,7 @@
     </entry>
     <entry>
     <para
->Copia o favorito para a área de transferência do KDE.</para>
+>Copia o favorito para a área de transferência do sistema.</para>
     </entry>
   </row>
   <row>
@@ -2793,13 +2793,13 @@
     <entry>
     <para
 ><guilabel
->Loja de músicas em MP3</guilabel
+>MP3 Music Store</guilabel
 ></para>
     </entry>
     <entry>
     <para
 >Conecta com a <guilabel
->Loja de MP3 da Amazon</guilabel
+>Loja Amazon MP3</guilabel
 >, uma grande loja de músicas online.</para>
     </entry>
   </row>
@@ -4971,11 +4971,11 @@
     </imageobject>
     <textobject>
       <phrase
->(Clique para ampliar)</phrase>
+></phrase>
     </textobject>
     <caption>
       <para
->(Clique para ampliar)</para>
+></para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5203,12 +5203,12 @@
     <entry>
     <para
 ><guilabel
->Loja de músicas em MP3</guilabel
+>MP3 Music Store</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Acessar a loja de MP3 da Amazon diretamente a partir do Amarok</para>
+>Acessa a loja Amazon MP3 diretamente do Amarok</para>
     </entry>
     <entry>
     <para
@@ -5258,7 +5258,7 @@
 </sect2>
 <sect2 id="local-collection-backends"
 ><title
->Infraestrutura da coleção local</title
+>Infraestruturas da coleção local</title
 > 
 <para
 >O &amarok; oferece-lhe acesso às seguintes infraestruturas de coleções locais, caso estejam disponíveis: </para>
@@ -5295,7 +5295,7 @@
     </entry>
     <entry>
     <para
->Pastas da coleção local em compartilhamentos NFS (Network File System) remotos</para>
+>Pastas da coleção local em compartilhamentos remotos NFS (Network File System)</para>
     </entry>
   </row>
   <row>
@@ -5362,14 +5362,14 @@
 >Fontes multimídia</emphasis
 >, selecione a seção Internet e clique na loja Magnatune. Irá então baixar o catálogo, para que você possa procurar e selecionar a música que deseja comprar. </para>
 </sect2>
-<sect2 id="mp3-store-configuration"
+<sect2 id="mpthree-store-configuration"
 ><title
 >Configuração da loja de MP3</title
 > 
 <para
->Acessar a loja de MP3 da Amazon diretamente a partir do &amarok;. </para>
+>Acessa a loja Amazon MP3 diretamente do &amarok;. </para>
 <para
->A loja de MP3 da Amazon precisa saber o país em que você está, pois ela oferece diferentes itens de acordo com a sua localização. São permitidos os seguintes países: </para>
+>A loja Amazon MP3 precisa saber o país em que você está, pois ela oferece diferentes itens de acordo com a sua localização. São permitidos os seguintes países: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -5393,7 +5393,7 @@
 ></listitem>
 </itemizedlist>
 <para
->NOTA: Se modificar o país irá invalidar o seu carrinho de compras. Se o seu país não estiver na lista, você não poderá usar a loja de MP3 da Amazon porque não há suporte. </para>
+>NOTA: Se modificar o país irá invalidar o seu carrinho de compras. Se o seu país não estiver na lista, você não poderá usar a loja Amazon MP3 porque não há suporte. </para>
 </sect2>
 <sect2 id="mp3tunes-configuration"
 ><title
@@ -5417,7 +5417,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -5629,7 +5629,7 @@
 >Bloquear e salvar o leiaute da janela do Amarok</title
 > 
 <para
->Se estiver satisfeito com o leiaute dentro da janela do &amarok;, você poderá bloquear este leiaute com o item apropriado do menu <guilabel
+>Se estiver satisfeito com o leiaute dentro da janela do &amarok;, você poderá bloqueá-lo com o item apropriado do menu <guilabel
 >Exibir</guilabel
 >. Certifique-se de que o seu leiaute seja mantido na próxima execução do &amarok; fechando-o com a opção <menuchoice
 ><guimenu
@@ -5711,7 +5711,7 @@
 </informaltable>
 </para>
 <para
->Para ver mais sobre a Barra de ferramentas <link linkend="toolbar"
+>Para saber mais sobre a Barra de ferramentas <link linkend="toolbar"
 >clique aqui</link
 >. </para>
 </sect2>
@@ -5745,7 +5745,7 @@
 ><guimenuitem
 >Configurar os leiautes da lista de músicas...</guimenuitem
 ></menuchoice
-> e veja a janela de edição acima. Do lado esquerdo, você pode ver as os leiautes predefinidos; clicando neles, você poderá ver como é feita a configuração à direita. Se clicar no botão <guilabel
+> e veja a janela de edição acima. Do lado esquerdo, você pode ver os leiautes predefinidos; clicando neles, você poderá ver como é feita a configuração à direita. Se clicar no botão <guilabel
 >Visualizar</guilabel
 >, você poderá ver o leiaute aplicado no painel da <guilabel
 >Lista de músicas</guilabel
@@ -5755,7 +5755,7 @@
 >Modificando um leiaute predefinido</title
 > 
 <para
->Para modificar um dos leiautes padrão, faça primeiro uma nova cópia dele: basta clicar em <inlinemediaobject
+>Para modificar um dos leiautes predefinidos, faça primeiro uma nova cópia dele: basta clicar em <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-edit-copy.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -5821,7 +5821,7 @@
 >Configuração do leiaute do item</title
 > 
 <para
->Cada um dos itens adicionados pode ter o seu próprio leiaute configurado: se passar o mouse sobre o item será mostrada mostrar uma chave inglesa; se clicar nesse botão, você poderá acessar uma janela de configuração desse item. O exemplo abaixo mostra-lhe a janela de configuração do item <guilabel
+>Cada um dos itens adicionados pode ter o seu próprio leiaute configurado: se passar o mouse sobre o item será mostrada uma chave inglesa; se clicar nesse botão, você poderá acessar uma janela de configuração desse item. O exemplo abaixo mostra-lhe a janela de configuração do item <guilabel
 >Álbum</guilabel
 >: </para>
 <para>
@@ -5840,7 +5840,7 @@
 </screenshot>
 </para>
 <para
->Você pode então decidir a largura total desse item (100% é a largura total da linha, por isso, se usar uma largura personalizada e tiver mais que um item em uma linha, você precisa reduzir essa largura por item), o seu alinhamento, a espessura do texto e se a etiqueta deverá ser apresentada com um prefixo ou sufixo. </para>
+>Você pode então decidir a largura total desse item (100% é a largura total da linha, por isso, se usar uma largura personalizada e tiver mais de um item em uma linha, você precisa reduzir essa largura por item), o seu alinhamento, a espessura do texto e se a etiqueta deverá ser apresentada com um prefixo ou sufixo. </para>
 </sect4>
 <sect4 id="example--single-line-layout"
 ><title
@@ -6083,11 +6083,11 @@
 >Análise incremental / Atualizar coleção</title
 > 
 <para
->A análise incremental irá procurar nas pastas da coleção por atualizações. </para>
+>A análise incremental irá procurar por atualizações nas pastas da coleção. </para>
 <para
->Isto é feito a cada minuto caso esteja ativada a opção <guilabel
+>Isto é feito a cada minuto se a opção <guilabel
 >Monitorar as alterações nas faixas</guilabel
->, mas também poderá ser acionado manualmente ao escolher a opção <guilabel
+> estiver ativada, mas também poderá ser acionada manualmente ao escolher a opção <guilabel
 >Atualizar coleção</guilabel
 > no menu. </para>
 <para
@@ -6103,17 +6103,17 @@
 ></listitem>
 <listitem
 ><para
->Se os arquivos dentro de uma pasta forem alterados, o analisador não irá perceber a alteração, pois a alteração de um arquivo atualiza a sua hora de modificação mas não a hora de modificação da pasta-mãe. Por outro lado, a maioria dos programas que modificam arquivos, fazem-no de forma atômica, usando um arquivo temporário que depois é renomeado. Esse procedimento atualiza a hora de modificação da pasta e, assim, aciona uma nova pesquisa da pasta.</para
+>Se os arquivos dentro de uma pasta forem alterados, o analisador não irá perceber a alteração, pois a alteração de um arquivo atualiza a sua hora de modificação, mas não a hora de modificação da pasta-mãe. Por outro lado, a maioria dos programas que modificam arquivos, fazem-no de forma atômica, usando um arquivo temporário que depois é renomeado. Esse procedimento atualiza a hora de modificação da pasta e, assim, aciona uma nova análise da pasta.</para
 ></listitem>
 <listitem
 ><para
->Se as pastas da coleção estiverem em uma partição bastante lenta, o processo de verificação de todas as horas de modificação poderá levar algum tempo. Normalmente, esta informação fica em cache no sistema operacional, mas com grandes coleções, isso pode não ser possível. Nesse caso, o analisador pode parecer que continua indefinidamente. Em coleções com milhares de pastas ou quando as coleções são armazenadas em uma unidade de rede ou partição NTFS, recomenda-se desativar a opção <guilabel
+>Se as pastas da coleção estiverem em uma partição muito lenta, o processo de verificação de todas as horas de modificação poderá levar algum tempo. Normalmente, esta informação fica em cache no sistema operacional, mas com grandes coleções isso pode não ser possível. Nesse caso, o analisador pode parecer que continua indefinidamente. Em coleções com milhares de pastas ou quando as coleções são armazenadas em uma unidade de rede ou partição NTFS, recomenda-se desativar a opção <guilabel
 >Monitorar pastas por alterações</guilabel
 >.</para
 ></listitem>
 </itemizedlist>
 <para
->Se você tiver problemas com as faixas excluídas que continuam a aparecer na coleção, ou caso queira atualizar as capas do álbum (que não são atualizadas ao executar a opção <guilabel
+>Se tiver problemas com as faixas excluídas que continuam a aparecer na coleção, ou caso queira atualizar as capas do álbum (que não são atualizadas ao executar a opção <guilabel
 >Atualizar coleção</guilabel
 >), então você poderá usar a <guilabel
 >Análise completa</guilabel
@@ -6121,7 +6121,7 @@
 <para
 >A <guilabel
 >Análise completa</guilabel
-> não se preocupa com datas de modificação e não excluirá as estatísticas dos arquivos existentes. No entanto excluirá as estatísticas das faixas que desapareceram das pastas da coleção que estiverem montadas. Por este motivo, é aconselhável efetuar a <guilabel
+> não se preocupa com datas de modificação e não excluirá as estatísticas dos arquivos existentes. No entanto, excluirá as estatísticas das faixas que desapareceram das pastas da coleção que estiverem montadas. Por este motivo, é aconselhável efetuar a <guilabel
 >Análise completa</guilabel
 > apenas com todas as pastas da <guilabel
 >Coleção local</guilabel
@@ -6140,7 +6140,7 @@
 <para
 >O período acima dos 50% indica que o analisador está armazenando os resultados no banco de dados. </para>
 <para
->Normalmente, o segundo passo é muito mais rápido que o primeiro, por isso fique surpreso se a barra de progresso avançar rapidamente. </para>
+>Normalmente, o segundo passo é muito mais rápido que o primeiro, por isso não se surpreenda caso a barra de progresso avance rapidamente. </para>
 <para
 >Até os 50% é possível interromper a análise. Após os 50%, a gravação dos dados não pode ser interrompida. </para>
 <para
@@ -6200,10 +6200,18 @@
 <listitem
 ><para
 >Os álbuns chamados <quote
->Live</quote
+>Best Of</quote
+>, <quote
+>Anthology</quote
+>, <quote
+>Hit collection</quote
 >, <quote
 >Greatest Hits</quote
-> e outros nomes são sempre tratados como um álbum.</para
+>, <quote
+>All Time Greatest Hits</quote
+> e <quote
+>Live</quote
+> são sempre tratados como um álbum.</para
 ></listitem>
 <listitem
 ><para
@@ -6975,7 +6983,7 @@
 >Se você tiver o plugin do Last.fm ativo e configurado corretamente com a sua conta do Last.fm, poderá optar por sincronizar também as suas reproduções, classificações e etiquetas do &amarok; com a sua biblioteca do Last.fm. A sincronização leva algum tempo, mas você poderá continuar a usar o &amarok; enquanto está sincronizando. Por favor, repare que a Sincronização não-assistida (que será explicada posteriormente) não é possível com o Last.fm, tendo a sincronização do Last.fm para o &amarok; que ser iniciada manualmente. </para>
 <sect4 id="spelling-auto-correction"
 ><title
->Correção ortográfica automática</title
+>Verificação ortográfica automática</title
 > 
 <para
 >O Last.fm ativa por padrão uma funcionalidade que irá corrigir automaticamente as palavras erradas durante a sincronização. Poderá acontecer que, mesmo que tenha sondado várias reproduções de faixas, não apareça nas Faixas correspondentes, uma vez que o Last.fm conhece a faixa com um nome ligeiramente diferente. </para>
@@ -7027,11 +7035,11 @@
 <para
 ><important
 ><para
->Repare que a janela só irá aparecer no caso dos iPod's.</para
+>Repare que a janela só irá aparecer no caso dos iPods.</para
 ></important>
 </para>
 <para
->Quando você conectar um dispositivo que seja capaz de sincronizar com as suas coleções, irá aparecer uma janela como esta. </para>
+>Ao conectar um dispositivo que seja capaz de sincronizar com as suas coleções, aparecerá uma janela como esta. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -11448,19 +11456,85 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </screenshot>
 </para>
 <para
->Isto provavelmente significa que um arquivo idêntico foi registrado duas vezes na sua coleção em locais diferentes. Você pode usar o navegador de arquivos do Amarok para verificar os arquivos individualmente, sendo a ação normal remover um dos arquivos duplicados. Se tiver certeza de que as faixas não são duplicadas, você pode usar o utilitário da linha de comando <guilabel
->amarok_afttagger</guilabel
-> para restaurar o ID único de uma das faixas: </para>
-<para
-><userinput
->amarok_afttagger --newid --verbose local/de/uma/das/faixas.mp3</userinput>
-</para>
-<para
->Alternativamente, você poderá remover o identificador único de uma das faixas, perdendo a funcionalidade 'registrar-mesmo-que-alterado-fora': </para>
-<para
-><userinput
->amarok_afttagger --delete --verbose local/de/uma/das/faixas.mp3</userinput>
-</para>
+>Isto provavelmente significa que um arquivo idêntico foi registrado duas vezes na sua coleção em locais diferentes. Você pode usar o navegador de arquivos do Amarok para verificar os arquivos individualmente, <guilabel
+>sendo a ação normal remover um dos arquivos duplicados</guilabel
+>. Se tiver certeza de que as faixas não são (ou não devem ser) duplicadas, podem existir diversas razões pelas quais o &amarok; acha que sim: </para>
+<orderedlist>
+<listitem
+><para
+>Os arquivos são idênticos bit-a-bit<itemizedlist>
+<listitem
+><para
+>Você poderá usar, por exemplo, o comando <varname
+>md5sum</varname
+> para verificar isso</para
+></listitem>
+<listitem
+><para
+>Você pode editar os metadados de um dos arquivos dentro do navegador de arquivos do &amarok; para os diferenciar de alguma forma, talvez editando o artista, ano, compositor ou comentário</para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>Os arquivos têm o mesmo ID único de AFT do Amarok<itemizedlist
+><listitem
+><para
+>Este é normalmente o resultado da execução do 'amarok_afttagger' e da criação de várias cópias de um arquivo marcado; um leitor de etiquetas como o Kid3 ou o MP3Diags pode ser usado para verificar isto; procure pelo texto <varname
+>Amarok 2 AFTv1</varname
+> nas etiquetas</para
+></listitem>
+<listitem
+><para
+>Você poderá usar o utilitário de linha de comando <varname
+>amarok_afttagger</varname
+> para restaurar o ID único de uma das faixas: <userinput
+>amarok_afttagger --newid --verbose local/de/uma/das/faixas.mp3</userinput
+></para
+></listitem>
+<listitem
+><para
+>Alternativamente, você poderá remover o identificador único de uma das faixas, perdendo a funcionalidade 'registrar-mesmo-que-alterado-fora': <userinput
+>amarok_afttagger --delete --verbose local/de/uma/das/faixas.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+<listitem
+><para
+>(para o Amarok com versão anterior a <ulink url="http://commits.kde.org/amarok/216c18bdaf1"
+>v2.7.0-96-g216c18b</ulink
+>) Os arquivos têm o mesmo ID do MusicBrainz<itemizedlist
+><listitem
+><para
+>As versões anteriores ao &amarok; 2.7 tratavam o ID do MusizBrainz incorporado nas etiquetas (preenchido por um marcador com suporte para o MusicBrainz, como o Picard) como identificadores únicos das faixas. Entretanto, o MusicBrainz mudou a semântica do ID para corresponder ao <quote
+>ID de gravação</quote
+>, desde que foi implementado originalmente no &amarok;, o que significa que você poderá obter falsos ocorrências de arquivos duplicados, por exemplo, para as faixas que aparecem no álbum original e numa coletânea (Best of). Veja mais informações no <emphasis role="strikethrough"
+><ulink  url="https://bugs.kde.org/show_bug.cgi?id=315329"
+>relatório de erro #315329</ulink
+></emphasis
+></para
+></listitem>
+<listitem
+><para
+>Você pode usar qualquer leitor de etiquetas avançado para verificar isso (procure pelo texto <varname
+>MusicBrainz</varname
+> nas etiquetas) e para remover o ID do MusicBrainz de uma das faixas</para
+></listitem>
+<listitem
+><para
+>Como solução alternativa, você poderá usar o <varname
+>amarok_afttagger</varname
+> para adicionar o ID de AFT do &amarok; em uma das faixas, uma vez que o &amarok; irá preferir o seu próprio ID em detrimento daquele do MusicBrainz: <userinput
+>amarok_afttagger --newid --verbose local/de/uma/das/faixas.mp3</userinput
+></para
+></listitem>
+</itemizedlist>
+</para
+></listitem>
+</orderedlist>
 </sect3>
 </sect2>
 <sect2 id="problems-playing-files"
@@ -11572,7 +11646,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </sect1>
 <sect1 id="frequently-asked-questions"
 ><title
->Perguntas mais frequentes</title
+>Perguntas frequentes</title
 > 
 <sect2 id="what-is-amarok"
 ><title
@@ -11589,7 +11663,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >aqui</link
 >. </para>
 </sect2>
-<sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"
+<sect2 id="what-are-the-differences-between-amarok-two-and-the-previous-versions"
 ><title
 >Quais são as diferenças entre o Amarok 2 e as versões anteriores?</title
 > 
@@ -11762,7 +11836,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ></listitem>
 <listitem
 ><para
->Se o erro pode ser reproduzido. Por favor, não comunique erros que não você consegue reproduzir, pois são quase impossíveis de detectar e corrigir.</para
+>Se o erro pode ser reproduzido. Por favor, não comunique erros que você não consegue reproduzir, pois são quase impossíveis de detectar e corrigir.</para
 ></listitem>
 <listitem
 ><para
@@ -11871,7 +11945,9 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >aqui</link
 >. </para>
 <para
->Nós recomendamos tanto a infraestrutura do Gstreamer como a do VLC, uma vez que ambas são mantidas de forma ativa. Certifique-se de não usar nenhuma outra, uma vez que elas são consideradas obsoletas. </para>
+>No momento, nós recomendamos tanto a infraestrutura do Gstreamer quanto a do VLC, uma vez que ambas são mantidas de forma ativa. Se quiser reproduzir transmissões, deverá usar apenas a infraestrutura do VLC, uma vez que o Gstreamer tem algumas desvantagens nesse sentido. Certifique-se de não usar nenhuma outra infraestrutura porque elas são consideradas obsoletas. </para>
+<para
+>Se estiver usando a infraestrutura Phonon-backend-gstreamer, certifique-se de que usa apenas os plugins de uma determinada versão do GStreamer. Caso contrário, o som ficará comprometido. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
 ><title
@@ -11998,6 +12074,29 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Ferramentas</guilabel
 >. </para>
 </sect3>
+<sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"
+><title
+>Como posso controlar o volume apenas no Amarok sem precisar alterar no KMix?</title
+> 
+<para
+>Muitas distribuições fornecem o servidor de som <guilabel
+>PulseAudio</guilabel
+>, que lida com as configurações do som em nível de sistema. Se não puder alterar o volume no &amarok;, independentemente do &kmix;, então a sua configuração do <guilabel
+>PulseAudio</guilabel
+> tem a opção </para>
+<para
+> <userinput
+>flat-volume=yes</userinput>
+</para>
+<para
+>ativada. Dependendo da sua distribuição, esta localiza-se no arquivo <guilabel
+>$HOME/.pulse/daemon.conf</guilabel
+> ou em nível do sistema em <guilabel
+>/etc/pulse/daemon.conf</guilabel
+>. Você pode encontrar mais informações sobre as configurações específicas do PulseAudio na <ulink url="http://linux.die.net/man/5/pulse-daemon.conf"
+>manpage do pulse-daemon.conf'</ulink
+>. </para>
+</sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
 ><title
 >Como eu ativo as visualizações?</title
@@ -12102,7 +12201,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >aqui</link
 >. </para>
 </sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"
 ><title
 >Posso usar a coleção do Amarok antigo no Amarok 2? As minhas etiquetas, pontuações e avaliações serão perdidas?</title
 > 
@@ -12139,7 +12238,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ></menuchoice
 >. </para>
 </sect3>
-<sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"
+<sect3 id="can-i-use-amarok-one-four-scripts-in-amarok-2"
 ><title
 >Posso usar os scripts do Amarok 1.4 no Amarok 2?</title
 > 
@@ -12282,9 +12381,9 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 >Se o &amarok; falhou e você deseja comunicar esse problema, vá para o <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
 >HOWTO de depuração</ulink
->. O relatório de erros deverá ser cadastrado em <ulink url="http://bugs.kde.org"
+>. O relatório de erro deve ser cadastrado em <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
->, após verificar se ele já existe um relatório anterior. </para>
+>, após verificar se já não houve registro desse erro. </para>
 </sect3>
 <sect3 id="amarok-just-freezes-how-can-i-help-get-this-fixed"
 ><title
@@ -12309,7 +12408,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >O Amarok leva muito tempo para iniciar</title
 > 
 <para
->Se isto ocorrer, você precisa verificar quais os scripts instalados e quais os serviços de Internet em execução, porque alguns deles podem atrasar o início do programa. Do mesmo modo, se tiver transmissões na lista de músicas quando abrir o &amarok;, o início poderá levar um pouco mais de tempo. O mesmo ocorre se tiver uma grande quantidade de faixas na lista de músicas (300 ou mais). </para>
+>Se isto ocorrer, você precisa verificar quais os scripts instalados e quais os serviços de Internet estão em execução, porque alguns deles podem atrasar o início do programa. Do mesmo modo, se tiver transmissões na lista de músicas quando abrir o &amarok;, o início poderá levar um pouco mais de tempo. O mesmo ocorre se tiver uma grande quantidade de faixas na lista de músicas (300 ou mais). </para>
 <para
 >Por outro lado, se você usar um ambiente de trabalho diferente do KDE, o tempo de início poderá aumentar ligeiramente, uma vez que existem mais bibliotecas a serem carregadas. </para>
 </sect3>
@@ -12786,8 +12885,8 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Reproduzir</guilabel
 > / <guilabel
 >Pausar</guilabel
-> e um botão para controle do volume. Ela também mostra o nome do arquivo atual e uma barra para mostrar, assim como para alterar, a posição da reprodução da música. Obtenha mais informações sobre <link linkend="toolbar"
->barra de ferramentas</link
+> e um botão para controle do volume. Ela também mostra o nome do arquivo atual e uma barra para mostrar, assim como para alterar, a posição da reprodução da música. Obtenha mais informações sobre a <link linkend="toolbar"
+>Barra de ferramentas</link
 >. </para>
 <para>
 <screenshot>
@@ -12988,7 +13087,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >. A partir daqui você poderá adicionar mais faixas, transmitir os canais de áudio e limpar a sua lista de músicas. </para>
 <sect3 id="menu-items"
 ><title
->Itens do menu</title
+>Itens dos menus</title
 > 
 <para>
 <screenshot>
@@ -13486,7 +13585,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Verifica as faixas na sua coleção e atualiza a base de dados.</para>
+>Verifica as faixas na sua coleção e atualiza o banco de dados.</para>
     </entry>
   </row>
   <row>
@@ -13612,7 +13711,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Gerenciador de capas</title
 >  
 <para
->Mostra todos os álbuns da sua coleção. Aqui você poderá configurar as capas personalizadas dos álbuns e obter as que faltam. Para obter mais informações sobre o gerenciador de capas clique em <link linkend="cover-manager"
+>Mostra todos os álbuns da sua coleção. Aqui você poderá configurar as capas personalizadas dos álbuns e obter as que faltam. Para obter mais informações clique em <link linkend="cover-manager"
 >Gerenciador de capas</link
 >. </para>
 <para>
@@ -14495,11 +14594,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
-><keycombo
->&Ctrl;<keycap
->Esquerda</keycap
-></keycombo
-></para>
+>&Backspace;</para>
     </entry>
   </row>
   <row>
@@ -14547,7 +14642,61 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Procurar regressivamente</para>
+>Procurar progressivamente em 2 segundos</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>Direita</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Procurar progressivamente em 10 segundos</para>
+    </entry>
+    <entry>
+    <para
+><keycap
+>Direita</keycap
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Procurar progressivamente em 60 segundos</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Shift;<keycap
+>Direita</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Procurar regressivamente em 2 segundos</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>Esquerda</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Procurar regressivamente em 10 segundos</para>
     </entry>
     <entry>
     <para
@@ -14559,12 +14708,14 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Procurar progressivamente</para>
+>Procurar regressivamente em 60 segundos</para>
     </entry>
     <entry>
     <para
-><keycap
->Direita</keycap
+><keycombo
+>&Shift;<keycap
+>Esquerda</keycap
+></keycombo
 ></para>
     </entry>
   </row>

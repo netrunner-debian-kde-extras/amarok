@@ -15,27 +15,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ContextView"
+
 /*
   Significant parts of this code is inspired and/or copied from KDE plasma sources,
   available at kdebase/workspace/plasma
 */
 
-#define DEBUG_PREFIX "ContextView"
-
 #include "ContextView.h"
 
-#include "core/support/Amarok.h"
+#include "config.h"
+
 #include "Context.h"
 #include "ContextScene.h"
-#include "core/support/Debug.h"
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/ContextUrlRunner.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
 #include <plasma/dataenginemanager.h>
 
+#include <Phonon/AudioOutput>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
 #include <QWheelEvent>
@@ -76,11 +80,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     p.setColor( QPalette::Base, c );
     setPalette( p );
 
-    PERF_LOG( "Accessing Plasma::Theme" );
-    // here we initialize all the Plasma paths to Amarok paths
-    Plasma::Theme::defaultTheme()->setUseGlobalSettings( false );
-    Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
-    PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
     cont->setPos( 0, 0 );
@@ -103,10 +102,10 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     EngineController* const engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
     s_self = this;
@@ -214,6 +213,31 @@ ContextView::loadConfig()
         if( containment )
         {
             KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
+#ifdef QT_QTOPENGL_FOUND
+            // Special case: If this is the first time that the user runs an Amarok version
+            // containing the Analyzer applet, modify the user's config so that the applet
+            // will become active. We do this for discoverability and prettiness.
+            // Remove this code in a future Amarok release (possibly 3.0)
+            const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
+            if( firstTimeWithAnalyzer )
+            {
+                // Check if the Phonon backend implements all features required by the analyzer
+                Phonon::AudioDataOutput out;
+                const bool phononCanHandleAnalyzer = out.isValid();
+
+                QStringList plugins = cg.readEntry( "plugins", QStringList() );
+                if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
+                {
+                    Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
+
+                    // Put the Analyzer applet at position #2, which is most likely below the Currenttrack applet.
+                    if( !plugins.empty() )
+                        plugins.insert( 1, "analyzer" );
+
+                    cg.writeEntry( "plugins", plugins );
+                }
+            }
+#endif
             containment->loadConfig( cg );
         }
     }
@@ -296,8 +320,8 @@ ContextView::showAppletExplorer()
         m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
         m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
 
-        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString, const int)),
-                 cont, SLOT(addApplet(QString, const int)) );
+        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString,int)),
+                 cont, SLOT(addApplet(QString,int)) );
         connect( m_appletExplorer, SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
         connect( m_appletExplorer, SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
 
@@ -387,4 +411,3 @@ QStringList ContextView::currentAppletNames()
 } // Context namespace
 
 #include "ContextView.moc"
-

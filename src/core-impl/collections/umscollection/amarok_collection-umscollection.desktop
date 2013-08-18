@@ -6,7 +6,7 @@ Name[bg]=Колекция Universal Mass Storage
 Name[bs]=Zbirka na univerzalnom masovnom skladištu
 Name[ca]=Col·lecció d'emmagatzematge en massa universal
 Name[ca@valencia]=Col·lecció d'emmagatzematge en massa universal
-Name[cs]=Kolekce na velkokapacitním úložném zařízení
+Name[cs]=Sbírka na velkokapacitním úložném zařízení
 Name[csb]=Kòlekcëjô ùniwersalnych zôpisownych mediów
 Name[da]=Universal Mass Storage-samling
 Name[de]=Universelle Massenspeicher-Sammlung
@@ -53,7 +53,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=70
+X-KDE-Amarok-framework-version=71
 X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

@@ -1,6 +1,6 @@
-macro_optional_find_package(NepomukCore)
+macro_optional_find_package(NepomukCore QUIET)
 macro_log_feature(NepomukCore_FOUND "nepomuk-core" "NepomukCore Libraries required by Nepomuk Collection" "http://kde.org/download/#v4.9" FALSE "4.9.0")
-macro_optional_find_package(Soprano)
+macro_optional_find_package(Soprano QUIET)
 macro_log_feature(Soprano_FOUND "Soprano" "Soprano libraries required by Nepomuk Collection" "http://soprano.sourceforge.net/" FALSE)
 
 if(NepomukCore_FOUND AND Soprano_FOUND)
@@ -15,9 +15,12 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
 
     set(amarok_collection-nepomukcollection_PART_SRCS
 
+        NepomukCache.cpp
         NepomukCollection.cpp
         NepomukCollectionFactory.cpp
-        NepomukConstructMetaJob.cpp
+        NepomukInquirer.cpp
+        NepomukParser.cpp
+        NepomukQueryMaker.cpp
 
         meta/NepomukAlbum.cpp
         meta/NepomukArtist.cpp

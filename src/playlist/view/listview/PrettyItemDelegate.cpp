@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  * Copyright (c) 2011 Sandeep Raghuraman <sandy.8925@gmail.com>                         *
+ * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,7 +31,7 @@
 #include "SvgHandler.h"
 #include "QStringx.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
@@ -40,13 +41,16 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/listview/InlineEditorWidget.h"
 
-#include <kratingpainter.h>
 #include <KColorScheme>
+#include <kratingpainter.h>  // #include <KratingPainter> does not work on some distros
+#include <KWindowSystem>
 
+#include <QAction>
 #include <QFontMetricsF>
 #include <QPainter>
-#include <QAction>
 #include <QStyleOptionSlider>
+#include <QTimeLine>
+#include <QTimer>
 
 using namespace Playlist;
 
@@ -56,6 +60,15 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     : QStyledItemDelegate( parent )
 {
     LayoutManager::instance();
+
+    m_animationTimeLine = new QTimeLine( 900, this );
+    m_animationTimeLine->setFrameRange( 1000, 600 );
+    connect( m_animationTimeLine, SIGNAL( frameChanged( int ) ), this, SIGNAL( redrawRequested() ) );
+
+#ifdef Q_WS_X11
+    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( currentDesktopChanged() ) );
+#endif
+    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SIGNAL( redrawRequested() ) );
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -296,23 +309,45 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
 
         int endWidth = overlayHeight / 4;
 
+        if( m_animationTimeLine->currentFrame() == m_animationTimeLine->startFrame() && EngineController::instance()->isPlaying() ) {
+            m_animationTimeLine->setDirection( QTimeLine::Forward );
+            if( m_animationTimeLine->state() == QTimeLine::NotRunning )
+                m_animationTimeLine->start();
+        }
+        else if( m_animationTimeLine->currentFrame() == m_animationTimeLine->endFrame() ) {
+            m_animationTimeLine->setDirection( QTimeLine::Backward );
+            m_animationTimeLine->start();
+        }
+
+        // Opacity is used for animating the active track item
+        const qreal opacity = qreal( m_animationTimeLine->currentFrame() ) / 1000;
+
+        // If opacity is not the default value we cannot render from cache
+        const bool skipCache = opacity == 1.0 ? false : true;
+
         painter->drawPixmap( overlayXOffset, overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_left",
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_left" ) );
+                                                           "active_overlay_left",
+                                                           skipCache,
+                                                           opacity ) );
 
         painter->drawPixmap( overlayXOffset + endWidth, overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_mid",
                                                            overlayLength - endWidth * 2,
                                                            overlayHeight,
-                                                           "active_overlay_mid" ) );
+                                                           "active_overlay_mid",
+                                                           skipCache,
+                                                           opacity ) );
 
         painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_right",
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_right" ) );
+                                                           "active_overlay_right",
+                                                           skipCache,
+                                                           opacity ) );
     }
 
     // --- paint the cover
@@ -710,7 +745,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
         long trackLength = EngineController::instance()->trackLength();
 
         qreal percentage = (qreal) xSliderPos / (qreal) sliderWidth;
-        EngineController::instance()->seek( trackLength * percentage );
+        EngineController::instance()->seekTo( trackLength * percentage );
         return true;
 
     }
@@ -729,8 +764,8 @@ QWidget* Playlist::PrettyItemDelegate::createEditor( QWidget * parent, const QSt
     InlineEditorWidget *editor = new InlineEditorWidget( parent, index,
                      LayoutManager::instance()->activeLayout(), editorHeight, editorWidth );
 
-    connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ),
-             this, SLOT( editorDone(  InlineEditorWidget *) ) );
+    connect( editor, SIGNAL(editingDone(InlineEditorWidget*)),
+             this, SLOT(editorDone(InlineEditorWidget*)) );
     return editor;
 }
 
@@ -754,16 +789,16 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if( !track )
         return;
 
-    // this does not require EditCapability
-    if(changeMap.contains(Rating))
+    // this does not require TrackEditor
+    if( changeMap.contains( Rating ) )
     {
-        int rating = changeMap.value(Rating).toInt();
+        int rating = changeMap.value( Rating ).toInt();
         track->statistics()->setRating( rating );
         changeMap.remove( Rating );
     }
 
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
-    if( !ec || !ec->isEditable() )
+    Meta::TrackEditorPtr ec = track->editor();
+    if( !ec )
         return;
 
     QList<int> columns = changeMap.keys();
@@ -849,6 +884,15 @@ void
 Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
 {
     emit commitData( editor );
+}
+
+void
+Playlist::PrettyItemDelegate::currentDesktopChanged()
+{
+    // Optimization for X11/Linux desktops:
+    // Don't update the animation if Amarok is not on the active virtual desktop.
+
+    m_animationTimeLine->setPaused( !The::mainWindow()->isOnCurrentDesktop() );
 }
 
 QMap<QString, QString>

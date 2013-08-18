@@ -20,6 +20,7 @@
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "core/meta/Meta.h"
 
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
@@ -32,8 +33,8 @@ CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( handleAddActions() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(handleAddActions()) );
 }
 
 CurrentTrackToolbar::~CurrentTrackToolbar()

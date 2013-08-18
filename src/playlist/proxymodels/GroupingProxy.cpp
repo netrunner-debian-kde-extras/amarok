@@ -25,15 +25,16 @@
 
 #include "GroupingProxy.h"
 
-#include "core/support/Debug.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
-
+#include <QFileInfo>
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
     : ProxyBase( belowModel, parent )
@@ -60,11 +61,11 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     //       'this' QSFPM signal) would get called earlier, would call our 'data()'
     //       function, and we would return wrong answers from our stale internal state.
     //
-    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( proxyDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( this, SIGNAL( layoutChanged() ), this, SLOT( proxyLayoutChanged() ) );
-    connect( this, SIGNAL( modelReset() ), this, SLOT( proxyModelReset() ) );
-    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(proxyDataChanged(QModelIndex,QModelIndex)) );
+    connect( this, SIGNAL(layoutChanged()), this, SLOT(proxyLayoutChanged()) );
+    connect( this, SIGNAL(modelReset()), this, SLOT(proxyModelReset()) );
+    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(proxyRowsInserted(QModelIndex,int,int)) );
+    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(proxyRowsRemoved(QModelIndex,int,int)) );
 
 
     // No need to scan the pre-existing entries in sourceModel(), because we build our
@@ -88,7 +89,7 @@ void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
     m_groupingCategory = groupingCategory;
-    m_groupingCategoryIndex = groupableCategories.indexOf( m_groupingCategory );    // May be -1
+    m_groupingCategoryIndex = groupableCategories().indexOf( columnForName( m_groupingCategory ) );    // May be -1
 
     invalidateGrouping();
 
@@ -289,13 +290,17 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     // If the grouping category is empty or invalid, 'm_groupingCategoryIndex' will be -1.
     // That will cause us to choose "no grouping".
 
+    if( !track1 || !track2 )
+        return false;
+
     // DEBUG_BLOCK
-            // debug() << m_groupingCategoryIndex;
+    // debug() << m_groupingCategoryIndex;
+
     switch( m_groupingCategoryIndex )
     {
 
         case 0: //Album
-            if( track1 && track1->album() && track2 && track2->album() )
+            if( track1->album() && track2->album() )
             {
                 // don't group albums without name
                 if( track1->album()->prettyName().isEmpty() || track2->album()->prettyName().isEmpty() )
@@ -303,26 +308,31 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                 else
                     return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
             }
+            return false;
         case 1: //Artist
-            if( track1 && track1->artist() && track2 && track2->artist() )
+            if( track1->artist() && track2->artist() )
                 return ( *track1->artist().data() ) == ( *track2->artist().data() );
+            return false;
         case 2: //Composer
-            if( track1 && track1->composer() && track2 && track2->composer() )
+            if( track1->composer() && track2->composer() )
                 return ( *track1->composer().data() ) == ( *track2->composer().data() );
+            return false;
         case 3: //Directory
-            return false;  //FIXME
+            return ( QFileInfo( track1->playableUrl().path() ).path() ) ==
+                   ( QFileInfo( track2->playableUrl().path() ).path() );
         case 4: //Genre
-            if( track1 && track1->genre() && track2 && track2->genre() )
+            if( track1->genre() && track2->genre() )
             {
                 debug() << "gruping by genre. Comparing " << track1->genre()->prettyName() << " with " << track2->genre()->prettyName();
                 debug() << track1->genre().data() << " == " << track2->genre().data() << " : " << ( *track1->genre().data() == *track2->genre().data());
                 return ( *track1->genre().data() ) == ( *track2->genre().data() );
             }
+            return false;
         case 5: //Rating
-            if( track1 && track1->statistics()->rating() && track2 && track2->statistics()->rating() )
+            if( track1->statistics()->rating() && track2->statistics()->rating() )
                 return ( track1->statistics()->rating() ) == ( track2->statistics()->rating() );
+            return false;
         case 6: //Source
-            if( track1 && track2 )
             {
                 QString source1, source2;
 
@@ -333,29 +343,19 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                     source1 = sic1->sourceName();
                     source2 = sic2->sourceName();
                 }
-                if( sic1 )
-                    delete sic1;
-                if( sic2 )
-                    delete sic2;
+                delete sic1;
+                delete sic2;
 
-                if( ! (sic1 && sic2) )
-                {
-                    if( track1->collection() && track2->collection() )
-                    {
-                        source1 = track1->collection()->collectionId();
-                        source2 = track2->collection()->collectionId();
-                    }
-                    else
-                        return false;
-                }
+                if( sic1 && sic2 )
+                    return source1 == source2;
 
-                return source1 == source2;
+                // fall back to collection
+                return track1->collection() == track2->collection();
             }
-            else
-                return false;
         case 7: //Year
-            if( track1 && track1->year() && track2 && track2->year() )
+            if( track1->year() && track2->year() )
                 return ( *track1->year().data() ) == ( *track2->year().data() );
+            return false;
         default:
             return false;
     }

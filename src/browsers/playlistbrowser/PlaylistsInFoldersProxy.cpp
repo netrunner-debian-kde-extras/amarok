@@ -22,6 +22,7 @@
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KDialog>
 #include <KIcon>
@@ -35,18 +36,18 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
-    connect( m_renameFolderAction, SIGNAL( triggered() ), this,
-             SLOT( slotRenameFolder() ) );
+    connect( m_renameFolderAction, SIGNAL(triggered()), this,
+             SLOT(slotRenameFolder()) );
 
     m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
     m_deleteFolderAction->setObjectName( "deleteAction" );
-    connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
-             SLOT( slotDeleteFolder() ) );
+    connect( m_deleteFolderAction, SIGNAL(triggered()), this,
+             SLOT(slotDeleteFolder()) );
 
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
@@ -69,8 +70,8 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         return QVariant( providerString );
     }
 
-    if( idx.column() == 0 && isGroup( idx ) && role ==
-        PlaylistBrowserNS::PlaylistBrowserModel::ActionRole )
+    if( idx.column() == 0 && isGroup( idx ) &&
+        role == PrettyTreeRoles::DecoratorRole )
     {
         //whether we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
@@ -88,6 +89,10 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         actions << m_renameFolderAction << m_deleteFolderAction;
         return QVariant::fromValue( actions );
     }
+
+    if( idx.column() == 0 && isGroup( idx ) &&
+        role == PrettyTreeRoles::DecoratorRoleCount )
+        return 2; // 2 actions, see above
 
     return QtGroupingProxy::data( idx, role );
 }
@@ -270,8 +275,8 @@ PlaylistsInFoldersProxy::setSourceModel( QAbstractItemModel *model )
 
     QtGroupingProxy::setSourceModel( model );
 
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 void

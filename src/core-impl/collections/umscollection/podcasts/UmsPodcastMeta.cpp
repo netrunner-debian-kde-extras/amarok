@@ -76,6 +76,14 @@ UmsPodcastEpisode::playableUrl() const
     return m_localFile->playableUrl();
 }
 
+QString
+UmsPodcastEpisode::notPlayableReason() const
+{
+    if( m_localFile )
+        return m_localFile->notPlayableReason();
+    return PodcastEpisode::notPlayableReason();
+}
+
 void
 UmsPodcastEpisode::setLocalFile( MetaFile::TrackPtr localFile )
 {
@@ -89,15 +97,6 @@ UmsPodcastEpisode::title() const
         return m_title;
 
     return m_localFile->name();
-}
-
-bool
-UmsPodcastEpisode::isEditable() const
-{
-     if( m_localFile.isNull() )
-         return false;
-
-     return m_localFile->isEditable();
 }
 
 QDateTime

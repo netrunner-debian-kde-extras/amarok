@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
@@ -40,6 +40,8 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "playback/DelayedDoers.h"
+#include "playback/Fadeouter.h"
+#include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KMessageBox>
@@ -69,14 +71,13 @@ EngineController::instance()
 }
 
 EngineController::EngineController()
-    : m_fader( 0 )
-    , m_fadeoutTimer( 0 )
-    , m_boundedPlayback( 0 )
+    : m_boundedPlayback( 0 )
     , m_multiPlayback( 0 )
     , m_multiSource( 0 )
     , m_playWhenFetched( true )
     , m_volume( 0 )
     , m_currentAudioCdTrack( 0 )
+    , m_pauseTimer( new QTimer( this ) )
     , m_lastStreamStampPosition( -1 )
     , m_ignoreVolumeChangeAction ( false )
     , m_ignoreVolumeChangeObserve ( false )
@@ -91,6 +92,10 @@ EngineController::EngineController()
     connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
     connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
              SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
+    new PowerManager( this ); // deals with inhibiting suspend etc.
+
+    m_pauseTimer->setSingleShot( true );
+    connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPause() ) );
 }
 
 EngineController::~EngineController()
@@ -116,59 +121,66 @@ EngineController::~EngineController()
 }
 
 void
-EngineController::createFadeoutEffect()
-{
-    QMutexLocker locker( &m_mutex );
-    if( !m_fader )
-    {
-        m_fader = new Phonon::VolumeFaderEffect( this );
-        m_path.insertEffect( m_fader );
-        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
-
-        m_fadeoutTimer = new QTimer( this );
-        m_fadeoutTimer->setSingleShot( true );
-        connect( m_fadeoutTimer, SIGNAL(timeout()), SLOT(slotStopFadeout()) );
-    }
-}
-
-void
 EngineController::initializePhonon()
 {
     DEBUG_BLOCK
 
     m_path.disconnect();
     m_dataPath.disconnect();
+
+    // QWeakPointers reset themselves to null if the object is deleted
     delete m_media.data();
     delete m_controller.data();
     delete m_audio.data();
     delete m_audioDataOutput.data();
     delete m_preamp.data();
     delete m_equalizer.data();
+    delete m_fader.data();
 
+    using namespace Phonon;
     PERF_LOG( "EngineController: loading phonon objects" )
-    m_media = new Phonon::MediaObject( this );
+    m_media = new MediaObject( this );
 
     // Enable zeitgeist support on linux
     //TODO: make this configurable by the user.
     m_media.data()->setProperty( "PlaybackTracking", true );
 
-    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-    m_audioDataOutput = new Phonon::AudioDataOutput( this );
+    m_audio = new AudioOutput( MusicCategory, this );
+    m_audioDataOutput = new AudioDataOutput( this );
+    m_audioDataOutput.data()->setDataSize( DATAOUTPUT_DATA_SIZE ); // The number of samples that Phonon sends per signal
 
-    m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
-    m_path = Phonon::createPath( m_media.data(), m_audio.data() );
+    m_dataPath = createPath( m_media.data(), m_audioDataOutput.data() );
+    m_path = createPath( m_media.data(), m_audio.data() );
 
-    m_controller = new Phonon::MediaController( m_media.data() );
+    m_controller = new MediaController( m_media.data() );
 
-    //Add an equalizer effect if available
-    QList<Phonon::EffectDescription> mEffectDescriptions =
-            Phonon::BackendCapabilities::availableAudioEffects();
-    foreach( const Phonon::EffectDescription &mDescr, mEffectDescriptions )
+    // Add an equalizer effect if available
+    QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
+    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsCount ),
+                             Qt::CaseInsensitive );
+    foreach( const EffectDescription &description, effects )
     {
-        if( mDescr.name() == QLatin1String( "KEqualizer" ) )
+        if( !description.name().contains( equalizerRegExp ) )
+            continue;
+
+        QScopedPointer<Effect> equalizer( new Effect( description, this ) );
+        int parameterCount = equalizer->parameters().count();
+        if( parameterCount == s_equalizerBandsCount || parameterCount == s_equalizerBandsCount + 1 )
         {
-            m_equalizer = new Phonon::Effect( mDescr, this );
+            debug() << "Established Phonon equalizer effect with" << parameterCount
+                    << "parameters.";
+            m_equalizer = equalizer.take(); // accept the effect
             eqUpdate();
+            break;
+        }
+        else
+        {
+            QStringList paramNames;
+            foreach( const EffectParameter &param, equalizer->parameters() )
+                paramNames << param.name();
+            warning() << "Phonon equalizer effect" << description.name() << "with description"
+                      << description.description() << "has" << parameterCount << "parameters ("
+                      << paramNames << ") - which is unexpected. Trying other effects.";
         }
     }
 
@@ -179,11 +191,21 @@ EngineController::initializePhonon()
     AmarokConfig::setFadeout( false );
 #endif
 
-    // only create pre-amp if we have replaygain on, VolumeFaderEffect can cause phonon issues
-    if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    // we now try to create pre-amp unconditionally, however we check that it is valid.
+    // So now m_preamp is null   equals   not available at all
+    QScopedPointer<VolumeFaderEffect> preamp( new VolumeFaderEffect( this ) );
+    if( preamp->isValid() )
     {
-        m_preamp = new Phonon::VolumeFaderEffect( this );
+        m_preamp = preamp.take();
         m_path.insertEffect( m_preamp.data() );
+    }
+
+    QScopedPointer<VolumeFaderEffect> fader( new VolumeFaderEffect( this ) );
+    if( fader->isValid() )
+    {
+        fader->setFadeCurve( VolumeFaderEffect::Fade9Decibel );
+        m_fader = fader.take();
+        m_path.insertEffect( m_fader.data() );
     }
 
     m_media.data()->setTickInterval( 100 );
@@ -197,34 +219,29 @@ EngineController::initializePhonon()
     connect( m_media.data(), SIGNAL(finished()), SLOT(slotFinished()));
     connect( m_media.data(), SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
     connect( m_media.data(), SIGNAL(metaDataChanged()), SLOT(slotMetaDataChanged()) );
-    connect( m_media.data(), SIGNAL(stateChanged( Phonon::State, Phonon::State )),
-             SLOT(slotStateChanged( Phonon::State, Phonon::State )) );
-    connect( m_media.data(), SIGNAL(tick( qint64 )), SLOT(slotTick( qint64 )) );
-    connect( m_media.data(), SIGNAL(totalTimeChanged( qint64 )),
-             SLOT(slotTrackLengthChanged( qint64 )) );
-    connect( m_media.data(), SIGNAL(currentSourceChanged( const Phonon::MediaSource & )),
-             SLOT(slotNewTrackPlaying( const Phonon::MediaSource & )) );
-    connect( m_media.data(), SIGNAL(seekableChanged( bool )),
-             SLOT(slotSeekableChanged( bool )) );
-    connect( m_audio.data(), SIGNAL(volumeChanged( qreal )),
-             SLOT(slotVolumeChanged( qreal )) );
-    connect( m_audio.data(), SIGNAL(mutedChanged( bool )),
-             SLOT(slotMutedChanged( bool )) );
+    connect( m_media.data(), SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+             SLOT(slotStateChanged(Phonon::State,Phonon::State)) );
+    connect( m_media.data(), SIGNAL(tick(qint64)), SLOT(slotTick(qint64)) );
+    connect( m_media.data(), SIGNAL(totalTimeChanged(qint64)),
+             SLOT(slotTrackLengthChanged(qint64)) );
+    connect( m_media.data(), SIGNAL(currentSourceChanged(Phonon::MediaSource)),
+             SLOT(slotNewTrackPlaying(Phonon::MediaSource)) );
+    connect( m_media.data(), SIGNAL(seekableChanged(bool)),
+             SLOT(slotSeekableChanged(bool)) );
+    connect( m_audio.data(), SIGNAL(volumeChanged(qreal)),
+             SLOT(slotVolumeChanged(qreal)) );
+    connect( m_audio.data(), SIGNAL(mutedChanged(bool)),
+             SLOT(slotMutedChanged(bool)) );
     connect( m_audioDataOutput.data(),
-             SIGNAL(dataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & )),
-             SIGNAL(audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ))
+             SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
+             SIGNAL(audioDataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >))
            );
 
-    connect( m_controller.data(), SIGNAL(titleChanged( int )),
-             SLOT(slotTitleChanged( int )) );
+    connect( m_controller.data(), SIGNAL(titleChanged(int)),
+             SLOT(slotTitleChanged(int)) );
 
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
-
-    if( AmarokConfig::trackDelayLength() > -1 )
-        m_media.data()->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
-    else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
-        m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
 
     if( m_currentTrack )
     {
@@ -306,9 +323,9 @@ EngineController::restoreSession()
         // Only give a resume time for local files, because resuming remote protocols can have weird side effects.
         // See: http://bugs.kde.org/show_bug.cgi?id=172897
         if( url.isLocalFile() )
-            play( track, AmarokConfig::resumeTime() );
+            play( track, AmarokConfig::resumeTime(), AmarokConfig::resumePaused() );
         else
-            play( track );
+            play( track, 0, AmarokConfig::resumePaused() );
     }
 }
 
@@ -339,8 +356,6 @@ EngineController::play() //SLOT
     if( isPlaying() )
         return;
 
-    resetFadeout();
-
     if( isPaused() )
     {
         if( m_currentTrack && m_currentTrack->type() == "stream" )
@@ -351,6 +366,9 @@ EngineController::play() //SLOT
         }
         else
         {
+            m_pauseTimer->stop();
+            if( supportsFadeout() )
+                m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
             emit trackPlaying( m_currentTrack );
             return;
@@ -361,7 +379,7 @@ EngineController::play() //SLOT
 }
 
 void
-EngineController::play( Meta::TrackPtr track, uint offset )
+EngineController::play( Meta::TrackPtr track, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
@@ -382,19 +400,19 @@ EngineController::play( Meta::TrackPtr track, uint offset )
 
     if( m_multiPlayback )
     {
-        connect( m_multiPlayback, SIGNAL(playableUrlFetched( const KUrl & )),
-                 SLOT(slotPlayableUrlFetched( const KUrl & )) );
+        connect( m_multiPlayback, SIGNAL(playableUrlFetched(KUrl)),
+                 SLOT(slotPlayableUrlFetched(KUrl)) );
         m_multiPlayback->fetchFirst();
     }
     else if( m_boundedPlayback )
     {
         debug() << "Starting bounded playback of url " << track->playableUrl() << " at position " << m_boundedPlayback->startPosition();
-        playUrl( track->playableUrl(), m_boundedPlayback->startPosition() );
+        playUrl( track->playableUrl(), m_boundedPlayback->startPosition(), startPaused );
     }
     else
     {
         debug() << "Just a normal, boring track... :-P";
-        playUrl( track->playableUrl(), offset );
+        playUrl( track->playableUrl(), offset, startPaused );
     }
 }
 
@@ -403,17 +421,16 @@ EngineController::replay() // slot
 {
     DEBUG_BLOCK
 
-    seek( 0 );
+    seekTo( 0 );
     emit trackPositionChanged( 0, true );
 }
 
 void
-EngineController::playUrl( const KUrl &url, uint offset )
+EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
     m_media.data()->stop();
-    resetFadeout();
 
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
@@ -455,8 +472,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
         // call to play() is asynchronous and ->setCurrentTitle() can be only called on
         // playing, buffering or paused media.
         m_media.data()->pause();
-        DelayedSeeker *trackChanger = new DelayedTrackChanger( m_media.data(),
-                m_controller.data(), m_currentAudioCdTrack, offset );
+        DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
+                m_controller.data(), m_currentAudioCdTrack, offset, startPaused );
         connect( trackChanger, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
     }
@@ -466,18 +483,55 @@ EngineController::playUrl( const KUrl &url, uint offset )
         // buffering or paused media. Calling play() would lead to audible glitches,
         // so call pause() that doesn't suffer from such problem.
         m_media.data()->pause();
-        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset );
+        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset, startPaused );
         connect( seeker, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
     }
     else
-        m_media.data()->play();
+    {
+        if( startPaused )
+        {
+            m_media.data()->pause();
+        }
+        else
+        {
+            m_pauseTimer->stop();
+            if( supportsFadeout() )
+                m_fader.data()->setVolume( 1.0 );
+            m_media.data()->play();
+        }
+    }
 }
 
 void
 EngineController::pause() //SLOT
 {
-    m_media.data()->pause();
+    if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
+    {
+        m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
+        m_pauseTimer->start( AmarokConfig::fadeoutLength() );
+        return;
+    }
+
+    slotPause();
+}
+
+void
+EngineController::slotPause()
+{
+    if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
+    {
+        // Reset VolumeFaderEffect to full volume
+        m_fader.data()->setVolume( 1.0 );
+
+        // Wait a bit before pausing the pipeline. Necessary for the new fader setting to take effect.
+        QTimer::singleShot( 1000, m_media.data(), SLOT(pause()) );
+    }
+    else
+    {
+        m_media.data()->pause();
+    }
+
     emit paused();
 }
 
@@ -486,8 +540,24 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 {
     DEBUG_BLOCK
 
-    //let Amarok know that the previous track is no longer playing
-    if( m_currentTrack )
+    /* Only do fade-out when all conditions are met:
+     * a) instant stop is not requested
+     * b) we aren't already in a fadeout
+     * c) we are currently playing (not paused etc.)
+     * d) Amarok is configured to fadeout at all
+     * e) configured fadeout length is positive
+     * f) Phonon fader to do it is actually available
+     */
+    bool doFadeOut = !forceInstant
+                  && !m_fadeouter
+                  && m_media.data()->state() == Phonon::PlayingState
+                  && AmarokConfig::fadeoutOnStop()
+                  && AmarokConfig::fadeoutLength() > 0
+                  && m_fader;
+
+    // let Amarok know that the previous track is no longer playing; if we will fade-out
+    // ::stop() is called after the fade by Fadeouter.
+    if( m_currentTrack && !doFadeOut )
     {
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
@@ -519,19 +589,12 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         m_media.data()->clearQueue();
     }
 
-    // Stop instantly if fadeout is already running, or the media is not playing
-    if( ( m_fadeoutTimer && m_fadeoutTimer->isActive() ) ||
-        m_media.data()->state() != Phonon::PlayingState )
+    if( doFadeOut )
     {
-        forceInstant = true;
-    }
-
-    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
-    {
-        // WARNING: this can cause a gap in playback in GStreamer
-        createFadeoutEffect();
-        m_fader->fadeOut( AmarokConfig::fadeoutLength() );
-        m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
+        m_fadeouter = new Fadeouter( m_media, m_fader, AmarokConfig::fadeoutLength() );
+        // even though we don't pass forceInstant, doFadeOut will be false because
+        // m_fadeouter will be still valid
+        connect( m_fadeouter.data(), SIGNAL(fadeoutFinished()), SLOT(stop()) );
     }
     else
     {
@@ -555,10 +618,10 @@ EngineController::isPlaying() const
 bool
 EngineController::isStopped() const
 {
-    return (m_media.data()->state() == Phonon::StoppedState) ||
-        (m_media.data()->state() == Phonon::LoadingState) ||
-        (m_media.data()->state() == Phonon::ErrorState) ||
-        (m_fadeoutTimer && m_fadeoutTimer->isActive());
+    return
+        m_media.data()->state() == Phonon::StoppedState ||
+        m_media.data()->state() == Phonon::LoadingState ||
+        m_media.data()->state() == Phonon::ErrorState;
 }
 
 void
@@ -574,7 +637,7 @@ EngineController::playPause() //SLOT
 }
 
 void
-EngineController::seek( int ms ) //SLOT
+EngineController::seekTo( int ms ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -604,22 +667,10 @@ EngineController::seek( int ms ) //SLOT
 
 
 void
-EngineController::seekRelative( int ms ) //SLOT
+EngineController::seekBy( int ms ) //SLOT
 {
     qint64 newPos = m_media.data()->currentTime() + ms;
-    seek( newPos <= 0 ? 0 : newPos );
-}
-
-void
-EngineController::seekForward( int ms )
-{
-    seekRelative( ms );
-}
-
-void
-EngineController::seekBackward( int ms )
-{
-    seekRelative( -ms );
+    seekTo( newPos <= 0 ? 0 : newPos );
 }
 
 int
@@ -771,12 +822,12 @@ EngineController::eqMaxGain() const
 {
    if( !m_equalizer )
        return 100;
-   QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-   if( mEqPar.isEmpty() )
+   QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+   if( equalizerParameters.isEmpty() )
        return 100.0;
    double mScale;
-   mScale = ( qAbs(mEqPar.at(0).maximumValue().toDouble() )
-              + qAbs( mEqPar.at(0).minimumValue().toDouble() ) );
+   mScale = ( qAbs(equalizerParameters.at(0).maximumValue().toDouble() )
+              + qAbs( equalizerParameters.at(0).minimumValue().toDouble() ) );
    mScale /= 2.0;
    return mScale;
 }
@@ -788,28 +839,26 @@ EngineController::eqBandsFreq() const
     // as long as they follow the rules:
     // eq-preamp parameter will contain 'pre-amp' string
     // bands parameters are described using schema 'xxxHz'
-    QStringList mBandsFreq;
+    QStringList bandFrequencies;
     if( !m_equalizer )
-       return mBandsFreq;
-    QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-    if( mEqPar.isEmpty() )
-       return mBandsFreq;
+        return bandFrequencies;
+    QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+    if( equalizerParameters.isEmpty() )
+        return bandFrequencies;
     QRegExp rx( "\\d+(?=Hz)" );
-    foreach( const Phonon::EffectParameter &mParam, mEqPar )
+    foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
     {
-        if( mParam.name().contains( QString( "pre-amp" ) ) )
-            mBandsFreq << i18n( "Preamp" );
-        else if ( mParam.name().contains( rx ) )
+        if( mParam.name().contains( rx ) )
         {
             if( rx.cap( 0 ).toInt() < 1000 )
-                mBandsFreq << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
+                bandFrequencies << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
             else
-                mBandsFreq << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
+                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
         }
         else
-            mBandsFreq << mParam.name();
+            bandFrequencies << mParam.name();
     }
-    return mBandsFreq;
+    return bandFrequencies;
 }
 
 void
@@ -831,14 +880,21 @@ EngineController::eqUpdate() //SLOT
     else
     {
         // Set equalizer parameter according to the gains from settings
-        QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-        QList<int> mEqParCfg = AmarokConfig::equalizerGains();
+        QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+        QList<int> equalizerParametersCfg = AmarokConfig::equalizerGains();
 
-        QListIterator<int> mEqParNewIt( mEqParCfg );
+        QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        foreach( const Phonon::EffectParameter &mParam, mEqPar )
+        // Checking if preamp is present in equalizer parameters
+        if( equalizerParameters.size() == s_equalizerBandsCount )
         {
-            scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
+            // If pre-amp is not present then skip the first element of equalizer gain
+            if( equalizerParametersIt.hasNext() )
+                equalizerParametersIt.next();
+        }
+        foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
+        {
+            scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;
             scaledVal *= qAbs(mParam.maximumValue().toDouble() )
                          + qAbs( mParam.minimumValue().toDouble() );
             scaledVal /= 200.0;
@@ -857,6 +913,17 @@ EngineController::eqUpdate() //SLOT
             }
         }
     }
+}
+
+bool
+EngineController::supportsFadeout() const
+{
+    return m_fader;
+}
+
+bool EngineController::supportsGainAdjustments() const
+{
+    return m_preamp;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -903,6 +970,12 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
+
+    if( m_fadeouter )
+    {
+        debug() << "slotAboutToFinish(): a fadeout is in progress, don't queue new track";
+        return;
+    }
 
     if( m_multiPlayback )
     {
@@ -1051,12 +1124,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     if( m_currentTrack
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
-        if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
-        {
-            m_preamp = new Phonon::VolumeFaderEffect( this );
-            m_path.insertEffect( m_preamp.data() );
-        }
-
         Meta::ReplayGainTag mode;
         // gain is usually negative (but may be positive)
         mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
@@ -1074,10 +1141,17 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
             debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
             gain -= gain + peak;
         }
-        debug() << "Using gain of" << gain << "with relative peak of" << peak;
-        // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
-        // a little confused about minus signs
-        m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+
+        if( m_preamp )
+        {
+            debug() << "Using gain of" << gain << "with relative peak of" << peak;
+            // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
+            // a little confused about minus signs
+            m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+        }
+        else
+            warning() << "Would use gain of" << gain << ", but current Phonon backend"
+                      << "doesn't seem to support pre-amplifier (VolumeFaderEffect)";
     }
     else if( m_preamp )
     {
@@ -1248,26 +1322,6 @@ EngineController::slotMetaDataChanged()
 
     debug() << "slotMetaDataChanged(): new meta-data:" << meta;
     emit currentMetadataChanged( meta );
-}
-
-void
-EngineController::slotStopFadeout() //SLOT
-{
-    DEBUG_BLOCK
-
-    m_media.data()->stop();
-    m_media.data()->setCurrentSource( Phonon::MediaSource() );
-    resetFadeout();
-}
-
-void
-EngineController::resetFadeout()
-{
-    if( m_fader )
-    {
-        m_fader->setVolume( 1.0 );
-        m_fadeoutTimer->stop();
-    }
 }
 
 void
@@ -1445,3 +1499,5 @@ EngineController::updateStreamLength( qint64 length )
     debug() << "updateStreamLength(): emitting currentMetadataChanged(" << lengthMetaData << ")";
     emit currentMetadataChanged( lengthMetaData );
 }
+
+#include "EngineController.moc" // mention explicitly so that it knows full Meta::Track

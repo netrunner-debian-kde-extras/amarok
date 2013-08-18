@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "services/ServicePluginManager.h"
 
 #include <KBuildSycocaProgressDialog>
@@ -34,7 +35,7 @@
 
 #include <cstdlib>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 70;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 71;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
@@ -79,7 +80,8 @@ Plugins::PluginManager::init()
     key = QLatin1String( "Collection" );
     m_factories[ key ] = createFactories( key );
     handleEmptyCollectionFactories();
-    CollectionManager::instance()->init( m_factories.value( key ) );
+    CollectionManager::instance()->init();
+    CollectionManager::instance()->handleNewFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded collection plugins" )
 
     PERF_LOG( "Loading service plugins" )
@@ -106,7 +108,7 @@ void
 Plugins::PluginManager::checkPluginEnabledStates()
 {
     DEBUG_BLOCK
-    KPluginInfo::List newlyEnabledList;
+    QList<PluginFactory*> newFactories;
     foreach( const KPluginInfo::List &plugins, m_pluginInfos )
     {
         foreach( KPluginInfo plugin, plugins )
@@ -119,10 +121,14 @@ Plugins::PluginManager::checkPluginEnabledStates()
 
             PluginFactory *factory = createFactory( plugin );
             if( factory )
+            {
                 m_factories[ plugin.category() ] << factory;
+                newFactories << factory;
+            }
         }
     }
     m_servicePluginManager->checkEnabledStates( m_factories.value(QLatin1String("Service")) );
+    CollectionManager::instance()->handleNewFactories( newFactories );
 }
 
 KPluginInfo::List

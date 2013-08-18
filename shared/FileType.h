@@ -19,6 +19,8 @@
 #ifndef SHARED_FILETYPE_H
 #define SHARED_FILETYPE_H
 
+#include "amarokshared_export.h"
+
 #include <QStringList>
 #include <QString>
 
@@ -29,7 +31,7 @@ namespace Amarok
     {
         Unknown     =  0,
         Mp3         =  1,
-        Ogg         =  2,
+        Ogg         =  2, // please use just for Ogg Vorbis
         Flac        =  3,
         Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
         Wma         =  5,
@@ -43,24 +45,25 @@ namespace Amarok
         Mod         = 13,
         S3M         = 14,
         IT          = 15,
-        XM          = 16
+        XM          = 16,
+        Speex       = 17,
+        Opus        = 18
     };
 
-    class FileTypeSupport
+    class AMAROKSHARED_EXPORT FileTypeSupport
     {
         public:
             /**
-             * Return string representation of a filetype.
+             * Return preferred extension of given filetype
              *
-             * WARNING: the return string is only partially localized currently
-             * TODO: rename to toLocalizedString() and localise all filetypes
+             * TODO: rename to extension()
              */
             static QString toString( Amarok::FileType ft );
 
             /**
              * Return a list of possible localized filetype strings.
              *
-             * TODO: actualy localize the types
+             * TODO: rename to possibleExtensions()
              */
             static QStringList possibleFileTypes();
 
@@ -71,9 +74,6 @@ namespace Amarok
              *         type is in the enum
              */
             static Amarok::FileType fileType( const QString& extension );
-
-        private:
-            static QStringList s_fileTypeStrings;
     };
 }
 

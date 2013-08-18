@@ -70,6 +70,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , q( parent )
     {
         hoverTimer.setFrameRange( 0, 30 );
+        hoverTimer.setUpdateInterval( 20 ); // 50 fps
         q->setAcceptDrops( true );
         hoverIndicatorRectFillBrush.setColor( Qt::white );
         hoveredBorderPen.setWidth( borderWidth );
@@ -90,8 +91,8 @@ PopupDropperItem::PopupDropperItem( QGraphicsItem *parent )
     , QAbstractGraphicsShapeItem( parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
-    connect( &d->hoverTimer, SIGNAL( finished() ), this, SLOT( hoverFinished() ) );
-    connect( &d->hoverTimer, SIGNAL( frameChanged(int) ), this, SLOT( hoverFrameChanged(int) ) );
+    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
+    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
 }
 
 PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
@@ -100,8 +101,8 @@ PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
     d->file = file;
-    connect( &d->hoverTimer, SIGNAL( finished() ), this, SLOT( hoverFinished() ) );
-    connect( &d->hoverTimer, SIGNAL( frameChanged(int) ), this, SLOT( hoverFrameChanged(int) ) );
+    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
+    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
 }
 
 PopupDropperItem::~PopupDropperItem()

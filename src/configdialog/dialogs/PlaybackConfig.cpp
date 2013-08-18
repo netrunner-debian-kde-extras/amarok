@@ -31,9 +31,25 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
-    kcfg_FadeoutOnExit->setHidden( true );
 
-    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
+    EngineController *engine = EngineController::instance();
+    Q_ASSERT( engine );
+    if( !engine->supportsFadeout() )
+    {
+        const QString toolTip = i18n( "Current Phonon backend does not support volume fading" );
+        kcfg_FadeoutOnStop->setEnabled( false );
+        kcfg_FadeoutOnStop->setToolTip( toolTip );
+        kcfg_FadeoutOnPause->setEnabled( false );
+        kcfg_FadeoutOnPause->setToolTip( toolTip );
+        fadeoutLengthLabel->setEnabled( false );
+        fadeoutLengthLabel->setToolTip( toolTip );
+        kcfg_FadeoutLength->setEnabled( false );
+        kcfg_FadeoutLength->setToolTip( toolTip );
+    }
+
+    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL(clicked()), SLOT(configurePhonon()) );
+    connect( kcfg_FadeoutOnStop, SIGNAL(toggled(bool)), SLOT(setFadeoutState()) );
+    connect( kcfg_FadeoutOnPause, SIGNAL(toggled(bool)), SLOT(setFadeoutState()) );
 }
 
 PlaybackConfig::~PlaybackConfig()
@@ -76,5 +92,18 @@ PlaybackConfig::configurePhonon() //SLOT
     KCM.addModule( "kcm_phonon" );
     KCM.exec();
 }
+
+void
+PlaybackConfig::setFadeoutState() //SLOT
+{
+    if( !EngineController::instance()->supportsFadeout() )
+        return;
+
+    const bool enabled = kcfg_FadeoutOnPause->isChecked() || kcfg_FadeoutOnStop->isChecked();
+
+    fadeoutLengthLabel->setEnabled( enabled );
+    kcfg_FadeoutLength->setEnabled( enabled );
+}
+
 
 #include "PlaybackConfig.moc"

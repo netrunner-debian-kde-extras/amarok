@@ -18,7 +18,9 @@
 #define AMAROK_COLLECTION_SCRIPT_H
 
 #include <QObject>
-#include <QtScript>
+#include <QStringList>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -28,7 +30,6 @@ namespace AmarokScript
 
         public:
             AmarokCollectionScript( QScriptEngine* scriptEngine );
-            ~AmarokCollectionScript();
 
         public slots:
             int totalAlbums() const;
@@ -41,7 +42,6 @@ namespace AmarokScript
             QString escape( const QString& sql ) const;
             void scanCollection() const;
             void scanCollectionChanges() const;
-            bool isDirInCollection( const QString& path ) const;
 
             //this method will dump the database content into the user's home directory
             //debugging only! this is not part of the supported scripting API

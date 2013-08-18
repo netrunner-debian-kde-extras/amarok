@@ -17,13 +17,14 @@
 
 #include "InlineEditorWidget.h"
 
+#include "SvgHandler.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-#include "PrettyItemDelegate.h"
-#include "SvgHandler.h"
+#include "playlist/view/listview/PrettyItemDelegate.h"
 
 #include <KHBox>
 #include <KRatingWidget>
@@ -48,7 +49,11 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     , m_widgetWidth( width )
     , m_layoutChanged( false )
 {
-    setAutoFillBackground( false ); // we want our own playlist background
+    // The line below is nice but sometimes (despite best effort) we are missing
+    // a pixel or two (e.g. the width of the splitter widget handle is not present
+    // in the delegate).
+    // So, to fix BR: 300118 set it to "true" to debug or have the own playlist background set it to "false"
+    setAutoFillBackground( true );
 
     const int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
     const int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
@@ -127,7 +132,7 @@ void InlineEditorWidget::createChildWidgets()
         const int elementCount = row.count();
 
         QSplitter *rowWidget = new QSplitter( rowsWidget );
-        connect( rowWidget, SIGNAL( splitterMoved ( int, int ) ), this, SLOT( splitterMoved( int, int ) ) );
+        connect( rowWidget, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)) );
 
         m_splitterRowMap.insert( rowWidget, i );
 
@@ -188,7 +193,7 @@ void InlineEditorWidget::createChildWidgets()
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
-                connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
+                connect( ratingWidget, SIGNAL(ratingChanged(uint)), this, SLOT(ratingValueChanged()) );
 
                 m_editorRoleMap.insert( ratingWidget, value );
                 widget = ratingWidget;
@@ -251,11 +256,11 @@ void InlineEditorWidget::createChildWidgets()
                 font.setUnderline( underline );
                 edit->setFont( font );
 
-                connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
+                connect( edit, SIGNAL(editingFinished()), this, SLOT(editValueChanged()) );
 
                 //check if this is a column that is editable. If not, make the
                 //line edit read only.
-                if ( !editableColumns.contains( value ) )
+                if( !isEditableColumn( static_cast<Playlist::Column>(value) ) )
                 {
                     edit->setReadOnly( true );
                     edit->setDisabled( true );
@@ -389,36 +394,30 @@ bool
 InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
 {
     QList<QWidget *> editWidgets = m_editorRoleMap.keys();
-
-    QWidget * widget = qobject_cast<QWidget *>( obj );
-
+    QWidget *widget = qobject_cast<QWidget *>( obj );
     if( editWidgets.contains( widget ) )
     {
         if( event->type() == QEvent::KeyPress )
         {
-            QKeyEvent * keyEvent = static_cast<QKeyEvent *>( event );
-            if( keyEvent->key() == Qt::Key_Return )
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+            switch( keyEvent->key() )
             {
-                debug() << "InlineEditorWidget ate a return press for a child widget";
-                if( widget )
-                {
-                    widget->clearFocus ();
-                    debug() << "emitting editingDone!";
-                    emit editingDone( this );
-                }
-
-                return true;
+                case Qt::Key_Enter:
+                case Qt::Key_Return:
+                    if( widget )
+                    {
+                        widget->clearFocus();
+                        emit editingDone( this );
+                    }
+                    return true;
             }
-            else
-                return false;
+            return false;
         }
         else
             return false;
-
     }
     else
         return KHBox::eventFilter( obj, event );
 }
 
 #include "InlineEditorWidget.moc"
-

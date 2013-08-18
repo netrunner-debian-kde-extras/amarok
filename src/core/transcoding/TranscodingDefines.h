@@ -27,6 +27,7 @@ namespace Transcoding
         ALAC,      // Apple Lossless Audio Codec
         FLAC,      // Free Lossless Audio Codec
         MP3,       // MPEG-1 or MPEG-2 Audio Layer III encoded using lame encoder
+        OPUS,      // Opus
         VORBIS,    // Ogg Vorbis
         WMA2       // Windows Media Audio 2
     };

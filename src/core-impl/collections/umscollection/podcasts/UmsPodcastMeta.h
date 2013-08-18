@@ -59,9 +59,9 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         //Track Methods
         virtual QString name() const { return title(); }
         virtual KUrl playableUrl() const;
+        virtual QString notPlayableReason() const;
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
-        virtual bool isEditable() const;
         virtual QDateTime createDate() const;
 
         virtual Meta::AlbumPtr album() const;
@@ -97,7 +97,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         void setPlaylistFileSource( const KUrl &playlistFilePath );
         KUrl playlistFilePath() const { return m_playlistFilePath; }
 
-        virtual Podcasts::PodcastEpisodeList episodes()
+        virtual Podcasts::PodcastEpisodeList episodes() const
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 

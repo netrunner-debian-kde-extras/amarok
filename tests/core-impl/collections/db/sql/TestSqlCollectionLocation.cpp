@@ -116,7 +116,7 @@ TestSqlCollectionLocation::initTestCase()
     Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
+    m_collection = new Collections::SqlCollection( m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     mock->setCollectionFolders( QStringList() << m_tmpDir->name() ); // the target folder needs to have enough space and be writable
     m_collection->setMountPointManager( mock );
@@ -224,7 +224,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
 
         source->prepareMove( track, dest );
 
-        QTest::kWaitForSignal( source, SIGNAL( destroyed(QObject*) ), 1000 );
+        QTest::kWaitForSignal( source, SIGNAL(destroyed(QObject*)), 1000 );
 
         QCOMPARE( track->labels().count(), 1 );
         QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );

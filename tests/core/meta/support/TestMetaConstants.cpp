@@ -27,6 +27,16 @@ using namespace Meta;
 
 QTEST_KDEMAIN_CORE( TestMetaConstants )
 
+/* Just for clarification. This is not how you would normally write an auto test.
+   You don't write a switch just to test if the switch returns the correct values.
+
+   You also don't test localized texts, since you would have to run the test
+   in all available languages. There are other methods to test if you missed to
+   translate something. This is not it.
+
+   In my case the test failed three times. Always a false positive.
+*/
+
 void
 TestMetaConstants::dataNameField()
 {
@@ -164,8 +174,8 @@ TestMetaConstants::testI18nForField_data()
     QTest::newRow( "anything" )      << qint64( 0 )            << i18nc( "The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything" );
     QTest::newRow( "filename" )      << Meta::valUrl           << i18nc( "The name of the file this track is stored in", "File Name" );
     QTest::newRow( "title" )         << Meta::valTitle         << i18n( "Title" );
-    QTest::newRow( "artist" )        << Meta::valArtist        << i18n( "Artist Name" );
-    QTest::newRow( "album" )         << Meta::valAlbum         << i18n( "Album Name" );
+    QTest::newRow( "artist" )        << Meta::valArtist        << i18n( "Artist" );
+    QTest::newRow( "album" )         << Meta::valAlbum         << i18n( "Album" );
     QTest::newRow( "genre" )         << Meta::valGenre         << i18n( "Genre" );
     QTest::newRow( "composer" )      << Meta::valComposer      << i18n( "Composer" );
     QTest::newRow( "year" )          << Meta::valYear          << i18n( "Year" );
@@ -191,7 +201,7 @@ TestMetaConstants::testI18nForField_data()
     QTest::newRow( "albumgain" )     << Meta::valAlbumGain     << i18n( "Album Gain" );
     QTest::newRow( "albumgainpeak" ) << Meta::valAlbumGainPeak << i18n( "Album Gain Peak" );
 
-    QTest::newRow( "albumartist" )   << Meta::valAlbumArtist   << i18n( "Album Artist Name" );
+    QTest::newRow( "albumartist" )   << Meta::valAlbumArtist   << i18n( "Album Artist" );
     QTest::newRow( "label" )         << Meta::valLabel         << i18n( "Label" );
     QTest::newRow( "modified" )      << Meta::valModified      << i18n( "Last Modified" );
     QTest::newRow( "default" )       << qint64( -1 )           << i18n( "" );
@@ -354,12 +364,12 @@ TestMetaConstants::testIconForField_data()
     QTest::newRow( "year" )        << Meta::valYear        << "filename-year-amarok";
     QTest::newRow( "modified" )    << Meta::valModified    << "filename-year-amarok";
     QTest::newRow( "createdate" )  << Meta::valCreateDate  << "filename-year-amarok";
-    QTest::newRow( "comment" )     << Meta::valComment     << "amarok_playcount";
+    QTest::newRow( "comment" )     << Meta::valComment     << "amarok_comment";
     QTest::newRow( "playcount" )   << Meta::valPlaycount   << "amarok_playcount";
     QTest::newRow( "tracknumber" ) << Meta::valTrackNr     << "filename-track-amarok";
     QTest::newRow( "discnumber" )  << Meta::valDiscNr      << "filename-discnumber-amarok";
     QTest::newRow( "bpm" )         << Meta::valBpm         << "filename-bpm-amarok";
-    QTest::newRow( "length" )      << Meta::valLength      << "filename-group-length";
+    QTest::newRow( "length" )      << Meta::valLength      << "chronometer";
     QTest::newRow( "bitrate" )     << Meta::valBitrate     << "audio-x-generic";
     QTest::newRow( "samplerate" )  << Meta::valSamplerate  << "filename-sample-rate";
     QTest::newRow( "format" )      << Meta::valFormat      << "filename-filetype-amarok";

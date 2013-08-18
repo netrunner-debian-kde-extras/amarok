@@ -18,6 +18,7 @@
 
 #include "PlaylistDuration.h"
 
+#include "core/meta/Meta.h"
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
@@ -93,9 +94,9 @@ QWidget*
 ConstraintTypes::PlaylistDuration::editWidget() const
 {
     PlaylistDurationEditWidget* e = new PlaylistDurationEditWidget( m_duration, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL( comparisonChanged( const int ) ), this, SLOT( setComparison( const int ) ) );
-    connect( e, SIGNAL( durationChanged( const int ) ), this, SLOT( setDuration( const int ) ) );
-    connect( e, SIGNAL( strictnessChanged( const int ) ), this, SLOT( setStrictness( const int ) ) );
+    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
+    connect( e, SIGNAL(durationChanged(int)), this, SLOT(setDuration(int)) );
+    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
     return e;
 }
 
@@ -134,7 +135,7 @@ ConstraintTypes::PlaylistDuration::satisfaction( const Meta::TrackList& tl ) con
     foreach( Meta::TrackPtr t, tl ) {
         l += t->length();
     }
-    
+
     double factor = m_strictness * 0.0003;
     if ( m_comparison == CompareNumEquals ) {
         return 4.0 / ( ( 1.0 + exp( factor*( double )( l - m_duration ) ) )*( 1.0 + exp( factor*( double )( m_duration - l ) ) ) );

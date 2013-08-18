@@ -21,7 +21,7 @@
 
 #include "amarok_export.h"
 #include "CollectionTreeItemModelBase.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
 #include <QMap>
@@ -43,7 +43,6 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
-        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     protected:
@@ -53,7 +52,6 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
     private:
 
         Collections::Collection* m_collection;
-        Collections::QueryMaker* m_queryMaker;
 };
 
 #endif

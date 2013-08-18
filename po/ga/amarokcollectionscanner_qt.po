@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
 "PO-Revision-Date: 2009-03-18 20:31-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -17,27 +17,28 @@ msgstr ""
 "Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n < 11 ? "
 "3 : 4\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Comhad \"%1\" gan aimsiú."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Ní féidir an comhad \"%1\" a oscailt."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr ""
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"

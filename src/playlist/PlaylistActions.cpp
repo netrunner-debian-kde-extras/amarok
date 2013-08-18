@@ -44,6 +44,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistDock.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistRestorer.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KStandardDirs>
@@ -79,7 +80,7 @@ Playlist::Actions::Actions()
 
     if( engine ) // test cases might create a playlist without having an EngineController
     {
-        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr) ),
+        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
                  this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
         connect( engine, SIGNAL(stopped(qint64,qint64)),
                  this, SLOT(slotPlayingStopped(qint64,qint64)) );
@@ -184,7 +185,7 @@ Playlist::Actions::play()
 }
 
 void
-Playlist::Actions::play( const QModelIndex& index )
+Playlist::Actions::play( const QModelIndex &index )
 {
     DEBUG_BLOCK
 
@@ -348,6 +349,27 @@ Playlist::Actions::repopulateDynamicPlaylist()
     }
 }
 
+void
+Playlist::Actions::shuffle()
+{
+    QList<int> fromRows, toRows;
+
+    {
+        const int rowCount = The::playlist()->qaim()->rowCount();
+        fromRows.reserve( rowCount );
+
+        QMultiMap<int, int> shuffleToRows;
+        for( int row = 0; row < rowCount; ++row )
+        {
+            fromRows.append( row );
+            shuffleToRows.insert( qrand(), row );
+        }
+        toRows = shuffleToRows.values();
+    }
+
+    The::playlistController()->reorderRows( fromRows, toRows );
+}
+
 int
 Playlist::Actions::queuePosition( quint64 id )
 {
@@ -387,22 +409,24 @@ Playlist::Actions::dequeue( quint64 id )
 }
 
 void
-Playlist::Actions::queue( QList<int> rows )
+Playlist::Actions::queue( const QList<int> &rows )
 {
-    DEBUG_BLOCK
-
+    QList<quint64> ids;
     foreach( int row, rows )
-    {
-        quint64 id = The::playlist()->idAt( row );
-        debug() << "About to queue proxy row"<< row;
-        m_navigator->queueId( id );
-    }
-    if ( !rows.isEmpty() )
+        ids << The::playlist()->idAt( row );
+    queue( ids );
+}
+
+void
+Playlist::Actions::queue( const QList<quint64> &ids )
+{
+    m_navigator->queueIds( ids );
+    if ( !ids.isEmpty() )
         Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void
-Playlist::Actions::dequeue( QList<int> rows )
+Playlist::Actions::dequeue( const QList<int> &rows )
 {
     DEBUG_BLOCK
 
@@ -496,58 +520,9 @@ Playlist::Actions::restoreDefaultPlaylist()
     // The PlaylistManager needs to be loaded or podcast episodes and other
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
-
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
-
-    if( playlist ) // This pointer will be 0 on first startup
-        playlist->triggerTrackLoad(); // playlist track loading is on demand
-
-    if( playlist && playlist->tracks().count() > 0 )
-    {
-        Meta::TrackList tracks = playlist->tracks();
-
-        QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while( i.hasNext() )
-        {
-            i.next();
-            Meta::TrackPtr track = i.value();
-            if( ! track )
-                i.remove();
-            else if( Playlists::canExpand( track ) )
-            {
-                Playlists::PlaylistPtr playlist = Playlists::expand( track );
-                //expand() can return 0 if the KIO job errors out
-                if( playlist )
-                {
-                    i.remove();
-                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
-                    Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks )
-                        if( t )
-                            i.insert( t );
-                }
-            }
-        }
-
-        The::playlistController()->insertTracks( 0, tracks );
-
-        QList<int> queuedRows = playlist->queue();
-        queue( playlist->queue() );
-
-        //Select previously playing track
-        const int lastPlayingRow = AmarokConfig::lastPlaying();
-        if( lastPlayingRow >= 0 )
-            Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
-    }
-
-    //Check if we should load the first run jingle, since there is no saved playlist to load
-    else if( AmarokConfig::playFirstRunJingle() )
-    {
-        QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
-        The::playlistController()->clear();
-        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
-        AmarokConfig::setPlayFirstRunJingle( false );
-    }
+    Playlist::Restorer *restorer = new Playlist::Restorer();
+    restorer->restore( Amarok::defaultPlaylistPath() );
+    connect( restorer, SIGNAL(restoreFinished()), restorer, SLOT(deleteLater()) );
 }
 
 namespace The

@@ -14,21 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-
 #include "AmarokDockWidget.h"
-#include "core/support/Debug.h"
 
 AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
     , m_polished( false )
 {
     m_dummyTitleBarWidget = new QWidget( this );
-    connect( this, SIGNAL( visibilityChanged( bool ) ), SLOT( slotVisibilityChanged( bool ) ) );
+    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(slotVisibilityChanged(bool)) );
 }
 
 void AmarokDockWidget::slotVisibilityChanged( bool visible )
 {
-    // DEBUG_BLOCK
     if( visible )
         ensurePolish();
 }

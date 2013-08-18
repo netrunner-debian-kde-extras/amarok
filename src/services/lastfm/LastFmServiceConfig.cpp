@@ -20,6 +20,7 @@
 #include "LastFmServiceConfig.h"
 
 #include "App.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <KDialog>
@@ -57,6 +58,8 @@ LastFmServiceConfig::LastFmServiceConfig()
     m_scrobbleComposer = config.readEntry( "scrobbleComposer", defaultScrobbleComposer() );
     m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", defaultUseFancyRatingTags() );
     m_announceCorrections = config.readEntry( "announceCorrections", defaultAnnounceCorrections() );
+    m_filterByLabel = config.readEntry( "filterByLabel", defaultFilterByLabel() );
+    m_filteredLabel = config.readEntry( "filteredLabel", defaultFilteredLabel() );
 
     if( config.hasKey( "kWalletUsage" ) )
         m_kWalletUsage = KWalletUsage( config.readEntry( "kWalletUsage", int( NoPasswordEnteredYet ) ) );
@@ -99,6 +102,16 @@ LastFmServiceConfig::~LastFmServiceConfig()
 void LastFmServiceConfig::save()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
+
+    // if username and password is empty, reset to NoPasswordEnteredYet; this enables
+    // going from PasswordInAscii to PasswodInKWallet
+    if( m_username.isEmpty() && m_password.isEmpty() )
+    {
+        m_kWalletUsage = NoPasswordEnteredYet;
+        config.deleteEntry( "username" ); // prevent possible stray credentials
+        config.deleteEntry( "password" );
+    }
+
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
@@ -106,6 +119,8 @@ void LastFmServiceConfig::save()
     config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
     config.writeEntry( "announceCorrections", m_announceCorrections );
     config.writeEntry( "kWalletUsage", int( m_kWalletUsage ) );
+    config.writeEntry( "filterByLabel", m_filterByLabel );
+    config.writeEntry( "filteredLabel", m_filteredLabel );
     config.deleteEntry( "ignoreWallet" ); // remove old settings
 
     switch( m_kWalletUsage )
@@ -141,7 +156,14 @@ LastFmServiceConfig::openWalletToRead()
     if( m_wallet )
         disconnect( m_wallet, 0, this, 0 );
     else
+    {
         openWalletAsync();
+        if( !m_wallet ) // can happen, see bug 322964
+        {
+            slotWalletOpenedToRead( false );
+            return;
+        }
+    }
     connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToRead(bool)) );
 }
 
@@ -157,7 +179,14 @@ LastFmServiceConfig::openWalletToWrite()
     if( m_wallet )
         disconnect( m_wallet, 0, this, 0 );
     else
+    {
         openWalletAsync();
+        if( !m_wallet ) // can happen, see bug 322964
+        {
+            slotWalletOpenedToWrite( false );
+            return;
+        }
+    }
     connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToWrite(bool)) );
 }
 
@@ -180,16 +209,18 @@ LastFmServiceConfig::prepareOpenedWallet()
 void
 LastFmServiceConfig::slotWalletOpenedToRead( bool success )
 {
-    Q_ASSERT( m_wallet );
     if( !success )
     {
-        warning() << __PRETTY_FUNCTION__ << "failure to open wallet";
-        // TODO: KMessageBox with info once string freeze is lifted
-        m_wallet->deleteLater(); // no point in having invalid wallet around
+        warning() << __PRETTY_FUNCTION__ << "failed to open wallet";
+        QString message = i18n( "Failed to open KDE Wallet to read Last.fm credentials" );
+        Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
+        if( m_wallet )
+            m_wallet->deleteLater(); // no point in having invalid wallet around
         m_wallet = 0;
         return;
     }
 
+    Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
     if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
@@ -205,15 +236,16 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
 void
 LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
 {
-    Q_ASSERT( m_wallet );
     if( !success )
     {
         askAboutMissingKWallet();
-        m_wallet->deleteLater(); // no point in having invalid wallet around
+        if( m_wallet )
+            m_wallet->deleteLater(); // no point in having invalid wallet around
         m_wallet = 0;
         return;
     }
 
+    Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
     if( m_wallet->writePassword( "lastfm_password", m_password ) > 0 )

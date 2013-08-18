@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,6 +21,7 @@
 
 #include "amarokconfig.h"
 #include "config-amarok-test.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
@@ -33,6 +34,10 @@ QTEST_KDEMAIN( TestMetaTrack, GUI )
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
 {}
+
+TestMetaTrack::~TestMetaTrack()
+{
+}
 
 QString
 TestMetaTrack::dataPath( const QString &relPath )
@@ -54,11 +59,6 @@ void TestMetaTrack::initTestCase()
     // we need to enable this, otherwise testSetAndGetScore, testSetAndGetRating fails
     AmarokConfig::setWriteBackStatistics( true );
 }
-
-void TestMetaTrack::cleanupTestCase()
-{
-}
-
 
 void TestMetaTrack::testPrettyName()
 {

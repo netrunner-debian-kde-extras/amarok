@@ -24,7 +24,6 @@
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
-#include "core-impl/capabilities/timecode/TimecodeEditCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.h"
 
 using namespace Meta;
@@ -32,7 +31,7 @@ using namespace Capabilities;
 
 ////////////////// TRACK //////////////////
 
-TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 start, qint64 end )
+TimecodeTrack::TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end )
     : m_name( name )
     , m_start( start )
     , m_end( end )
@@ -44,11 +43,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_playableUrl( url )
     , m_updatedFields( 0 )
 {
-    DEBUG_BLOCK
     m_displayUrl = url + ':' + QString::number( start ) + '-' + QString::number( end );
-
-    debug() << "created with length: " << m_length;
-
 }
 
 TimecodeTrack::~ TimecodeTrack()
@@ -79,22 +74,16 @@ TimecodeTrack::prettyUrl() const
     return m_displayUrl;
 }
 
+QString
+TimecodeTrack::notPlayableReason() const
+{
+    return localFileNotPlayableReason( m_playableUrl );
+}
+
 AlbumPtr
 TimecodeTrack::album() const
 {
     return AlbumPtr::staticCast( m_album );
-}
-
-bool
-TimecodeTrack::isEditable() const
-{
-    return true;
-}
-
-bool
-TimecodeTrack::isPlayable() const
-{
-     return true;
 }
 
 ArtistPtr
@@ -245,13 +234,13 @@ TimecodeTrack::setDiscNumber( int newDiscNumber )
     m_fields.insert( DISCNUMBER_UPDATED, QString::number( newDiscNumber ) );
 }
 
-void TimecodeTrack::beginMetaDataUpdate()
+void TimecodeTrack::beginUpdate()
 {
     m_updatedFields = 0;
     m_fields.clear();
 }
 
-void TimecodeTrack::endMetaDataUpdate()
+void TimecodeTrack::endUpdate()
 {
 
     bool updateCover = false;
@@ -345,6 +334,12 @@ TimecodeTrack::setAlbum( TimecodeAlbumPtr album )
 }
 
 void
+TimecodeTrack::setAlbumArtist( const QString & )
+{
+    // no suport for it
+}
+
+void
 TimecodeTrack::setYear( TimecodeYearPtr year )
 {
     m_year = year;
@@ -372,8 +367,7 @@ TimecodeTrack::setArtist( TimecodeArtistPtr artist )
 bool
 TimecodeTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::BoundedPlayback
-           || type == Capabilities::Capability::Editable;
+    return type == Capabilities::Capability::BoundedPlayback;
 }
 
 Capabilities::Capability *
@@ -383,10 +377,14 @@ TimecodeTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 
     if ( type == Capabilities::Capability::BoundedPlayback )
         return new Capabilities::TimecodeBoundedPlaybackCapability( this );
-    else if( type == Capabilities::Capability::Editable )
-        return new Capabilities::TimecodeEditCapability( this );
     else
         return 0;
+}
+
+TrackEditorPtr
+TimecodeTrack::editor()
+{
+    return TrackEditorPtr( this );
 }
 
 qint64 Meta::TimecodeTrack::start()
@@ -441,11 +439,6 @@ TimecodeAlbum::TimecodeAlbum( const QString & name )
     : QObject()
     , m_name( name )
     , m_isCompilation( false )
-    , m_separator( 0 )
-    , m_displayCoverAction( 0 )
-    , m_fetchCoverAction( 0 )
-    , m_setCustomCoverAction( 0 )
-    , m_unsetCoverAction( 0 )
 {
 }
 

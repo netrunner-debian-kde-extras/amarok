@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
 extern "C" {
     typedef quint64 UINT64_C;

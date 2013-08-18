@@ -22,7 +22,7 @@
 #include "amarok_export.h"
 
 #include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
@@ -61,19 +61,17 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
         virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
-        
+
         // Writable..
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
         virtual QStringList mimeTypes() const;
-        virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+        virtual QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const;
 
-        virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
-
-        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType ) = 0;
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
         virtual QList<CategoryId::CatMenuId> levels() const { return m_levelType; }
         virtual CategoryId::CatMenuId levelCategory( const int level ) const;
 
@@ -92,6 +90,15 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          * This should be called every time a drag enters collection browser
          */
         void setDragSourceCollections( const QSet<Collections::Collection*> &collections );
+
+        /**
+         * Return true if there are any queries still running. If this returns true,
+         * you can expect allQueriesFinished() signal in some time.
+         */
+        bool hasRunningQueries() const;
+
+        static QIcon iconForCategory( CategoryId::CatMenuId category );
+        static QString nameForCategory( CategoryId::CatMenuId category, bool showYears = false );
 
     signals:
         void expandIndex( const QModelIndex &index );
@@ -112,7 +119,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );
-    
         void slotExpanded( const QModelIndex &index );
 
     private:
@@ -124,7 +130,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     protected:
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
         virtual void updateHeaderText();
+
+        virtual QIcon iconForLevel( int level ) const;
         virtual QString nameForLevel( int level ) const;
+
         virtual int levelModifier() const = 0;
         virtual QVariant dataForItem( CollectionTreeItem *item, int role, int level = -1 ) const;
 
@@ -134,7 +143,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
         /** Initiates a special search for albums without artists */
-        void handleCompilations( CollectionTreeItem *parent ) const;
+        void handleCompilations( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         /** Initiates a special search for tracks without label */
         void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
@@ -142,9 +151,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString m_headerText;
         CollectionTreeItem *m_rootItem;
         QList<CategoryId::CatMenuId> m_levelType;
-
-        class Private;
-        Private * const d;
 
         QTimeLine *m_timeLine;
         int m_animFrame;
@@ -162,24 +168,16 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          */
         QSet<Collections::Collection*> m_dragSourceCollections;
 
+        QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_noLabelsQueries;
+        mutable QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
+
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();
-        void update();
-
-    private slots:
-        void updateRowHeight();
 };
 
-class CollectionTreeItemModelBase::Private
-{
- public:
-    QHash<QString, CollectionRoot > collections;  //I'll concide this one... :-)
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
-    int rowHeight;
-};
 
 #endif

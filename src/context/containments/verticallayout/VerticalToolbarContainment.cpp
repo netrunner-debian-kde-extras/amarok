@@ -45,8 +45,8 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SLOT(appletRemoved(Plasma::Applet*)) );
     connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SIGNAL(geometryChanged()) );
 
-    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(appletAdded(Plasma::Applet*, int)) );
-    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(geometryChanged()) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*,int)), SIGNAL(appletAdded(Plasma::Applet*,int)) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*,int)), SIGNAL(geometryChanged()) );
     connect( m_applets, SIGNAL(noApplets(bool)), SLOT(showEmptyText(bool)) );
 
 }
@@ -143,12 +143,10 @@ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const
 
     Plasma::Applet* applet = Plasma::Containment::addApplet( pluginName );
 
-    if( applet == 0 )
-        debug() << "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!";
-    else
-        m_applets->addApplet( applet, loc );
+    Q_ASSERT_X( applet, "addApplet", "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!" );
 
-     applet->setFlag(QGraphicsItem::ItemIsMovable, false);
+    m_applets->addApplet( applet, loc );
+    applet->setFlag(QGraphicsItem::ItemIsMovable, false);
 
     return applet;
 }

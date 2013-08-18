@@ -77,8 +77,9 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
-    emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
-    return PodcastChannelPtr::dynamicCast( umsChannel );
+
+    emit playlistAdded( Playlists::PlaylistPtr( umsChannel.data() ) );
+    return PodcastChannelPtr( umsChannel.data() );
 }
 
 PodcastEpisodePtr
@@ -96,7 +97,7 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
             .arg( destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
-    connect( copyJob, SIGNAL( result( KJob * ) ), SLOT( slotCopyComplete( KJob * ) ) );
+    connect( copyJob, SIGNAL(result(KJob*)), SLOT(slotCopyComplete(KJob*)) );
     copyJob->start();
     //we have not copied the data over yet so we can't return an episode yet
     //TODO: return a proxy for the episode we are still copying.
@@ -173,28 +174,23 @@ UmsPodcastProvider::playlists()
     return playlists;
 }
 
-QList<QAction *>
+QActionList
 UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
 {
-    QList<QAction *> actions;
+    QActionList actions;
+    if( episodes.isEmpty() )
+        return actions;
+
     if( m_deleteEpisodeAction == 0 )
     {
-        m_deleteEpisodeAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Episode" ),
-            this
-        );
+        m_deleteEpisodeAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete Episode" ), this );
         m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteEpisodeAction, SIGNAL( triggered() ),
-                 SLOT( slotDeleteEpisodes() ) );
+        connect( m_deleteEpisodeAction, SIGNAL(triggered()), SLOT(slotDeleteEpisodes()) );
     }
-    //set the episode list as data that we'll retrieve in the slot
-    PodcastEpisodeList actionList =
-            m_deleteEpisodeAction->data().value<PodcastEpisodeList>();
-
-    actionList << episodes;
-    m_deleteEpisodeAction->setData( QVariant::fromValue( actionList ) );
+    // set the episode list as data that we'll retrieve in the slot
+    m_deleteEpisodeAction->setData( QVariant::fromValue( episodes ) );
     actions << m_deleteEpisodeAction;
+
     return actions;
 }
 
@@ -281,8 +277,8 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     //keep track of these episodes until the job is done
     m_deleteJobMap.insert( deleteJob, umsEpisodes );
 
-    connect( deleteJob, SIGNAL( result( KJob * ) ),
-             SLOT( deleteJobComplete( KJob *) ) );
+    connect( deleteJob, SIGNAL(result(KJob*)),
+             SLOT(deleteJobComplete(KJob*)) );
 }
 
 void
@@ -317,29 +313,24 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
     }
 }
 
-QList<QAction *>
+QActionList
 UmsPodcastProvider::channelActions( PodcastChannelList channels )
 {
-    QList<QAction *> actions;
+    QActionList actions;
+    if( channels.isEmpty() )
+        return actions;
+
     if( m_deleteChannelAction == 0 )
     {
-        m_deleteChannelAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Channel and Episodes" ),
-            this
-        );
+        m_deleteChannelAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete "
+                "Channel and Episodes" ), this );
         m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteChannelAction, SIGNAL( triggered() ),
-                 SLOT( slotDeleteChannels() ) );
+        connect( m_deleteChannelAction, SIGNAL(triggered()), SLOT(slotDeleteChannels()) );
     }
-    //set the episode list as data that we'll retrieve in the slot
-    PodcastChannelList actionList =
-            m_deleteChannelAction->data().value<PodcastChannelList>();
-
-    actionList << channels;
-    m_deleteChannelAction->setData( QVariant::fromValue( actionList ) );
-
+    // set the episode list as data that we'll retrieve in the slot
+    m_deleteChannelAction->setData( QVariant::fromValue( channels ) );
     actions << m_deleteChannelAction;
+
     return actions;
 }
 
@@ -371,29 +362,41 @@ UmsPodcastProvider::slotDeleteChannels()
     }
 }
 
-QList<QAction *>
-UmsPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
+QActionList
+UmsPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
     PodcastChannelList channels;
-    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
-    if( channel.isNull() )
-        return QList<QAction *>();
+    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    {
+        PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+        if( channel )
+            channels << channel;
+    }
 
-    return channelActions( channels << channel );
+    return channelActions( channels );
 }
 
-QList<QAction *>
-UmsPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
+QActionList
+UmsPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks )
 {
-    if( playlist->tracks().count() > trackIndex )
+    PodcastEpisodeList episodes;
+    foreach( const Playlists::PlaylistPtr &playlist, playlistTracks.uniqueKeys() )
     {
-        PodcastEpisodeList episodes;
-        episodes << UmsPodcastEpisode::toPodcastEpisodePtr(
-                    UmsPodcastEpisode::fromTrackPtr( playlist->tracks()[trackIndex] )
-                );
-        return episodeActions( episodes );
+        PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+        if( !channel )
+            continue;
+
+        PodcastEpisodeList channelEpisodes = channel->episodes();
+        QList<int> trackPositions = playlistTracks.values( playlist );
+        qSort( trackPositions );
+        foreach( int trackPosition, trackPositions )
+        {
+            if( trackPosition >= 0 && trackPosition < channelEpisodes.count() )
+                episodes << channelEpisodes.at( trackPosition );
+        }
     }
-    return QList<QAction *>();
+
+    return episodeActions( episodes );
 }
 
 void
@@ -533,7 +536,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
         channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
         channel->setTitle( metafileTrack->album()->name() );
         m_umsChannels << channel;
-        emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( channel ) ) );
+        emit playlistAdded( Playlists::PlaylistPtr( channel.data() ) );
     }
 
     if( episode.isNull() )

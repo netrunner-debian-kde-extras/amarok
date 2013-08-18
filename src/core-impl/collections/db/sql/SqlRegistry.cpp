@@ -16,12 +16,15 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "SqlRegistry"
-#include "core/support/Debug.h"
 
 #include "SqlRegistry.h"
+
+#include "DatabaseUpdater.h"
 #include "SqlRegistry_p.h"
 #include "SqlCollection.h"
-#include "../ScanManager.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/db/MountPointManager.h"
+#include "scanner/GenericScanManager.h"
 
 #include <QMutableHashIterator>
 #include <QMutexLocker>
@@ -39,6 +42,15 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     // we have to do this now before anyone can hold references
     // to those objects.
     DatabaseUpdater databaseUpdater( m_collection );
+
+    // url entries without associated directory just stick around and cannot be processed
+    // by SqlScanResultProcessor. Delete them before checking tracks
+    databaseUpdater.deleteOrphanedByDirectory( "urls" );
+
+    // tracks with no associated url entry are useless, just a bunch of medatada with
+    // nothing to associate them to; remove those first
+    databaseUpdater.deleteOrphanedByUrl( "tracks" );
+
     databaseUpdater.deleteAllRedundant( "album" ); // what about cover images in database and disk cache?
     databaseUpdater.deleteAllRedundant( "artist" );
     databaseUpdater.deleteAllRedundant( "genre" );
@@ -53,7 +65,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     m_timer = new QTimer( this );
     m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
     m_timer->setSingleShot( false );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
+    connect( m_timer, SIGNAL(timeout()), this, SLOT(emptyCache()) );
     m_timer->start();
 }
 
@@ -81,7 +93,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     // - create new entry
     if( res.isEmpty() )
     {
-        debug() << "SqlRegistry::getDirectory new Directory" << path;
+        debug() << "SqlRegistry::getDirectory(): new directory" << path;
         QString insert = QString( "INSERT INTO directories(deviceid,changedate,dir) "
                                   "VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
@@ -99,8 +111,8 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
             QString update = QString( "UPDATE directories SET changedate = %1 "
                                       "WHERE id = %2;" )
                 .arg( QString::number( mtime ), res[0] );
-        debug() << "SqlRegistry::getDirectory update Directory"<<res[0]<<"from" << oldMtime << "to" << mtime;
-        debug() << update;
+            debug() << "SqlRegistry::getDirectory(): update directory" << path << "(id" <<
+                    res[0] << ") from" << oldMtime << "to" << mtime << "UNIX time";
             storage->query( update );
         }
     }
@@ -352,10 +364,11 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
 // -------- artist
 
 Meta::ArtistPtr
-SqlRegistry::getArtist( const QString &name )
+SqlRegistry::getArtist( const QString &oName )
 {
     QMutexLocker locker( &m_artistMutex );
 
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_artistMap.contains( name ) )
         return m_artistMap.value( name );
 
@@ -421,10 +434,11 @@ SqlRegistry::getArtist( int id, const QString &name )
 // -------- genre
 
 Meta::GenrePtr
-SqlRegistry::getGenre( const QString &name )
+SqlRegistry::getGenre( const QString &oName )
 {
     QMutexLocker locker( &m_genreMutex );
 
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_genreMap.contains( name ) )
         return m_genreMap.value( name );
 
@@ -484,10 +498,11 @@ SqlRegistry::getGenre( int id, const QString &name )
 // -------- composer
 
 Meta::ComposerPtr
-SqlRegistry::getComposer( const QString &name )
+SqlRegistry::getComposer( const QString &oName )
 {
     QMutexLocker locker( &m_composerMutex );
 
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_composerMap.contains( name ) )
         return m_composerMap.value( name );
 
@@ -585,10 +600,11 @@ SqlRegistry::getYear( int year, int yearId )
 // -------- album
 
 Meta::AlbumPtr
-SqlRegistry::getAlbum( const QString &name, const QString &artist )
+SqlRegistry::getAlbum( const QString &oName, const QString &oArtist )
 {
-    QString albumArtist( artist );
     // we allow albums with empty name but nonempty artist, see bug 272471
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
+    QString albumArtist = oArtist.left( DatabaseUpdater::textColumnLength() );
     AlbumKey key( name, albumArtist );
 
     QMutexLocker locker( &m_albumMutex );
@@ -687,9 +703,10 @@ SqlRegistry::getAlbum( int albumId, const QString &name, int artistId )
 // ------------ label
 
 Meta::LabelPtr
-SqlRegistry::getLabel( const QString &label )
+SqlRegistry::getLabel( const QString &oLabel )
 {
     QMutexLocker locker( &m_labelMutex );
+    QString label = oLabel.left( DatabaseUpdater::textColumnLength() );
     if( m_labelMap.contains( label ) )
         return m_labelMap.value( label );
 
@@ -801,30 +818,38 @@ SqlRegistry::commitDirtyTracks()
     // -- notify all observers
     foreach( Meta::SqlYearPtr year, dirtyYears )
     {
+        // this means that a new year was added to track or an old removed (or both),
+        // Collection docs says we need to emit updated() in this case. Ditto below.
+        m_collectionChanged = true;
         year->invalidateCache();
         year->notifyObservers();
     }
     foreach( Meta::SqlGenrePtr genre, dirtyGenres )
     {
+        m_collectionChanged = true;
         genre->invalidateCache();
         genre->notifyObservers();
     }
     foreach( Meta::SqlAlbumPtr album, dirtyAlbums )
     {
+        m_collectionChanged = true;
         album->invalidateCache();
         album->notifyObservers();
     }
     foreach( Meta::SqlTrackPtr track, dirtyTracks )
     {
+        // if only track changes, no need to emit updated() from here
         track->notifyObservers();
     }
     foreach( Meta::SqlArtistPtr artist, dirtyArtists )
     {
+        m_collectionChanged = true;
         artist->invalidateCache();
         artist->notifyObservers();
     }
     foreach( Meta::SqlComposerPtr composer, dirtyComposers )
     {
+        m_collectionChanged = true;
         composer->invalidateCache();
         composer->notifyObservers();
     }

@@ -18,7 +18,7 @@
 #ifndef AMAROK_ALBUMSVIEW_H
 #define AMAROK_ALBUMSVIEW_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "AlbumsModel.h"
 
 #include <QGraphicsWidget>
@@ -70,9 +70,10 @@ protected:
 
 private slots:
     void itemClicked( const QModelIndex &index );
+    void slotDoubleClicked();
     void slotAppendSelected();
     void slotEditSelected();
-    void slotPlaySelected();
+    void slotReplaceWithSelected();
     void slotQueueSelected();
     void slotScrollBarRangeChanged( int min, int max );
 

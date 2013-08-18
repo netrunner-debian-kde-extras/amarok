@@ -19,7 +19,7 @@
 #define AMAROK_FILEVIEW_H
 
 #include "core/collections/Collection.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -64,6 +64,7 @@ public:
 
 signals:
     void navigateToDirectory( const QModelIndex &index );
+    void refreshBrowser();
 
 protected slots:
     void slotAppendToPlaylist();
@@ -73,7 +74,8 @@ protected slots:
     void slotPrepareCopyTracks();
     void slotMoveTracks( const Meta::TrackList &tracks );
     void slotCopyTracks( const Meta::TrackList &tracks );
-    void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotDelete();
 
 protected:
     enum ActionType {
@@ -89,7 +91,7 @@ protected:
      * Convenience.
      */
     void addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions options );
-    void addIndicesToPlaylist( const QModelIndexList &indices, Playlist::AddOptions options );
+    void addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions options );
 
     virtual void contextMenuEvent( QContextMenuEvent *e );
     virtual void mouseReleaseEvent( QMouseEvent *event );

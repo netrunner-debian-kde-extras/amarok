@@ -20,45 +20,26 @@
 
 #include "SingleCollectionTreeItemModel.h"
 
-#include <amarokconfig.h>
-#include "core/support/Amarok.h"
+#include "amarokconfig.h"
+#include "browsers/CollectionTreeItem.h"
 #include "core/collections/Collection.h"
-#include "CollectionTreeItem.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection *collection,
                                                               const QList<CategoryId::CatMenuId> &levelType )
-    :CollectionTreeItemModelBase( )
+    : m_collection( collection )
 {
-    m_collection = collection;
+    m_rootItem = new CollectionTreeItem( m_collection, 0, this );
+    connect( collection, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
+    m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
     //we only have one collection that, by its very nature, is always expanded
     m_expandedCollections.insert( m_collection );
+
     setLevels( levelType );
-
-    connect( collection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-}
-
-void
-SingleCollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelType )
-{
-    if( m_levelType == levelType && m_rootItem )
-        return;
-
-    delete m_rootItem; //clears the whole tree!
-    m_levelType = levelType;
-    m_rootItem = new CollectionTreeItem( m_collection, 0, this );
-
-    d->collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
-
-    updateHeaderText();
-    m_expandedItems.clear();
-    m_expandedSpecialNodes.clear();
-    d->runningQueries.clear();
-    d->childQueries.clear();
-    d->compilationQueries.clear();
-    reset(); //resets the whole model, as the data changed
 }
 
 QVariant
@@ -108,4 +89,3 @@ SingleCollectionTreeItemModel::filterChildren()
 }
 
 #include "SingleCollectionTreeItemModel.moc"
-

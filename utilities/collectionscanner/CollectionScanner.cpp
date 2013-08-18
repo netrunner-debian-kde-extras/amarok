@@ -21,9 +21,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "CollectionScanner.h"
+
 #include "Version.h"  // for AMAROK_VERSION
 #include "collectionscanner/BatchFile.h"
-#include "collectionscanner/CollectionScanner.h"
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Track.h"
 
@@ -201,7 +202,7 @@ CollectionScanner::Scanner::doJob() //SLOT
         if( m_incremental )
             xmlWriter.writeAttribute("incremental", QString());
         // write some information into the file and close previous tag
-        xmlWriter.writeComment("Created by amarokcollectionscanner "AMAROK_VERSION" on "+QDateTime::currentDateTime().toString());
+        xmlWriter.writeComment("Created by amarokcollectionscanner " AMAROK_VERSION " on "+QDateTime::currentDateTime().toString());
         xmlFile.flush();
     }
 
@@ -373,7 +374,7 @@ CollectionScanner::Scanner::readArgs()
     CollectionScanner::Track::setUseCharsetDetector( m_charset );
 
     // Start the actual scanning job
-    QTimer::singleShot( 0, this, SLOT( doJob() ) );
+    QTimer::singleShot( 0, this, SLOT(doJob()) );
 }
 
 void
@@ -406,7 +407,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
     stream << error
         << tr( "Amarok Collection Scanner\n"
         "Scans directories and outputs a xml file with the results.\n"
-        "For more information see http://amarok.kde.org/wiki/Batch_Mode\n\n"
+        "For more information see http://community.kde.org/Amarok/Development/BatchMode\n\n"
         "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
         "User-modifiable Options:\n"
         "<Folder(s)>             : list of folders to scan\n"

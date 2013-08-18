@@ -42,7 +42,7 @@ namespace Playdar
      * will provide a QueryPtr for each call to resolve(). Results will
      * be provided by the appropriate Query as they become available, and
      * the friendly relationship between Controller and Query ensures that
-     * results are properly matched with Querys.
+     * results are properly matched with Queries.
      */
     class Controller : public QObject
     {
@@ -52,7 +52,7 @@ namespace Playdar
              * We invoke the private function status() here, return immediately,
              * and will emit playdarReady() once things are actually set up.
              * @param queriesShouldWaitForSolutions
-             *        If true, Playdar::Querys created by this controller will
+             *        If true, Playdar::Queries created by this controller will
              *        only use getResultsLongPoll instead of first using getResults.
              */
             Controller( bool queriesShouldWaitForSolutions = false );
@@ -122,7 +122,7 @@ namespace Playdar
         
         public:
             /**
-             * NOTE: Querys handle invoking these on their own.
+             * NOTE: Queries handle invoking these on their own.
              */
             /**
              * Asks Playdar for the state of the query with @p qid.
