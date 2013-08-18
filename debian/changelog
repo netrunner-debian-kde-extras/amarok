@@ -1,4 +1,7 @@
-amarok (2.7.1-2) UNRELEASED; urgency=low
+amarok (2.8.0-0r1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * Team upload.
 
   [ Modestas Vainius ]
   * Drop libifp-dev and libnjb-dev build dependencies. Apparently, they have
