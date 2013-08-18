@@ -11,6 +11,7 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
     KDE 4.9 so they will trigger FTBFS. We are not quite there yet with amarok
     tests (Closes: #719425).
   * Build depend on nepomuk-core-dev for KDE 4.9 or higher.
+  * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
 
   [ Maximiliano Curia ]
   * Update watch file.
