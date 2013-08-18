@@ -1,3 +1,8 @@
+amarok (2.8.0-2) UNRELEASED; urgency=low
+
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 18 Aug 2013 21:10:04 +0300
+
 amarok (2.8.0-1) unstable; urgency=low
 
   * New upstream release:
