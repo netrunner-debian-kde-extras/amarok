@@ -52,7 +52,6 @@ usr/lib/libamarokcore.so.1*
 usr/lib/libamaroklib.so.1*
 usr/lib/libamarokocsclient.so.4*
 usr/lib/libamarokpud.so.1*
-usr/lib/libamarokshared.so.1*
 usr/lib/libampache_account_login.so
 usr/share/applications/kde4/amarok.desktop
 usr/share/applications/kde4/amarok_containers.desktop
