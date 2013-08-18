@@ -1,6 +1,8 @@
 amarok (2.8.0-0r1) UNRELEASED; urgency=low
 
-  * New upstream release.
+  * New upstream release:
+    - new spectrum analyzer applet added (GStreamer backend only)
+      Closes: #683707
   * Team upload.
 
   [ Modestas Vainius ]
