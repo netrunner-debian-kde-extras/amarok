@@ -1,6 +1,7 @@
 amarok (2.8.0-2) UNRELEASED; urgency=low
 
   * Drop kdemultimedia-dev build dependency. Apparently, it is not needed.
+  * Replace kdemultimedia-kio-plugins Recommends with kio-audiocd.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 18 Aug 2013 21:10:04 +0300
 
