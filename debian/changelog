@@ -14,6 +14,7 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
   * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
   * Adapt debian_find_mysql_fix.diff to upstream changes.
   * Adapt debian_clamz_is_runtime_dependency.diff to upstream changes.
+  * Update install files.
 
   [ Maximiliano Curia ]
   * Update watch file.

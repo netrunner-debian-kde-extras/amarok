@@ -33,6 +33,7 @@ usr/share/kde4/config/amarokapplets.knsrc
 usr/share/kde4/services/ServiceMenus/*
 usr/share/kde4/services/amarok-containment-vertical.desktop
 usr/share/kde4/services/amarok-context-applet-albums.desktop
+usr/share/kde4/services/amarok-context-applet-analyzer.desktop
 usr/share/kde4/services/amarok-context-applet-currenttrack.desktop
 usr/share/kde4/services/amarok-context-applet-info.desktop
 usr/share/kde4/services/amarok-context-applet-labels.desktop
@@ -51,14 +52,13 @@ usr/share/kde4/services/amarok-data-engine-similarArtists.desktop
 usr/share/kde4/services/amarok-data-engine-tabs.desktop
 usr/share/kde4/services/amarok-data-engine-upcomingEvents.desktop
 usr/share/kde4/services/amarok-data-engine-wikipedia.desktop
-usr/share/kde4/services/amarok-scriptengine-applet-simple-javascript.desktop
-usr/share/kde4/services/amarok-scriptengine-runner-javascript.desktop
 usr/share/kde4/services/amarok_collection-audiocdcollection.desktop
 usr/share/kde4/services/amarok_collection-daapcollection.desktop
 usr/share/kde4/services/amarok_collection-ipodcollection.desktop
 usr/share/kde4/services/amarok_collection-mtpcollection.desktop
 usr/share/kde4/services/amarok_collection-mysqlecollection.desktop
 usr/share/kde4/services/amarok_collection-mysqlservercollection.desktop
+usr/share/kde4/services/amarok_collection-nepomukcollection.desktop
 usr/share/kde4/services/amarok_collection-playdarcollection.desktop
 usr/share/kde4/services/amarok_collection-umscollection.desktop
 usr/share/kde4/services/amarok_collection-upnpcollection.desktop
