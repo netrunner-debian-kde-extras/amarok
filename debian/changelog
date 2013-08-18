@@ -20,6 +20,9 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
   * Move amzdownloader into amarok-utils package.
   * Add notes about Phonon backends to README.Debian. Some Amarok features are
     not supported by Phonon VLC backend.
+  * Backport upstream patch which avoids adding analyzer applet by default if
+    Phonon backend does not support it.
+    Patch backport_dont_add_analyzer_when_not_supported.diff
 
   [ Maximiliano Curia ]
   * Update watch file.

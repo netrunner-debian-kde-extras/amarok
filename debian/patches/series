@@ -1,3 +1,4 @@
+backport_dont_add_analyzer_when_not_supported.diff
 debian_disable_qtscriptbindings_check_fix.diff
 debian_mysqle_amarok_local_errmsg_feature.diff
 debian_mysqle_force_defaults_file.diff
