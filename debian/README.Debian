@@ -14,3 +14,27 @@ General notes
   Refer to http://amarok.kde.org/wiki/Moodbar#Usage for more information.
 * As of 2.7.0, you should install clamz package if you wish to download songs
   from Amazon with Amarok.
+
+Phonon Backend
+--------------
+
+At the time of writing (phonon-backend-gstreamer at 4.6.3 and
+phonon-backend-vlc at 0.6.2), Phonon GStreamer backend has more features than
+Phonon VLC backend. Therefore, some Amarok features might not work when Phonon
+VLC backend is in use and you will need to switch to GStreamer one. For
+example:
+
+* Spectrum Analyzer applet
+* Equalizer
+* Fade-out
+
+are known not to work.
+
+In order to change the backend, open up Multimedia -> Phonon -> Backend
+settings in System Settings and move the GStreamer backend to the top. If it is
+not listed, you will probably need to install phonon-backend-gstreamer package.
+
+Another way to open Phonon configuration dialog is via Amarok Playback
+configuration dialog. Please note, however, that in both cases you will be
+changing user-wide settings so other KDE applications might end up being
+affected as well.

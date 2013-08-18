@@ -18,6 +18,8 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
     - New libamarokshared library goes to amarok-utils package since it might
       be needed by a few utilities (e.g. collectionscanner).
   * Move amzdownloader into amarok-utils package.
+  * Add notes about Phonon backends to README.Debian. Some Amarok features are
+    not supported by Phonon VLC backend.
 
   [ Maximiliano Curia ]
   * Update watch file.
