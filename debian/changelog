@@ -12,6 +12,7 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
     tests (Closes: #719425).
   * Build depend on nepomuk-core-dev for KDE 4.9 or higher.
   * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
+  * Adapt debian_find_mysql_fix.diff to upstream changes.
 
   [ Maximiliano Curia ]
   * Update watch file.
