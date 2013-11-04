@@ -96,6 +96,8 @@ Description: utilities for Amarok media player
      file tags and prints it in the structured XML format.
    - amarok_afttagger - a helper program which writes/removes custom tags
      to/from media files required for embedded "Amarok File Tracking".
+   - amzdownloader - easily download your files from Amazon if you have their
+     references in an encrypted .amz file.
 
 Package: amarok-dbg
 Priority: extra

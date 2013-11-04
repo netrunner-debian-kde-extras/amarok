@@ -4,6 +4,7 @@ amarok (2.8.0-2) UNRELEASED; urgency=low
   * Replace kdemultimedia-kio-plugins Recommends with kio-audiocd.
   * Re-enable QtScript bindings which got disabled due to bug
     (fix debian_disable_qtscriptbindings_check_fix.diff) (Closes: #721882)
+  * Describe amzdownloader in amarok-utils package description (Closes: #728037)
 
  -- Modestas Vainius <modax@debian.org>  Sun, 18 Aug 2013 21:10:04 +0300
 
