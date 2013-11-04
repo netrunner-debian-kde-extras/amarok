@@ -16,7 +16,7 @@ Build-Depends: debhelper (>= 9), cmake (>= 2.6.2), pkg-kde-tools (>= 0.5),
  libgtk2.0-dev, libqca2-dev, liblastfm-dev (>= 1.0.3),
  libavformat-dev (>= 4:0.5), libofa0-dev, libaio-dev [linux-any]
 Build-Depends-Indep: mysql-server-core-5.5 | mysql-server-core
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: http://amarok.kde.org
 Vcs-Git: git://anonscm.debian.org/pkg-kde/kde-extras/amarok.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-kde/kde-extras/amarok.git

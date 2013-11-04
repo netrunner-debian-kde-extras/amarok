@@ -7,6 +7,7 @@ amarok (2.8.0-2) UNRELEASED; urgency=low
   * Describe amzdownloader in amarok-utils package description (Closes: #728037)
   * Backport a fix for a crash on shuffle keyboard shortcut (Closes: #725895)
     Patch: backport_dont_crash_on_shuffle_keyb_shortcut.diff
+  * Bump Standards-Version to 3.9.5: no further changes needed.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 18 Aug 2013 21:10:04 +0300
 
