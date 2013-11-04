@@ -1,0 +1,165 @@
+From: Mark Kretschmann <kretschmann@kde.org>
+Subject: Don't allow adding Analyzer applet when not supported.
+Origin: backport, commit:2b87fb43c550e946acfb47b3c5b217a07fcefa0c
+Date: Thu Aug 22 16:47:30 2013 +0200
+Bug: https://bugs.kde.org/show_bug.cgi?id=323119
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=725893
+
+Also now shows an error message explaining why it can't be used.
+
+--- a/src/EngineController.cpp
++++ b/src/EngineController.cpp
+@@ -926,6 +926,13 @@ bool EngineController::supportsGainAdjus
+     return m_preamp;
+ }
+ 
++bool EngineController::supportsAudioDataOutput() const
++{
++    const Phonon::AudioDataOutput out;
++    return out.isValid();
++}
++
++
+ //////////////////////////////////////////////////////////////////////////////////////////
+ // PRIVATE SLOTS
+ //////////////////////////////////////////////////////////////////////////////////////////
+--- a/src/EngineController.h
++++ b/src/EngineController.h
+@@ -313,6 +313,11 @@ public slots:
+      */
+     bool supportsGainAdjustments() const;
+ 
++    /**
++     * Return true if the current Phonon backend supports visualizations.
++     */
++    bool supportsAudioDataOutput() const;
++
+ Q_SIGNALS:
+     /**
+      * Emitted when the playback stops while playing a track.
+--- a/src/context/Containment.h
++++ b/src/context/Containment.h
+@@ -51,7 +51,7 @@ public:
+ public slots:
+     void showApplet( Plasma::Applet* ) {}
+     void moveApplet( Plasma::Applet*, int, int ) {}
+-    virtual Applet* addApplet( const QString& pluginName, const int ) { Q_UNUSED( pluginName ); return 0; }
++    virtual void addApplet( const QString& pluginName, const int ) = 0;
+ };
+ 
+ } // Context namespace
+--- a/src/context/ContextView.cpp
++++ b/src/context/ContextView.cpp
+@@ -36,6 +36,7 @@
+ #include "core/support/Amarok.h"
+ #include "core/support/Debug.h"
+ #include "core/meta/Meta.h"
++#include "EngineController.h"
+ 
+ #include <plasma/dataenginemanager.h>
+ 
+@@ -221,12 +222,8 @@ ContextView::loadConfig()
+             const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
+             if( firstTimeWithAnalyzer )
+             {
+-                // Check if the Phonon backend implements all features required by the analyzer
+-                Phonon::AudioDataOutput out;
+-                const bool phononCanHandleAnalyzer = out.isValid();
+-
+                 QStringList plugins = cg.readEntry( "plugins", QStringList() );
+-                if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
++                if( EngineController::instance()->supportsAudioDataOutput() && !plugins.contains( "analyzer" ) )
+                 {
+                     Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
+ 
+@@ -244,20 +241,6 @@ ContextView::loadConfig()
+     PERF_LOG( "Done loading config" );
+ }
+ 
+-Plasma::Applet*
+-ContextView::addApplet( const QString& name, const QStringList& args )
+-{
+-    QVariantList argList;
+-    QStringListIterator i(args);
+-    while( i.hasNext() )
+-        argList << QVariant( i.next() );
+-
+-    if( !containment() )
+-        contextScene()->addContainment( "amarok_containment_vertical" );
+-
+-    return containment()->addApplet( name, argList );
+-}
+-
+ void
+ ContextView::addCollapseAnimation( QAbstractAnimation *anim )
+ {
+--- a/src/context/ContextView.h
++++ b/src/context/ContextView.h
+@@ -98,11 +98,6 @@ public:
+ 
+ public slots:
+     /**
+-     * Add the applet with the given plugin name to the context view. Will add in default position, which is at
+-     *  the end of the applet list.
+-     */
+-    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
+-    /**
+      * Convenience methods to show and hide the applet explorer.
+      */
+     void hideAppletExplorer();
+--- a/src/context/containments/verticallayout/VerticalToolbarContainment.cpp
++++ b/src/context/containments/verticallayout/VerticalToolbarContainment.cpp
+@@ -19,7 +19,10 @@
+ #include "VerticalToolbarContainment.h"
+ 
+ #include "ContextView.h"
++#include "core/interfaces/Logger.h"
++#include "core/support/Components.h"
+ #include "core/support/Debug.h"
++#include "EngineController.h"
+ #include "PaletteHandler.h"
+ #include "VerticalAppletLayout.h"
+ 
+@@ -136,19 +139,25 @@ Context::VerticalToolbarContainment::upd
+     m_applets->refresh();
+ }
+ 
+-Plasma::Applet*
++void
+ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const int loc ) // SLOT
+ {
+     DEBUG_BLOCK
+ 
++    if( pluginName == "analyzer" && !EngineController::instance()->supportsAudioDataOutput() )
++    {
++        Amarok::Components::logger()->longMessage( i18n( "Error: Visualizations are not supported by your current Phonon backend." ),
++                                                   Amarok::Logger::Error ) ;
++
++        return;
++    }
++
+     Plasma::Applet* applet = Plasma::Containment::addApplet( pluginName );
+ 
+     Q_ASSERT_X( applet, "addApplet", "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!" );
+ 
+     m_applets->addApplet( applet, loc );
+-    applet->setFlag(QGraphicsItem::ItemIsMovable, false);
+-
+-    return applet;
++    applet->setFlag( QGraphicsItem::ItemIsMovable, false );
+ }
+ 
+ void
+--- a/src/context/containments/verticallayout/VerticalToolbarContainment.h
++++ b/src/context/containments/verticallayout/VerticalToolbarContainment.h
+@@ -48,8 +48,8 @@ class VerticalToolbarContainment : publi
+         virtual ContextView *view();
+ 
+     public slots:
+-        Applet* addApplet( const QString& pluginName, const int );
+-        void    appletRemoved( Plasma::Applet* );
++        void addApplet( const QString& pluginName, const int );
++        void appletRemoved( Plasma::Applet* );
+         // these slots below are forwarded to the layout
+         void showApplet( Plasma::Applet* );
+         void moveApplet( Plasma::Applet*, int, int );
