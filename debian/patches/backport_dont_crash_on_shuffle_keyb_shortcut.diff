@@ -1,0 +1,201 @@
+From: Konrad Zemek <konrad.zemek@gmail.com>
+Date: Sat Aug 17 15:23:48 2013 +0200
+Subject: Get rid of last traces of Shuffle sort level
+Origin: backport, commit:2f42e4687d5dd277d0e39f012c49496f6e9631c8/diff
+Bug: https://bugs.kde.org/show_bug.cgi?id=323614
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=725895
+Last-Update: 2013-11-04
+
+--- a/src/MainWindow.cpp
++++ b/src/MainWindow.cpp
+@@ -660,7 +660,7 @@ void
+ MainWindow::slotShufflePlaylist()
+ {
+     m_playlistDock.data()->sortWidget()->trimToLevel();
+-    m_playlistDock.data()->sortWidget()->addLevel( QString( "Shuffle" ) );
++    The::playlistActions()->shuffle();
+ }
+ 
+ void
+--- a/src/playlist/PlaylistSortWidget.cpp
++++ b/src/playlist/PlaylistSortWidget.cpp
+@@ -62,31 +62,7 @@ SortWidget::SortWidget( QWidget *parent
+     connect( m_addButton->menu(), SIGNAL(shuffleActionClicked()), The::playlistActions(), SLOT(shuffle()) );
+ 
+     QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
+-    if( !sortPath.isEmpty() )
+-    {
+-        QStringList levels = sortPath.split( '-' );
+-        foreach( const QString &level, levels )
+-        {
+-            QStringList levelParts = level.split( '_' );
+-	    /*
+-	     * Check whether the configuration is valid. If indexOf
+-	     * returns -1, the entry is corrupted. We can't use columnForName
+-	     * here, as it will do a static_cast, which is UB when indexOf is -1
+-	     * as there's no corresponding enum value
+-	     * (C++ standard 5.2.9 Static cast [expr.static.cast] paragraph 7)
+-	     */
+-            if( levelParts.count() > 2
+-	        || ( Playlist::PlaylistColumnInfos::internalNames().
+-                               indexOf( levelParts.value(0) ) == -1) )
+-                warning() << "Playlist sorting load error: Invalid sort level " << level;
+-            else if( levelParts.value( 1 ) == QString( "asc" ) )
+-                addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
+-            else if( levelParts.value( 1 ) == QString( "des" ) )
+-                addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
+-            else
+-                warning() << "Playlist sorting load error: Invalid sort order for level " << level;
+-        }
+-    }
++    readSortPath( sortPath );
+ }
+ 
+ SortWidget::~SortWidget()
+@@ -108,7 +84,6 @@ SortWidget::addLevel( QString internalCo
+     updateSortScheme();
+ }
+ 
+-
+ void
+ SortWidget::trimToLevel( const int level )
+ {
+@@ -185,6 +160,35 @@ SortWidget::sortPath() const
+     return path;
+ }
+ 
++void
++SortWidget::readSortPath( const QString &sortPath )
++{
++    trimToLevel();
++
++    QStringList levels = sortPath.split( '-' );
++    foreach( const QString &level, levels )
++    {
++        QStringList levelParts = level.split( '_' );
++    /*
++     * Check whether the configuration is valid. If indexOf
++     * returns -1, the entry is corrupted. We can't use columnForName
++     * here, as it will do a static_cast, which is UB when indexOf is -1
++     * as there's no corresponding enum value
++     * (C++ standard 5.2.9 Static cast [expr.static.cast] paragraph 7)
++     */
++        if( levelParts.count() > 2
++        || ( Playlist::PlaylistColumnInfos::internalNames().
++                           indexOf( levelParts.value(0) ) == -1) )
++            warning() << "Playlist sorting load error: Invalid sort level " << level;
++        else if( levelParts.value( 1 ) == QString( "asc" ) )
++            addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
++        else if( levelParts.value( 1 ) == QString( "des" ) )
++            addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
++        else
++            warning() << "Playlist sorting load error: Invalid sort order for level " << level;
++    }
++}
++
+ QString
+ SortWidget::prettySortPath() const
+ {
+--- a/src/playlist/PlaylistSortWidget.h
++++ b/src/playlist/PlaylistSortWidget.h
+@@ -56,6 +56,11 @@ public:
+     QString sortPath() const;
+ 
+     /**
++     * Generate current sort scheme from a sorth path stored in a QString.
++     */
++    void readSortPath( const QString &sortPath );
++
++    /**
+      * Generates a user-visible QString usable by a URL runner for the title of a bookmark.
+      */
+     QString prettySortPath() const;
+@@ -68,13 +73,6 @@ public slots:
+     void updateSortScheme();
+ 
+     /**
+-     * Adds a level to the breadcrumb path.
+-     * @param internalColumnName the name of the level.
+-     * @param sortOrder the Qt::SortOrder of the level.
+-     */
+-    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+-
+-    /**
+      * Removes items from the breadcrumb path up to a certain level.
+      * @param level the cutoff level of the breadcrumb path.
+      */
+@@ -89,6 +87,13 @@ private:
+ 
+ private slots:
+     /**
++     * Adds a level to the breadcrumb path.
++     * @param internalColumnName the name of the level.
++     * @param sortOrder the Qt::SortOrder of the level.
++     */
++    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
++
++    /**
+      * Handles the (possible) deletion of further levels when an item is clicked.
+      */
+     void onItemClicked();
+--- a/src/playlist/PlaylistViewUrlRunner.cpp
++++ b/src/playlist/PlaylistViewUrlRunner.cpp
+@@ -48,51 +48,31 @@ ViewUrlRunner::run( AmarokUrl url )
+ {
+     DEBUG_BLOCK
+ 
+-    QMap< QString, QString > args = url.args();
++    const QMap< QString, QString > args = url.args();
+     QWeakPointer<Dock> playlistDock = The::mainWindow()->playlistDock();
+ 
+     if( args.keys().contains( "filter" ) )
+     {
+-        QString filterExpr = args.value( "filter" );
++        const QString filterExpr = args.value( "filter" );
+         playlistDock.data()->searchWidget()->setCurrentFilter( filterExpr );
+         if( args.keys().contains( "matches" ) )
+         {
+-            QString onlyMatches = args.value( "matches" );
++            const QString onlyMatches = args.value( "matches" );
+             playlistDock.data()->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
+         }
+     }
+     if( args.keys().contains( "sort" ) )
+     {
+-        playlistDock.data()->sortWidget()->trimToLevel();
+-
+-        QString sortPath = args.value( "sort" );
+-
+-        QStringList levels = sortPath.split( '-' );
+-        foreach( const QString &level, levels )
+-        {
+-            if( level == QString( "Random" ) || level == QString( "Shuffle" ) ) //we keep "Random" for compatibility
+-            {
+-                playlistDock.data()->sortWidget()->addLevel( QString( "Shuffle" ) );
+-                break;
+-            }
+-            QStringList levelParts = level.split( '_' );
+-            if( levelParts.count() > 2 )
+-                warning() << "Playlist view URL parse error: Invalid sort level " << level;
+-            if( levelParts.at( 1 ) == QString( "asc" ) )
+-                playlistDock.data()->sortWidget()->addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
+-            else if( levelParts.at( 1 ) == QString( "des" ) )
+-                playlistDock.data()->sortWidget()->addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
+-            else
+-                warning() << "Playlist view URL parse error: Invalid sort order for level " << level;
+-        }
++        const QString sortPath = args.value( "sort" );
++        playlistDock.data()->sortWidget()->readSortPath( sortPath );
+     }
+ 
+     if( args.keys().contains( "layout" ) )
+     {
+-        QString layout = args.value( "layout" );
++        const QString layout = args.value( "layout" );
+         LayoutManager::instance()->setActiveLayout( layout );
+     }
+-    
++
+     The::mainWindow()->showDock( MainWindow::AmarokDockPlaylist );
+ 
+     return true;
