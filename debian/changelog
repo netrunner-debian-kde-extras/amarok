@@ -1,3 +1,11 @@
+amarok (2.8.0-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/control: Explicitly list libgcrypt20-dev in Build-Depends (Closes:
+    #758412).
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 30 Aug 2014 10:37:41 +0200
+
 amarok (2.8.0-2) unstable; urgency=low
 
   * Drop kdemultimedia-dev build dependency. Apparently, it is not needed.
