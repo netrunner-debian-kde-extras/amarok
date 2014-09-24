@@ -1,0 +1,12 @@
+diff --git a/src/services/ServiceSqlQueryMaker.cpp b/src/services/ServiceSqlQueryMaker.cpp
+index 64cead7..614c0aa 100644
+--- a/src/services/ServiceSqlQueryMaker.cpp
++++ b/src/services/ServiceSqlQueryMaker.cpp
+@@ -94,6 +94,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
+     //d->includedBuilder = true;
+     //d->collectionRestriction = false;
+     d->worker = 0;
++    d->albumMode = AllAlbums;
+ 
+     d->queryType = Private::NONE;
+     d->linkedTables = 0;
