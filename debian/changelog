@@ -1,5 +1,6 @@
 amarok (2.8.0-3~) UNRELEASED; urgency=medium
 
+  * Refresh patches.
 
  -- Maximiliano Curia <maxy@debian.org>  Wed, 24 Sep 2014 10:59:24 +0200
 
