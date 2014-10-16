@@ -1,2 +1,2 @@
 version=3
-opts=pasv ftp://ftp.kde.org/pub/kde/stable/amarok/([\d\.]+)/src/amarok-([\d\.]+).tar.bz2
+http://download.kde.org/stable/amarok/([\d.]+)/src/amarok-([\d.]+).tar.bz2
