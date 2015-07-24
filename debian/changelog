@@ -1,7 +1,13 @@
 amarok (2.8.0-3~) UNRELEASED; urgency=medium
 
+  [ Maximiliano Curia ]
   * Refresh patches.
   * New patch: valgrind_uninitialized_value
+
+  [ Diane Trout ]
+  * Update build-depends-indep to mysql-server-core-5.6.
+    This is needed as the libmysqld-pic version changed to 5.6.x.
+    (Closes: #793451)
 
  -- Maximiliano Curia <maxy@debian.org>  Wed, 24 Sep 2014 10:59:24 +0200
 
