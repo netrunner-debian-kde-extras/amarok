@@ -1,4 +1,4 @@
-amarok (2.8.0-3~) UNRELEASED; urgency=medium
+amarok (2.8.0-3) unstable; urgency=medium
 
   [ Maximiliano Curia ]
   * Refresh patches.
@@ -10,7 +10,7 @@ amarok (2.8.0-3~) UNRELEASED; urgency=medium
     (Closes: #793451)
   * Add myself to uploaders, ACKed by Sune and Lisandro.
 
- -- Maximiliano Curia <maxy@debian.org>  Wed, 24 Sep 2014 10:59:24 +0200
+ -- Diane Trout <diane@debian.org>  Fri, 24 Jul 2015 14:43:31 -0700
 
 amarok (2.8.0-2.1) unstable; urgency=medium
 
