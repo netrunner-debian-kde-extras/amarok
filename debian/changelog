@@ -1,10 +1,10 @@
-amarok (2.8.0-4) UNRELEASED; urgency=medium
+amarok (2.8.0-4) unstable; urgency=medium
 
   * Update watch file.
   * Add ffmpeg-2.9.patch for FFmpeg 2.9 compatibility (Closes: #803797)
     Thanks: Andreas Cadhalpun for the patch.
 
- -- Diane Trout <diane@debian.org>  Fri, 11 Sep 2015 14:52:32 -0700
+ -- Diane Trout <diane@ghic.org>  Sat, 09 Jan 2016 15:49:03 -0800
 
 amarok (2.8.0-3) unstable; urgency=medium
 
