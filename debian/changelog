@@ -1,3 +1,8 @@
+amarok (2.8.0-5) UNRELEASED; urgency=medium
+
+
+ -- Debian KDE Extras Team <pkg-kde-extras@lists.alioth.debian.org>  Sun, 24 Jan 2016 16:19:34 +0100
+
 amarok (2.8.0-4) unstable; urgency=medium
 
   * Update watch file.
