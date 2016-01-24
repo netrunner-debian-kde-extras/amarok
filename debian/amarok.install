@@ -1,4 +1,3 @@
-debian/icons/*                          /usr/share/pixmaps
 usr/bin/amarok
 usr/bin/amarokmp3tunesharmonydaemon
 usr/bin/amarokpkg

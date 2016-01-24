@@ -1,5 +1,8 @@
 amarok (2.8.0-5) UNRELEASED; urgency=medium
 
+  [ Pino Toscano ]
+  * Drop menu file and its pixmaps, since amarok already provides a .desktop
+    file.
 
  -- Debian KDE Extras Team <pkg-kde-extras@lists.alioth.debian.org>  Sun, 24 Jan 2016 16:19:34 +0100
 
